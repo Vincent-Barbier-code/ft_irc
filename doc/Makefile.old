@@ -1,0 +1,43 @@
+NAME = ft_irc
+
+CXX = c++ 
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
+#https://stackoverflow.com/questions/2855121/what-is-the-purpose-of-using-pedantic-in-the-gcc-g-compiler
+SRC = main.cpp 
+DEP = Array.hpp
+OBJ = $(SRC:.cpp=.o)
+
+C_RED		:= \033[31m
+C_GREEN		:= \033[32m
+C_CYAN		:= \033[36m
+C_NONE		:= \033[0m
+CROSS		:= ✘
+CHECK		:= ✔
+BUILD_MSG	:= @echo "$(C_GREEN)$(CHECK)$(C_NONE)"
+REMOVE_MSG	:= @echo "$(C_RED)$(CROSS)$(C_NONE)"
+
+#To redirect stderr to stdout:
+#2>&1
+
+#@make 
+#The @ symbol before a command tells make to not print the command before executing it.
+# This is useful for commands that print a lot of output, such as compiling a large project.
+# /dev/null is a special file that discards all data written to it.
+
+%.o: %.cpp
+	$(CFLAGS) -c $< -o $@
+
+$(NAME): $(OBJ) $(DEP)
+	$(CFLAGS) $(OBJ) -o $(NAME)
+
+all : $(NAME)
+
+clean :
+	rm -rf $(OBJ)
+
+fclean : clean
+	rm -f $(NAME)
+
+re : fclean all
+
+.PHONY : all clean fclean re
