@@ -1,30 +1,30 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
-NAME = ft_irc
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
+NAME := ft_irc
+CXX := c++
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
 
 # Interpreteur de commandes
 SHELL := /bin/zsh -o pipefail 
 # Si ne marche pas a 42 utiliser ca SHELL := /bin/sh
 
 # Répertoires pour les fichiers objets et de dépendances
-OBJDIR = obj
-DEPDIR = dep
+OBJDIR := obj
+DEPDIR := dep
 
 # Variables pour les fichiers sources, objets et de dépendances
-SRCDIR = ./src
-INCDIR = ./inc
-SRCS = $(SRCDIR)/main.cpp 
-OBJ = $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
-DEPS = $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))
+SRCDIR := ./src
+INCDIR := ./inc
+SRCS := $(SRCDIR)/main.cpp 
+OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
+DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))
 
 # Variables pour les messages de compilation
-C_RED    := \033[31m
-C_GREEN  := \033[32m
-C_CYAN   := \033[36m
-C_NONE   := \033[0m
-CROSS    := ✘
-CHECK    := ✔
+C_RED := \033[31m
+C_GREEN := \033[32m
+C_CYAN := \033[36m
+C_NONE := \033[0m
+CROSS := ✘
+CHECK := ✔
 
 # Fonction pour l'affichage d'un message de construction
 define build_msg
@@ -41,9 +41,10 @@ endef
 
 # Cibles principales du Makefile
 all: $(NAME)
+#	make -j $(nproc)
 
 $(NAME): $(OBJ)
-	$(call build_msg,$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME))
+	$(call build_msg,$(CXX) $(CXXFLAGS) $(OBJ) -o $@)
 
 # Règle pour la génération des fichiers de dépendances
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
@@ -74,4 +75,12 @@ re: fclean all
 run: $(NAME)
 	./$(NAME)
 
-.PHONY: all clean fclean re run
+# Règle pour le formatage du code avec clang-format
+format:
+	@echo "Formatting source files..."
+	@clang-format -i $(shell find $(SRCDIR) -type f -name "*.cpp" ! -name "*~" -exec echo "{}" \;) \
+		$(shell find $(INCDIR) -type f -name "*.hpp" ! -name "*~" -exec echo "{}" \;)
+	@echo "Done formatting."
+
+
+.PHONY: all clean fclean re run format

@@ -20,9 +20,16 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
 
 -MM est utilisé pour générer une liste de dépendances en fonction des fichiers d'entrée spécifiés. Cette option génère une liste de dépendances au format Makefile pour chaque fichier d'entrée spécifié.
 
+-Utiliser le flag -MMD à la place de -MM dans la règle pour la génération des fichiers de dépendances. Cette option permet de générer des fichiers de dépendances sans inclure les fichiers système, ce qui les rend plus précis et réduit le risque d'erreurs.
+
 -MT est utilisé pour spécifier une cible de sortie pour les règles de dépendance générées. L'argument de cette option est la cible qui doit être générée.
 
 -MF est utilisé pour spécifier le nom du fichier de sortie pour les règles de dépendance générées.
+Ajouter l'option -MF au compilateur pour générer les fichiers de dépendances dans le répertoire de dépendances plutôt que dans le répertoire source 
+
+L'affectation simple avec le signe "=" qui définit une variable dont la valeur sera remplacée par le texte défini à chaque occurrence.
+
+L'affectation avec le signe ":=" qui définit une variable dont la valeur est évaluée une seule fois, lors de la définition de la variable, et non pas chaque fois qu'elle est utilisée.
 
 Lorsque vous utilisez ces options ensemble, le compilateur GCC génère un fichier de dépendance qui est inclus dans le Makefile. Le fichier de dépendance contient une liste de tous les fichiers d'entête dont dépend le fichier source, et si l'un de ces fichiers est modifié, le fichier source sera recompilé.
 
