@@ -2,6 +2,7 @@
 NAME := ft_irc
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
+DEBUG := -g3 -fsanitize=address
 
 # Interpreteur de commandes
 SHELL := /bin/zsh -o pipefail 
@@ -52,7 +53,7 @@ $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -I$(INCDIR) -MM -MT '$(OBJDIR)/$(notdir $(patsubst %.cpp,%.o,$<))' $< -MF $@
 
 # Règle pour la compilation des fichiers sources
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(DEPDIR)/%.d
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp 
 	@mkdir -p $(OBJDIR)
 	$(call build_msg,$(CXX) $(CXXFLAGS) -I$(INCDIR) -c $< -o $@)
 
@@ -82,5 +83,10 @@ format:
 		$(shell find $(INCDIR) -type f -name "*.hpp" ! -name "*~" -exec echo "{}" \;)
 	@echo "Done formatting."
 
+# Règle pour la compilation des fichiers sources en mode debug
+debug: fclean
+debug: CXXFLAGS += $(DEBUG)
+debug: all
 
-.PHONY: all clean fclean re run format
+.PHONY: all clean fclean re run format debug
+
