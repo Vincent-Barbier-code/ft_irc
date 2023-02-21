@@ -1,5 +1,6 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
 NAME := ft_irc
+PORT := 6667
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
 DEBUG := -g3 -fsanitize=address
@@ -15,7 +16,8 @@ DEPDIR := dep
 # Variables pour les fichiers sources, objets et de dépendances
 SRCDIR := ./src
 INCDIR := ./inc
-SRCS := $(SRCDIR)/main.cpp 
+SRCS := $(SRCDIR)/main.cpp \
+		$(SRCDIR)/socket.cpp 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
 DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))
 
@@ -74,7 +76,7 @@ re: fclean all
 
 # Cible pour exécuter le programme
 run: $(NAME)
-	./$(NAME)
+	./$(NAME) $(PORT)
 
 # Règle pour le formatage du code avec clang-format
 format:

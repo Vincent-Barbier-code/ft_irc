@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ft_irc.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 17:44:47 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/02/21 18:53:34 by vbarbier         ###   ########.fr       */
+/*   Created: 2023/02/21 14:25:06 by vbarbier          #+#    #+#             */
+/*   Updated: 2023/02/21 20:58:28 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
+// cpp librairies
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		std::cerr << "Usage: ./server <port>" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+#include <iostream>
+#include <string>
 
-	// Initialisation du socket serveur
-	int port = atoi(argv[1]);
-	port = port + 1;
-	// int sockfd = initServerSocket(port);
+// c librairies
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-	return (0);
-}
+// my librairies
+#include "macro.hpp"
+#include "socket.hpp"

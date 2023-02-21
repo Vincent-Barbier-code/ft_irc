@@ -1,0 +1,127 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/21 14:25:12 by vbarbier          #+#    #+#             */
+/*   Updated: 2023/02/21 18:55:15 by vbarbier         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_irc.hpp"
+
+// Fonction pour initialiser le socket serveur
+int initServerSocket(int port) {
+    // Création du socket
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        std::cerr << "Erreur: Impossible de créer le socket" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Configuration du socket
+    int reuseaddr = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr)) < 0) {
+        std::cerr << "Erreur: Impossible de configurer le socket" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Liaison du socket à une adresse et un port
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port = htons(port);
+    if (bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        std::cerr << "Erreur: Impossible de lier le socket à l'adresse et au port" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Mise en écoute du socket
+    if (listen(sockfd, MAX_CLIENTS) < 0) {
+        std::cerr << "Erreur: Impossible de mettre le socket en écoute" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    return sockfd;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        std::cerr << "Usage: ./server <port>" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialisation du socket serveur
+    int port = atoi(argv[1]);
+    int sockfd = initServerSocket(port);
+
+    // Initialisation des variables pour le polling
+    struct pollfd fds[MAX_CLIENTS];
+    memset(fds, 0, sizeof(fds));
+    fds[0].fd = sockfd;
+    fds[0].events = POLLIN;
+    int nclients = 1;
+
+    // Boucle principale
+	while (true) {
+		// Attente de nouveaux événements
+		int ret = poll(fds, nclients, -1);
+		if (ret < 0) {
+			std::cerr << "Erreur: Impossible d'attendre des événements" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+
+		// Vérification des événements pour chaque client
+		for (int i = 0; i < nclients; i++) {
+			if (fds[i].revents & POLLIN) {
+				// Nouvelle connexion entrante
+				if (i == 0) {
+					int clientfd = accept(sockfd, NULL, NULL);
+					if (clientfd < 0) {
+						std::cerr << "Erreur: Impossible d'accepter la connexion entrante" << std::endl;
+						exit(EXIT_FAILURE);
+					}
+					// Ajout du nouveau client dans le tableau de descripteurs de fichiers
+					fds[nclients].fd = clientfd;
+					fds[nclients].events = POLLIN;
+					nclients++;
+					std::cout << "Nouvelle connexion entrante" << std::endl;
+				}
+				// Données à lire sur un socket client
+				else {
+					char buffer[BUFFER_SIZE];
+					int nbytes = recv(fds[i].fd, buffer, BUFFER_SIZE, 0);
+					if (nbytes < 0) {
+						std::cerr << "Erreur: Impossible de lire depuis le socket client" << std::endl;
+						exit(EXIT_FAILURE);
+					} else if (nbytes == 0) {
+						// Connexion fermée par le client
+						close(fds[i].fd);
+						// Suppression du client du tableau de descripteurs de fichiers
+						for (int j = i; j < nclients - 1; j++) {
+							fds[j] = fds[j + 1];
+						}
+						nclients--;
+						std::cout << "Connexion fermée par le client" << std::endl;
+					} else {
+						// Affichage des données reçues
+						buffer[nbytes] = '\0';
+						std::cout << "Données reçues: " << buffer << std::endl;
+						// Envoi de la réponse au client
+						std::string response = "Message reçu: ";
+						response += buffer;
+						response += "\n";
+						nbytes = send(fds[i].fd, response.c_str(), response.length(), 0);
+						if (nbytes < 0) {
+							std::cerr << "Erreur: Impossible d'écrire sur le socket client" << std::endl;
+							exit(EXIT_FAILURE);
+						}
+					}
+				}
+			}
+		}
+	}
+}

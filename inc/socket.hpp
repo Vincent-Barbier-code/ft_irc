@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   socket.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 17:44:47 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/02/21 18:53:34 by vbarbier         ###   ########.fr       */
+/*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
+/*   Updated: 2023/02/21 20:56:42 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
+class socketServer {
+   private:
+	int socket_fd;
+	struct sockaddr_in sin;
 
-int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		std::cerr << "Usage: ./server <port>" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+   protected:
+	socketServer();
+	sockaddr_in get_addr();
 
-	// Initialisation du socket serveur
-	int port = atoi(argv[1]);
-	port = port + 1;
-	// int sockfd = initServerSocket(port);
+   public:
+	socketServer(int port);
+	~socketServer();
+	socketServer(socketServer const &src);
+	socketServer &operator=(socketServer const &rhs);
+	int initServerSocket(int port);
+};
 
-	return (0);
-}
+std::string itostr(int i);
