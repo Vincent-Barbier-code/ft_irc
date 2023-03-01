@@ -1,27 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 17:44:47 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/01 20:46:48 by vbarbier         ###   ########.fr       */
+/*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
+/*   Updated: 2023/03/01 20:54:35 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_irc.hpp"
-#include <set>
+class  Server {
 
-int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		std::cerr << "Usage: ./server <port>" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+  public:
+	Server(int port);
+	Server(Server const &src);
+	~Server();
+	
+	Server &operator=( Server const &rhs);
 
-	int port = atoi(argv[1]);
+	int 		getFd();
+	sockaddr_in getAddr();
+	void 		start(void);	
 
-	Server server(port);
-	server.start();
-    return 0;
-}
+  private:
+	int server_fd;
+	struct sockaddr_in	addr;
+	
+	Server();
+};
+

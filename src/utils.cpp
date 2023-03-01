@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   socket.hpp                                         :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/02/21 20:56:42 by vbarbier         ###   ########.fr       */
+/*   Created: 2023/03/01 18:18:37 by vbarbier          #+#    #+#             */
+/*   Updated: 2023/03/01 19:40:27 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-class socketServer {
-   private:
-	int socket_fd;
-	struct sockaddr_in sin;
+#include "ft_irc.hpp"
+#include <sstream>
 
-   protected:
-	socketServer();
-	sockaddr_in get_addr();
+// Converti un int en string
+// std::string itostr(int i) {
+// 	std::string s;
 
-   public:
-	socketServer(int port);
-	~socketServer();
-	socketServer(socketServer const &src);
-	socketServer &operator=(socketServer const &rhs);
-	int initServerSocket(int port);
-};
+// 	while (i > 0) {
+// 		s = (char)(i % 10 + '0') + s;
+// 		i /= 10;
+// 	}
+// 	return (s);
+// }
 
-std::string itostr(int i);
+// void cou(void) {
+// 	std::stringstream ss;
+
+// 	ss << 42;
+// 	ss << 'c';
+// 	ss << "de";
+// 	std::cout << ss.str();
+// }

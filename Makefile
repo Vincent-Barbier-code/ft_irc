@@ -2,7 +2,7 @@
 NAME := ft_irc
 PORT := 6667
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -pedantic
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -Wshadow
 DEBUG := -g3 -fsanitize=address
 
 # Interpreteur de commandes
@@ -17,7 +17,8 @@ DEPDIR := dep
 SRCDIR := ./src
 INCDIR := ./inc
 SRCS := $(SRCDIR)/main.cpp \
-		$(SRCDIR)/socket.cpp 
+		$(SRCDIR)/server.cpp \
+		$(SRCDIR)/utils.cpp 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
 DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))
 
