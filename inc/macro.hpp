@@ -1,17 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   macro.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 17:56:21 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/01 14:43:25 by vbarbier         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef MACRO_HPP
+# define MACRO_HPP
 
 // default macro
 #define MAX_CLIENTS 100
 #define BUFFER_SIZE 1024
 // my macro
 #define DEFAULT_PORT 8080
+
+#endif

@@ -1,14 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_irc.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 14:25:06 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/01 20:51:16 by vbarbier         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef FT_IRC_HPP
+# pragma once
 
 // cpp librairies
 #include <arpa/inet.h>
@@ -21,7 +12,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -34,3 +25,4 @@
 #include "macro.hpp"
 #include "server.hpp"
 
+#endif

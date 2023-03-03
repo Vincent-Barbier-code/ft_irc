@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef SERVER_HPP
+# pragma once
+
 class  Server {
 
   public:
@@ -17,11 +20,12 @@ class  Server {
 	Server(Server const &src);
 	~Server();
 	
-	Server &operator=( Server const &rhs);
+	//Server &operator=(Server const &rhs); A faire ou non?
 
 	int 		getFd();
 	sockaddr_in getAddr();
-	void 		start(void);	
+	void 		start(void);
+	void		shutdown();	
 
   private:
 	int server_fd;
@@ -29,4 +33,5 @@ class  Server {
 	
 	Server();
 };
+#endif
 
