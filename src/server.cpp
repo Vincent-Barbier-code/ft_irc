@@ -40,16 +40,15 @@ void Server::start(){
         memset(&client_addr, 0, client_addrlen);
 		if ((client_fd = accept(server_fd, &client_addr, &client_addrlen)) == -1) 
 			perror("accept() failed");
-		std::cout << reinterpret_cast<void *>(&client_addr) << std::endl;
-/*
-		if (1)
-		{
-			close(client_fd);
-			exit(EXIT_SUCCESS);
-		}
-		*/
 
-       std::cout << "Client connected !!!" << std::endl;
+       std::cout << "Client connected, fd:" << client_fd << std::endl;
+
+	   char msg[] = "Je suis un messager du serveur !";
+	   if(send(client_fd, msg, strlen(msg), 0) == -1) {
+			perror("send failed");
+			exit(EXIT_FAILURE);
+	   }
+	   	
     }
 }
 
