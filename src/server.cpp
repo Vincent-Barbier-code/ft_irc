@@ -43,8 +43,14 @@ void Server::start(){
 
        std::cout << "Client connected, fd:" << client_fd << std::endl;
 
+	  char buf[1024];
+	   if (recv(client_fd, buf, sizeof(buf), 0) == -1) {
+			perror("recv() failed");
+			exit(EXIT_FAILURE);
+	   }
+	   std::cout << "Message du client: " << buf << std::endl;
 	   char msg[] = "Je suis un messager du serveur !";
-	   if(send(client_fd, msg, strlen(msg), 0) == -1) {
+	   if(send(client_fd, msg, strlen(msg) + 1, 0) == -1) {
 			perror("send failed");
 			exit(EXIT_FAILURE);
 	   }
