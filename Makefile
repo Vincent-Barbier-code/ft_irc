@@ -1,6 +1,6 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
 NAME := ft_irc
-PORT := 6667
+PORT := 8080
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -Wshadow
 DEBUG := -g3 -fsanitize=address

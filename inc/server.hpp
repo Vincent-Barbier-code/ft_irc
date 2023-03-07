@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/03 17:29:35 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/07 15:32:38 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # pragma once
 
 #include "client.hpp"
+#include "utils.hpp"
 class  Server {
 
   public:
@@ -25,6 +26,7 @@ class  Server {
 	sockaddr_in getAddr();
 	void 		start(void);
 	void		shutdown();
+	void		clientAlreadyConnected(int fd);
 	
   private:
 	int					_server_fd;

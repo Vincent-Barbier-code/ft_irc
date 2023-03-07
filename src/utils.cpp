@@ -12,11 +12,8 @@
 // 	return (s);
 // }
 
-// void cou(void) {
-// 	std::stringstream ss;
-
-// 	ss << 42;
-// 	ss << 'c';
-// 	ss << "de";
-// 	std::cout << ss.str();
-// }
+std::string itostr(int i) {
+	std::stringstream ss;
+	ss << i;
+	return ss.str();
+}
