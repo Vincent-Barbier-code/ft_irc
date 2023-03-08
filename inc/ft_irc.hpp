@@ -1,4 +1,5 @@
 #ifndef FT_IRC_HPP
+#define FT_IRC_HPP
 # pragma once
 
 // cpp librairies
@@ -14,6 +15,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 
 // c librairies
@@ -24,6 +26,5 @@
 
 // my librairies
 #include "macro.hpp"
-#include "server.hpp"
 
 #endif

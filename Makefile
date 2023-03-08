@@ -1,6 +1,6 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
 NAME := ft_irc
-PORT := 6667
+PORT := 8080
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -ansi -Wshadow
 DEBUG := -g3 -fsanitize=address
@@ -18,6 +18,7 @@ SRCDIR := ./src
 INCDIR := ./inc
 SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/server.cpp \
+		$(SRCDIR)/client.cpp \
 		$(SRCDIR)/utils.cpp 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
 DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))

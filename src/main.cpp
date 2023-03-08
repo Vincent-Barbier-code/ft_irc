@@ -1,5 +1,5 @@
 #include "ft_irc.hpp"
-#include <set>
+#include "server.hpp"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
