@@ -59,7 +59,6 @@ void Server::startOld(){
 }
 
 
-
 void Server::start() {
 	if (listen(server_fd, SOMAXCONN) == -1) {
         perror("listen() failed");
@@ -75,7 +74,7 @@ void Server::start() {
 		int maxevents = 12;//a remplacer par le nombre de client + 1 une fois le merge effectue
 		int nb_ev;
 
-		std::cout << "epollfd : " << epoll_fd << std::endl;
+		//std::cout << "epollfd : " << epoll_fd << std::endl;
 
 		if ((nb_ev = epoll_wait(epoll_fd, &ready_events, maxevents, 50000)) == -1) {
 			perror("epoll_wait() failed first");
@@ -106,7 +105,7 @@ void Server::start() {
 					exit(EXIT_FAILURE);
 				}
 			} else { //un event sur un client a ete triggered (nouveau msg ou deconnexion)
-				_treat_client_event((&ready_events)[i].data.fd);
+				_treat_client_event((&ready_events)[i]);
 			}
 		}
 	}
@@ -129,26 +128,29 @@ void Server::_initEpoll() {
 	}
 }
 
-void Server::_treat_client_event(int client_fd) const {
+void Server::_treat_client_event(epoll_event const & client_ev) const {
 	int size = 1024;
 	char buf[size + 1];
 	bzero(buf, size + 1);
 
+	if (client_ev.events & EPOLLRDHUP) {
+		_deconnection(client_ev.data.fd);
+		return ;
+	}
+
 	int len;
-	
+	int client_fd = client_ev.data.fd;
 	if ((len = read(client_fd, buf, size)) == -1) { // A METTRE DANS UNE BOUCLE
 		perror("read() failed");
 		exit(EXIT_FAILURE);
 	}
+	std::cout << "len ::  " << len << std::endl;
 	buf[len] = '\0';
 	std::cout << "client said : " << buf << std::endl;
-
-
-
 }
 
 void Server::_deconnection(int client_fd) const { // FONCTION A MODIFIER 
-	std::cout << "Le client : " << client_fd << "a ete deconnecte !" << std::endl;
+	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
 		perror("epoll_ctl() failed");
 		exit(EXIT_FAILURE);
