@@ -149,6 +149,10 @@ void Server::_treat_client_event(int client_fd) const {
 
 void Server::_deconnection(int client_fd) const { // FONCTION A MODIFIER 
 	std::cout << "Le client : " << client_fd << "a ete deconnecte !" << std::endl;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
+		perror("epoll_ctl() failed");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	Server::shutdown()
