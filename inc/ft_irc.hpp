@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sys/epoll.h>
 
 // my librairies
 #include "macro.hpp"

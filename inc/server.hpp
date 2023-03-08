@@ -25,13 +25,19 @@ class  Server {
 	int 		getFd();
 	sockaddr_in getAddr();
 	void 		start(void);
+	void 		startOld(void);
 	void		shutdown();	
 
   private:
-	int server_fd;
-	struct sockaddr_in	addr;
+	int			server_fd;
+	int			epoll_fd;
+	sockaddr_in	addr;
 	
 	Server();
+
+	void	_initEpoll(void);
+	void	_treat_client_event(epoll_event const & client_ev) const;
+	void	_deconnection(int client_fd) const;
 };
 #endif
 
