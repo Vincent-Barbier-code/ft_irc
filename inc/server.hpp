@@ -39,6 +39,7 @@ class  Server {
 	Server();
 
 	void	_initEpoll(void);
+	void	_acceptNewConnection(void);
 	void	_treat_client_event(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
 };
