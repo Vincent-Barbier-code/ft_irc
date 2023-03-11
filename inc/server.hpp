@@ -16,6 +16,7 @@
 
 #include "client.hpp"
 #include "utils.hpp"
+#include "Message.hpp"
 class  Server {
 
   public:
@@ -42,6 +43,7 @@ class  Server {
 	void	_acceptNewConnection(void);
 	void	_treat_client_event(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
+	void	_interpretData(std::string const & data);
 };
 #endif
 

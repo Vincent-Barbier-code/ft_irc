@@ -28,46 +28,6 @@ Server::Server(int port){
     }
 }
 
-// void Server::startOld(){
-// 	if (listen(_server_fd, SOMAXCONN) == -1) {
-//         perror("listen() failed");
-//         exit(EXIT_FAILURE);
-//     }
-
-
-//     std::cout << "listen..." << std::endl;
-//     while (1) {
-// 		int			client_fd;
-// 		sockaddr	client_addr;
-// 		socklen_t	client_addrlen = sizeof(client_addr);
-
-// 		memset(&client_addr, 0, client_addrlen);
-// 		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
-// 			perror("accept() failed");	
-
-
-	
-//         memset(&client_addr, 0, client_addrlen);
-// 		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
-// 			perror("accept() failed");
-
-//        std::cout << "Client connected, fd:" << client_fd << std::endl;
-
-// 	  char buf[1024];
-// 	   if (recv(client_fd, buf, sizeof(buf), 0) == -1) {
-// 			perror("recv() failed");
-// 			exit(EXIT_FAILURE);
-// 	   }
-// 	   std::cout << "Message du client: " << buf << std::endl;
-// 	   char msg[] = "Je suis un messager du serveur !";
-// 	   if(send(client_fd, msg, strlen(msg) + 1, 0) == -1) {
-// 			perror("send failed");
-// 			exit(EXIT_FAILURE);
-// 	   }
-	   	
-//     }
-// }
-
 
 void Server::start() {
 	if (listen(_server_fd, SOMAXCONN) == -1) {
@@ -81,8 +41,8 @@ void Server::start() {
 
 	while (!g_shutdown) {
 		epoll_event ready_events;
-		int maxevents = 12;//a remplacer par le nombre de client + 1 une fois le merge effectue
-		int nb_ev;
+		int			maxevents = _clients.size() + 1;
+		int			nb_ev;
 
 		if ((nb_ev = epoll_wait(_epoll_fd, &ready_events, maxevents, -1)) == -1) {
 			if (errno == EINTR) //signal recu
@@ -90,18 +50,14 @@ void Server::start() {
 			perror("epoll_wait() failed first");
 			exit(EXIT_FAILURE);
 		}
-
 		
 		for (int i = 0; i < nb_ev; i++) {
-
-			if ((&ready_events)[i].data.fd ==_server_fd) {
+			if ((&ready_events)[i].data.fd ==_server_fd)
 				_acceptNewConnection();
-			} else {
+			else
 				_treat_client_event((&ready_events)[i]);
-			}
 		}
 	}
-
 }
 
 void Server::_initEpoll() {
@@ -136,12 +92,12 @@ void Server::_acceptNewConnection(void) {
 
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
 	nbr_client++;
+	
 	std::cout << "nbr client from begining= " + itostr(nbr_client) << std::endl;
 	std::cout << "Client connected " << _clients[client_fd]->getUserName() << std::endl;
 	std::cout << "fd = " << client_fd << std::endl;
 	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
 
-	std::cout << "servererrre" << std::endl;
 
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
@@ -179,10 +135,12 @@ void	Server::stop()
 }
 
 
-void Server::_treat_client_event(epoll_event const & client_ev){
-	int size = 1024;
-	char buf[size + 1];
-	bzero(buf, size + 1);
+void Server::_treat_client_event(epoll_event const & client_ev) {
+	
+	std::string data;
+	int 		size = 512;
+	char 		buf[size + 1];
+	memset(buf, 0, size + 1);
 
 	if (client_ev.events & EPOLLRDHUP) {
 		_deconnection(client_ev.data.fd);
@@ -191,13 +149,38 @@ void Server::_treat_client_event(epoll_event const & client_ev){
 
 	int len;
 	int client_fd = client_ev.data.fd;
-	if ((len = read(client_fd, buf, size)) == -1) { // A METTRE DANS UNE BOUCLE
-		perror("read() failed");
-		exit(EXIT_FAILURE);
+	while ((len = read(client_fd, buf, size))) { // A METTRE DANS UNE BOUCLE
+		if (len == -1) {
+			perror("read() failed");
+			exit(EXIT_FAILURE);
+		}
+		buf[len] = '\0';
+		data.append(buf);
+		if (0 && data.length() < 3) {
+			std::cerr << "The server has received a message smaller than 3 character which is weird so i exit" << std::endl;
+			exit(2);
+		}
+		if (data[data.length() - 2] == '\r' && data[data.length() - 1] == '\n')
+			break;
 	}
-	std::cout << "len ::  " << len << std::endl;
-	buf[len] = '\0';
-	std::cout << "client said : " << buf << std::endl;
+	//std::cout << "client said : " << data << "|end-cuicui| ";
+	//fflush(stdout);
+	
+	_interpretData(data);
+
+}
+
+void Server::_interpretData(std::string const & data) {
+
+	//std::cout << "client said : " << data << "|end-cuicui| ";
+	//fflush(stdout);
+
+	std::list<Message> msgs = Message::parseAllMsg(data);
+
+	for (std::list<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
+		std::cout << "MSG: " << (*it).getRaw() << std::endl;
+
+
 }
 
 void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER 
