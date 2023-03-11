@@ -178,7 +178,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs) {
 	std::list<Message> msgs = Message::parseAllMsg(raw_msgs);
 
 	for (std::list<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
-		std::cout << "MSG: " << (*it).getRaw() << std::endl;
+		std::cout << "MSG: " << std::setw(30) << (*it).getRaw()  << " |   CMD: " << (*it).getCmd() << std::endl;
 
 
 }

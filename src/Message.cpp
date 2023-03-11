@@ -17,6 +17,13 @@ std::list<Message> Message::parseAllMsg(std::string const & raw_msgs) {
 
 Message::Message(std::string const & raw_msg) {
     _raw = raw_msg;
+
+    _cmd = _raw.substr(0, _raw.find(' '));
+}
+
+
+std::string const & Message::getCmd() const {
+    return _cmd;
 }
 
 std::string const & Message::getRaw() const {
