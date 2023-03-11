@@ -166,16 +166,16 @@ void Server::_treat_client_event(epoll_event const & client_ev) {
 	//std::cout << "client said : " << data << "|end-cuicui| ";
 	//fflush(stdout);
 	
-	_interpretData(data);
+	_execRawMsgs(data);
 
 }
 
-void Server::_interpretData(std::string const & data) {
+void Server::_execRawMsgs(std::string const & raw_msgs) {
 
 	//std::cout << "client said : " << data << "|end-cuicui| ";
 	//fflush(stdout);
 
-	std::list<Message> msgs = Message::parseAllMsg(data);
+	std::list<Message> msgs = Message::parseAllMsg(raw_msgs);
 
 	for (std::list<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
 		std::cout << "MSG: " << (*it).getRaw() << std::endl;

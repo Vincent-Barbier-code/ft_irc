@@ -43,7 +43,7 @@ class  Server {
 	void	_acceptNewConnection(void);
 	void	_treat_client_event(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
-	void	_interpretData(std::string const & data);
+	void	_execRawMsgs(std::string const & raw_msgs);
 };
 #endif
 

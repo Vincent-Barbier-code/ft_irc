@@ -13,8 +13,6 @@ std::list<Message> Message::parseAllMsg(std::string const & raw_msgs) {
         msgs.push_back(Message(msg_str));
     }
     return msgs;
-
-
 }
 
 Message::Message(std::string const & raw_msg) {
