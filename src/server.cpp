@@ -118,6 +118,7 @@ void Server::start() {
 				std::cout << "servererrre" << std::endl;
 
 				epoll_event client_ev;
+				memset(&client_ev, 0, sizeof(client_ev));
 				client_ev.data.fd = client_fd;
 				client_ev.events = EPOLLIN | EPOLLRDHUP;
 				if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1) {
@@ -145,12 +146,14 @@ void	Server::stop()
 	std::map<int, ClientPtr>::iterator ite = _clients.end();
 
 	std::cout << "Server is shutting down..." << std::endl;
-	close(_server_fd);
 	while(it != ite)
 	{
 		close(it->first); //first is used to access the key (fd of client)
+		delete it->second; //second is used to access the value (pointer to client)
 		_clients.erase(it++);
 	}
+	close(_epoll_fd);
+	close(_server_fd);
 	exit(EXIT_SUCCESS);
 }
 
@@ -197,6 +200,8 @@ void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER
 		perror("epoll_ctl() failed");
 		exit(EXIT_FAILURE);
 	}
+	close(client_fd);
+	delete _client[client_fd];
 	_clients.erase(client_fd);
 }
 
