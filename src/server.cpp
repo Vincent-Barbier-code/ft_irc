@@ -104,7 +104,7 @@ void Server::start() {
 					exit(EXIT_FAILURE);
 				}
 
-				_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client));
+				_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
 				nbr_client++;
 				std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
 				std::cout << "Client connected " << _clients[client_fd]->getUserName() << std::endl;
