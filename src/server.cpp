@@ -175,9 +175,9 @@ void Server::_execRawMsgs(std::string const & raw_msgs) {
 	//std::cout << "client said : " << data << "|end-cuicui| ";
 	//fflush(stdout);
 
-	std::list<Message> msgs = Message::parseAllMsg(raw_msgs);
+	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
 
-	for (std::list<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
+	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
 		std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << " |   CMD: " << (*it).getCmd() << std::endl;
 
 
