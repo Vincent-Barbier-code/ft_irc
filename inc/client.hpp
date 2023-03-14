@@ -7,6 +7,17 @@
 
 class  Client {
 
+  private:
+	int								_fd;
+	struct sockaddr_in				_addr;
+	std::string						_userName;
+	std::string						_nickName;
+	std::string						_currentChannel;
+	bool							_isLoggedIn;
+	
+	void		sendNumericReply(int code);
+	std::string	getNumericReplyMessage(int code);
+
   public:
 	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
 	~Client();
@@ -14,6 +25,7 @@ class  Client {
 	int 		getFd();
 	sockaddr_in getAddr();
 	std::string getUserName();
+	std::string getNickName();
 	bool		isConnected() const;
 	bool		isLoggedIn() const;
 	// channel 		getCurrentChannel();
@@ -28,9 +40,6 @@ class  Client {
 	// void 			disconnect();
 
 	void		nick(std::string nick);//, std::string compteur);
-	void		sendNumericReply(int code);
-	std::string	getNumericReplyMessage(int code);
-	Client		*findClientByNickName(std::string const nickName);
 	class InvalidNicknameException : public std::exception {
 	public:
 		const char* what() const throw() {
@@ -46,16 +55,9 @@ class  Client {
 	};
 
 	Client();
-	
-  private:
-	int								_fd;
-	struct sockaddr_in				_addr;
-	std::string						_userName;
-	std::string						_nickName;
-	std::string						_currentChannel;
-	bool							_isLoggedIn;
 };
 
-#endif
+	Client		*findClientByNickName(std::string const nickName);
 
-typedef Client* ClientPtr;
+	typedef Client* ClientPtr;
+#endif

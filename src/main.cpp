@@ -30,25 +30,28 @@ int main() {
     serverAddress.sin_port = htons(port); // numéro de port (en ordre réseau)
     inet_pton(AF_INET, ip.c_str(), &serverAddress.sin_addr);
 	
+	try
+	{
 	Client client1(11, serverAddress, "User1", "Nick1");
 	Client client2(12, serverAddress, "User2", "Nick2");
-
+	Client client3(12, serverAddress, "User5", "Nick3");
+	
 	// Test de la fonction findClientByNickName
-	Client* foundClient = client1.findClientByNickName("Nick1");
+	Client* foundClient = findClientByNickName("Nick1");
 	if (foundClient != NULL) {
 		std::cout << "Client found: " << foundClient->getUserName() << std::endl;
 	} else {
 		std::cout << "Client not found" << std::endl;
 	}
 
-	foundClient = client1.findClientByNickName("Nick2");
+	foundClient = findClientByNickName("Nick2");
 	if (foundClient != NULL) {
 		std::cout << "Client found: " << foundClient->getUserName() << std::endl;
 	} else {
 		std::cout << "Client not found" << std::endl;
 	}
 
-	foundClient = client1.findClientByNickName("Nick3");
+	foundClient = findClientByNickName("Nick3");
 	if (foundClient != NULL) {
 		std::cout << "Client found: " << foundClient->getUserName() << std::endl;
 	} else {
@@ -57,17 +60,16 @@ int main() {
 
 	// Test de la fonction nick
 	client1.nick("Nick2");
+	std::cout << client1.getNickName() << std::endl;
 	client1.nick("Nick3");
+	std::cout << client1.getNickName() << std::endl;
 
-	// Test de la fonction getNumericReplyMessage
-	std::string reply = client1.getNumericReplyMessage(RPL_WELCOME);
-	std::cout << "RPL_WELCOME reply: " << reply << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 
-	reply = client1.getNumericReplyMessage(ERR_ERRONEUSNICKNAME);
-	std::cout << "ERR_ERRONEUSNICKNAME reply: " << reply << std::endl;
-
-	reply = client1.getNumericReplyMessage(ERR_NICKNAMEINUSE);
-	std::cout << "ERR_NICKNAMEINUSE reply: " << reply << std::endl;
 
 	return 0;
 }

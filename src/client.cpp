@@ -1,7 +1,7 @@
 #include "client.hpp"
 #include "struct.hpp"
 
-Client::Client()
+Client::Client(): _fd(0), _addr(), _userName(), _nickName(), _isLoggedIn(false)
 {
 }
 
@@ -10,6 +10,8 @@ Client::Client(int fd, sockaddr_in addr, std::string userName, std::string nickN
 	_fd = fd;
 	_addr = addr;
 	_userName = userName;
+	if (clientMap.find(nickName) != clientMap.end())
+		throw NicknameInUseException();
 	_nickName = nickName;
 	_isLoggedIn = true;
 	clientMap[_nickName] = *this;
@@ -34,6 +36,11 @@ std::string Client::getUserName()
 	return (this->_userName);
 }
 
+std::string Client::getNickName()
+{
+	return (this->_nickName);
+}
+
 bool Client::isConnected() const {
 	int error = 0;
 	socklen_t len = sizeof(error);
@@ -55,7 +62,8 @@ bool Client::isLoggedIn() const {
 // compteur de distance (JSP QUOI EN FAIRE)
 
 void	Client::nick(std::string nickname){//, std::string compteur){
-	try {
+	try 
+	{
 		std::string ancienNickname = _nickName;
 
 		if (nickname.empty())
@@ -63,7 +71,10 @@ void	Client::nick(std::string nickname){//, std::string compteur){
 		if (nickname.size() > 9)
 			throw InvalidNicknameException();
 		if (clientMap.find(nickname) != clientMap.end())
+		{
+			// std::cout << "Nickname already in use" << std::endl;
 			throw NicknameInUseException();
+		}
 		_nickName = nickname;
 		_isLoggedIn = true;
 		sendNumericReply(RPL_WELCOME);
@@ -83,6 +94,8 @@ void	Client::nick(std::string nickname){//, std::string compteur){
 
 void	Client::sendNumericReply(int code){
 	std::string message = getNumericReplyMessage(code);
+	std::cout << "Sending message to client " << _nickName << ": " << message << std::endl;
+	
 	//send MESSAGE KEVIN;
 }
 
@@ -99,7 +112,7 @@ std::string	Client::getNumericReplyMessage(int code){
 	}
 }
 
-Client 	*Client::findClientByNickName(std::string const nickName){
+Client 	*findClientByNickName(std::string const nickName){
 	if (clientMap.find(nickName) != clientMap.end())
 		return &clientMap[nickName];
 	return NULL;
