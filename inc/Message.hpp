@@ -28,4 +28,5 @@ class Message {
 };
 
 
+std::list<std::string>    ke_split(std::string const & str, std::string const & pattern);
 #endif
