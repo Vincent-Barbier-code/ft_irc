@@ -14,6 +14,18 @@ std::vector<std::string>    ke_split(std::string const & str, std::string const 
     return vec;
 }
 
+bool Message::_isParserInitialized = false;
+
+void Message::_initParser(void) {
+    if (_isParserInitialized)
+        return ;
+    Message::_parse[0] = &Message::_parseUSER;
+}
+
+void Message::_parseUSER(void) {
+    return ;
+}
+
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
     
     /*std::list<Message> msgs;
@@ -37,11 +49,19 @@ std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
 }
 
 Message::Message(std::string const & raw_msg) {
-    _raw = raw_msg;
 
+    _initParser();
+    
+    _raw = raw_msg;
     _cmd = _raw.substr(0, _raw.find(' '));
+    
+    _initParams();
 }
 
+
+void Message::_initParams() {
+
+}
 
 std::string const & Message::getCmd() const {
     return _cmd;
