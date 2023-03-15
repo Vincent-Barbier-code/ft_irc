@@ -4,20 +4,19 @@
 
 #include <string>
 #include <vector>
-
+#include <map>
+#include <list>
+#include <stdexcept>
 
 class Message {
 
-    enum CMD {
-        NICK = 0,
-        USER,
-        NB_CMD = 2
-    };
+    typedef void (Message::*func_type)(void);
 
     public:
 
 
         static std::vector<Message> parseAllMsg(std::string const & raw_msgs);
+        static std::string _shrinkNBlank(std::string const & str, size_t n = std::string::npos);
 
         std::string const & getRaw() const;
         std::string const & getCmd() const;
@@ -29,10 +28,10 @@ class Message {
 
     private:
         
-        static bool _isParserInitialized;
-        static void (Message::* _parse[2])(void);
+        static bool _isParsersInitialized;
+        static std::map<std::string, func_type> _parsers;
 
-        void _initParser();
+        static void _initParsers();
         
         std::string _raw;
         std::string _cmd;
