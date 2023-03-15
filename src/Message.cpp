@@ -15,11 +15,12 @@ std::vector<std::string>    ke_split(std::string const & str, std::string const 
 }
 
 bool Message::_isParserInitialized = false;
+void (Message::* Message::_parse[2])(void);
 
 void Message::_initParser(void) {
     if (_isParserInitialized)
         return ;
-    Message::_parse[0] = &Message::_parseUSER;
+    _parse[0] = &Message::_parseUSER;
 }
 
 void Message::_parseUSER(void) {

@@ -32,7 +32,7 @@ class Message {
         static bool _isParserInitialized;
         static void (Message::* _parse[2])(void);
 
-        static void _initParser();
+        void _initParser();
         
         std::string _raw;
         std::string _cmd;
