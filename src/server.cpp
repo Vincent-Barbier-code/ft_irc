@@ -2,7 +2,13 @@
 
 bool	g_shutdown = false;
 
+
+// ------------------ Server Class - Constructor / Destructor ------------------
+
 Server::Server() {
+}
+
+Server::~Server(){
 }
 
 Server::Server(int port){
@@ -28,6 +34,8 @@ Server::Server(int port){
     }
 }
 
+
+// ---------------------- Server starter ----------------------------
 
 void Server::start() {
 	if (listen(_server_fd, SOMAXCONN) == -1) {
@@ -75,6 +83,9 @@ void Server::_initEpoll() {
 	   exit(EXIT_FAILURE);
 	}
 }
+
+
+// ---------------------- new client connection / deconnection ----------------------------
 
 void Server::_acceptNewConnection(void) {
 
@@ -149,7 +160,7 @@ void Server::_treat_client_event(epoll_event const & client_ev) {
 
 	int len;
 	int client_fd = client_ev.data.fd;
-	while ((len = read(client_fd, buf, size))) { // A METTRE DANS UNE BOUCLE
+	while ((len = read(client_fd, buf, size))) {
 		if (len == -1) {
 			perror("read() failed");
 			exit(EXIT_FAILURE);
@@ -163,25 +174,18 @@ void Server::_treat_client_event(epoll_event const & client_ev) {
 		if (data[data.length() - 2] == '\r' && data[data.length() - 1] == '\n')
 			break;
 	}
-	//std::cout << "client said : " << data << "|end-cuicui| ";
-	//fflush(stdout);
 	
 	_execRawMsgs(data);
-
 }
 
 void Server::_execRawMsgs(std::string const & raw_msgs) {
 
-	//std::cout << "client said : " << data << "|end-cuicui| ";
-	//fflush(stdout);
-
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) 
-		std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << " |   CMD: " << (*it).getCmd() << std::endl;
-
-
+		std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
 }
+
 
 void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER 
 	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
@@ -201,8 +205,3 @@ int Server::getFd(){
 sockaddr_in Server::getAddr(){
 	return(_addr);
 }
-
-
-Server::~Server(){
-}
-

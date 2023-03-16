@@ -8,23 +8,32 @@
 #include <list>
 #include <stdexcept>
 
+#include "ke_utils.hpp"
+
+class Param
+{
+    private:
+        std::string _name;
+        std::string _value;
+    public:
+        Param(std::string const &name, std::string const &value);
+        Param(Param const &src);
+        Param &operator=(Param const &rhs);
+
+        std::string const & getName() const;
+        std::string const & getValue() const;
+};
+
 class Message {
 
     typedef void (Message::*func_type)(void);
 
     public:
 
-
         static std::vector<Message> parseAllMsg(std::string const & raw_msgs);
-        static std::string _shrinkNBlank(std::string const & str, size_t n = std::string::npos);
 
         std::string const & getRaw() const;
         std::string const & getCmd() const;
-
-
-        //~Message();
-
-
 
     private:
         
@@ -35,16 +44,15 @@ class Message {
         
         std::string _raw;
         std::string _cmd;
-        std::vector<std::string> _params;
-
+        std::vector<Param> _params;
 
         Message(std::string const & raw_msg);
 
         void _initParams();
+        void _parseCAP();
+        void _parseNICK();
         void _parseUSER();
 
 };
 
-
-std::vector<std::string>    ke_split(std::string const & str, std::string const & pattern);
 #endif

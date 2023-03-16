@@ -11,9 +11,6 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	std::string s = "Je   suis    si                beau   putain";
-	std::cout << "|" << Message::_shrinkNBlank(s, 25) <<  "|" << std::endl;
-	std::cout << "|Je suis si beau putain|" << std::endl;
 
 	int port = atoi(argv[1]);
 
