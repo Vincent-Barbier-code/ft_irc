@@ -7,6 +7,8 @@ Client::Client(): _fd(0), _addr(), _userName(), _nickName(), _isLoggedIn(false)
 
 Client::Client(int fd, sockaddr_in addr, std::string userName, std::string nickName)
 {
+	try
+	{
 	_fd = fd;
 	_addr = addr;
 	_userName = userName;
@@ -15,6 +17,11 @@ Client::Client(int fd, sockaddr_in addr, std::string userName, std::string nickN
 	_nickName = nickName;
 	_isLoggedIn = true;
 	clientMap[_nickName] = *this;
+	}
+	catch (const NicknameInUseException& e) 
+	{
+		sendNumericReply(ERR_NICKNAMEINUSE);
+	}
 }
 
 Client::~Client()

@@ -1,7 +1,7 @@
 #include "ft_irc.hpp"
 #include "server.hpp"
 
-#define MAIN 0
+#define MAIN 1
 #define TEST1 1
 
 #if MAIN

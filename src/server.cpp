@@ -201,7 +201,7 @@ void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER
 		exit(EXIT_FAILURE);
 	}
 	close(client_fd);
-	delete _client[client_fd];
+	delete _clients[client_fd];
 	_clients.erase(client_fd);
 }
 
