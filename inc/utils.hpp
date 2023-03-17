@@ -3,6 +3,7 @@
 # pragma once
 
 #include "ft_irc.hpp"
+#include "client.hpp"
 
 std::string itostr(int i);
 

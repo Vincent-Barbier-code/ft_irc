@@ -27,11 +27,11 @@ Server::Server(int port){
 }
 
 void Server::startOld(){
-	if (listen(server_fd, SOMAXCONN) == -1) {
-	int 		nbr_client = 0;
+	if (listen(_server_fd, SOMAXCONN) == -1) {
         perror("listen() failed");
         exit(EXIT_FAILURE);
     }
+
 
     std::cout << "listen..." << std::endl;
     while (1) {
@@ -43,15 +43,10 @@ void Server::startOld(){
 		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
 			perror("accept() failed");	
 
-		_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client));
-		nbr_client++;
-		std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
-		std::cout << "Client connected " << _clients[client_fd]->getUserName() << std::endl;
-		// std::cout << "fd = " << client_fd << std::endl;
-		// std::cout << "nbr client connecte = " << _clients.size() << std::endl;
+
 	
         memset(&client_addr, 0, client_addrlen);
-		if ((client_fd = accept(server_fd, &client_addr, &client_addrlen)) == -1) 
+		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
 			perror("accept() failed");
 
        std::cout << "Client connected, fd:" << client_fd << std::endl;
@@ -73,7 +68,7 @@ void Server::startOld(){
 
 
 void Server::start() {
-	if (listen(server_fd, SOMAXCONN) == -1) {
+	if (listen(_server_fd, SOMAXCONN) == -1) {
         perror("listen() failed");
         exit(EXIT_FAILURE);
     }
@@ -86,10 +81,11 @@ void Server::start() {
 		epoll_event ready_events;
 		int maxevents = 12;//a remplacer par le nombre de client + 1 une fois le merge effectue
 		int nb_ev;
+		int 		nbr_client = 0;
 
-		//std::cout << "epollfd : " << epoll_fd << std::endl;
+		//std::cout << "epollfd : " << _epoll_fd << std::endl;
 
-		if ((nb_ev = epoll_wait(epoll_fd, &ready_events, maxevents, 50000)) == -1) {
+		if ((nb_ev = epoll_wait(_epoll_fd, &ready_events, maxevents, 50000)) == -1) {
 			perror("epoll_wait() failed first");
 			exit(EXIT_FAILURE);
 		}
@@ -97,23 +93,30 @@ void Server::start() {
 		// on parcourt chaque event qui a ete triggered	
 		for (int i = 0; i < nb_ev; i++) {
 
-			if ((&ready_events)[i].data.fd == server_fd) {  //le socket du server a ete triggered car nouvelle connexion
+			if ((&ready_events)[i].data.fd ==_server_fd) {  //le socket du server a ete triggered car nouvelle connexion
 				int 		client_fd;
 				sockaddr	client_addr;
 				socklen_t 	client_addrlen = sizeof(client_addr);
 				memset(&client_addr, 0, client_addrlen);
 
-				if ((client_fd = accept(server_fd, &client_addr, &client_addrlen)) == -1) {
+				if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) {
 					perror("accept() failed");
 					exit(EXIT_FAILURE);
 				}
+
+				_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
+				nbr_client++;
+				std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
+				std::cout << "Client connected " << _clients[client_fd]->getUserName() << std::endl;
+				std::cout << "fd = " << client_fd << std::endl;
+				std::cout << "nbr client connecte = " << _clients.size() << std::endl;
 
 				std::cout << "servererrre" << std::endl;
 
 				epoll_event client_ev;
 				client_ev.data.fd = client_fd;
 				client_ev.events = EPOLLIN | EPOLLRDHUP;
-				if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1) {
+				if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1) {
 					perror("epoll_ctl() failed");
 					exit(EXIT_FAILURE);
 				}
@@ -126,22 +129,22 @@ void Server::start() {
 }
 
 void Server::_initEpoll() {
-	if ((epoll_fd = epoll_create(180)) == -1) {
+	if ((_epoll_fd = epoll_create(180)) == -1) {
 		perror("epoll_create() failed");
 		exit(EXIT_FAILURE);
 	}
 
 	epoll_event server_ev;
 
-	server_ev.data.fd = server_fd;
+	server_ev.data.fd =_server_fd;
 	server_ev.events = EPOLLIN;
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &server_ev) == -1) {
+	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD,_server_fd, &server_ev) == -1) {
 	   perror("epoll_ctl on server fd failed:");
 	   exit(EXIT_FAILURE);
 	}
 }
 
-void Server::_treat_client_event(epoll_event const & client_ev) const {
+void Server::_treat_client_event(epoll_event const & client_ev){
 	int size = 1024;
 	char buf[size + 1];
 	bzero(buf, size + 1);
@@ -162,22 +165,13 @@ void Server::_treat_client_event(epoll_event const & client_ev) const {
 	std::cout << "client said : " << buf << std::endl;
 }
 
-void Server::_deconnection(int client_fd) const { // FONCTION A MODIFIER 
+void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER 
 	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
+	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
 		perror("epoll_ctl() failed");
 		exit(EXIT_FAILURE);
 	}
-}
-
-void	Server::shutdown()
-{
-
-}
-
-void Server::clientAlreadyConnected(int fd){
-	std::string msg = "Welcome to the server !\r " + fd;
-	
+	_clients.erase(client_fd);
 }
 
 int Server::getFd(){
