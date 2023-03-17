@@ -121,6 +121,17 @@ void Server::_acceptNewConnection(void) {
 	}
 }
 
+void Server::_deconnection(int client_fd) {
+	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
+	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
+		perror("epoll_ctl() failed");
+		exit(EXIT_FAILURE);
+	}
+	close(client_fd);
+	delete _clients[client_fd];
+	_clients.erase(client_fd);
+}
+
 void sigStop(int signum)
 {
 	(void)signum;
@@ -145,6 +156,8 @@ void	Server::stop()
 	exit(EXIT_SUCCESS);
 }
 
+
+// ---------------- Manage client events  ---------------------
 
 void Server::_treat_client_event(epoll_event const & client_ev) {
 	
@@ -187,16 +200,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs) {
 }
 
 
-void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER 
-	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
-	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
-		perror("epoll_ctl() failed");
-		exit(EXIT_FAILURE);
-	}
-	close(client_fd);
-	delete _clients[client_fd];
-	_clients.erase(client_fd);
-}
+// --------------------- Getters -----------------
 
 int Server::getFd(){
 	return(_server_fd);
