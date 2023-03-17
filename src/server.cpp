@@ -1,5 +1,7 @@
 #include "server.hpp"
 
+bool	g_shutdown = false;
+
 Server::Server() {
 }
 
@@ -26,45 +28,45 @@ Server::Server(int port){
     }
 }
 
-void Server::startOld(){
-	if (listen(_server_fd, SOMAXCONN) == -1) {
-        perror("listen() failed");
-        exit(EXIT_FAILURE);
-    }
+// void Server::startOld(){
+// 	if (listen(_server_fd, SOMAXCONN) == -1) {
+//         perror("listen() failed");
+//         exit(EXIT_FAILURE);
+//     }
 
 
-    std::cout << "listen..." << std::endl;
-    while (1) {
-		int			client_fd;
-		sockaddr	client_addr;
-		socklen_t	client_addrlen = sizeof(client_addr);
+//     std::cout << "listen..." << std::endl;
+//     while (1) {
+// 		int			client_fd;
+// 		sockaddr	client_addr;
+// 		socklen_t	client_addrlen = sizeof(client_addr);
 
-		memset(&client_addr, 0, client_addrlen);
-		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
-			perror("accept() failed");	
+// 		memset(&client_addr, 0, client_addrlen);
+// 		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
+// 			perror("accept() failed");	
 
 
 	
-        memset(&client_addr, 0, client_addrlen);
-		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
-			perror("accept() failed");
+//         memset(&client_addr, 0, client_addrlen);
+// 		if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) 
+// 			perror("accept() failed");
 
-       std::cout << "Client connected, fd:" << client_fd << std::endl;
+//        std::cout << "Client connected, fd:" << client_fd << std::endl;
 
-	  char buf[1024];
-	   if (recv(client_fd, buf, sizeof(buf), 0) == -1) {
-			perror("recv() failed");
-			exit(EXIT_FAILURE);
-	   }
-	   std::cout << "Message du client: " << buf << std::endl;
-	   char msg[] = "Je suis un messager du serveur !";
-	   if(send(client_fd, msg, strlen(msg) + 1, 0) == -1) {
-			perror("send failed");
-			exit(EXIT_FAILURE);
-	   }
+// 	  char buf[1024];
+// 	   if (recv(client_fd, buf, sizeof(buf), 0) == -1) {
+// 			perror("recv() failed");
+// 			exit(EXIT_FAILURE);
+// 	   }
+// 	   std::cout << "Message du client: " << buf << std::endl;
+// 	   char msg[] = "Je suis un messager du serveur !";
+// 	   if(send(client_fd, msg, strlen(msg) + 1, 0) == -1) {
+// 			perror("send failed");
+// 			exit(EXIT_FAILURE);
+// 	   }
 	   	
-    }
-}
+//     }
+// }
 
 
 void Server::start() {
@@ -77,7 +79,7 @@ void Server::start() {
 
 	_initEpoll();
 
-	while (1) {
+	while (!g_shutdown) {
 		epoll_event ready_events;
 		int maxevents = 12;//a remplacer par le nombre de client + 1 une fois le merge effectue
 		int nb_ev;
@@ -86,6 +88,8 @@ void Server::start() {
 		//std::cout << "epollfd : " << _epoll_fd << std::endl;
 
 		if ((nb_ev = epoll_wait(_epoll_fd, &ready_events, maxevents, 50000)) == -1) {
+			if (errno == EINTR) //signal recu
+				continue;
 			perror("epoll_wait() failed first");
 			exit(EXIT_FAILURE);
 		}
@@ -114,6 +118,7 @@ void Server::start() {
 				std::cout << "servererrre" << std::endl;
 
 				epoll_event client_ev;
+				memset(&client_ev, 0, sizeof(client_ev));
 				client_ev.data.fd = client_fd;
 				client_ev.events = EPOLLIN | EPOLLRDHUP;
 				if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1) {
@@ -125,7 +130,31 @@ void Server::start() {
 			}
 		}
 	}
+	stop();
+}
 
+void sigStop(int signum)
+{
+	(void)signum;
+	std::cout << "Sigquit received." << std::endl;
+	g_shutdown = 1;
+}
+
+void	Server::stop()
+{
+	std::map<int, ClientPtr>::iterator it = _clients.begin();
+	std::map<int, ClientPtr>::iterator ite = _clients.end();
+
+	std::cout << "Server is shutting down..." << std::endl;
+	while(it != ite)
+	{
+		close(it->first); //first is used to access the key (fd of client)
+		delete it->second; //second is used to access the value (pointer to client)
+		_clients.erase(it++);
+	}
+	close(_epoll_fd);
+	close(_server_fd);
+	exit(EXIT_SUCCESS);
 }
 
 void Server::_initEpoll() {
@@ -135,7 +164,7 @@ void Server::_initEpoll() {
 	}
 
 	epoll_event server_ev;
-
+	memset(&server_ev, 0, sizeof(server_ev));
 	server_ev.data.fd =_server_fd;
 	server_ev.events = EPOLLIN;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD,_server_fd, &server_ev) == -1) {
@@ -171,6 +200,8 @@ void Server::_deconnection(int client_fd){ // FONCTION A MODIFIER
 		perror("epoll_ctl() failed");
 		exit(EXIT_FAILURE);
 	}
+	close(client_fd);
+	delete _client[client_fd];
 	_clients.erase(client_fd);
 }
 

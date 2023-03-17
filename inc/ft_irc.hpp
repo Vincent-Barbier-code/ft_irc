@@ -27,4 +27,6 @@
 // my librairies
 #include "macro.hpp"
 
+void sigStop(int signum);
+
 #endif
