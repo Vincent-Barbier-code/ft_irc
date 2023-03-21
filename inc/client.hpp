@@ -28,6 +28,7 @@ class  Client {
 	std::string getNickName();
 	bool		isConnected() const;
 	bool		isLoggedIn() const;
+
 	// channel 		getCurrentChannel();
 	// channel 		joinChannel(const std::string &channel_name);
 	// channel 		leaveChannel();
@@ -39,7 +40,7 @@ class  Client {
 	// void 			connect();
 	// void 			disconnect();
 
-	void		nick(std::string nick);//, std::string compteur);
+	void		nick(std::string nick);
 	class InvalidNicknameException : public std::exception {
 	public:
 		const char* what() const throw() {

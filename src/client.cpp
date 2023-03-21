@@ -65,10 +65,8 @@ bool Client::isLoggedIn() const {
 
 
 //Commande : NICK
-// Paramètres : <nicknamenyme> [ <compteur de distance> ]
-// compteur de distance (JSP QUOI EN FAIRE)
-
-void	Client::nick(std::string nickname){//, std::string compteur){
+// Paramètres : <nicknamenyme>
+void	Client::nick(std::string nickname){
 	try 
 	{
 		std::string ancienNickname = _nickName;

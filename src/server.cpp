@@ -88,9 +88,6 @@ void Server::_initEpoll() {
 // ---------------------- new client connection / deconnection ----------------------------
 
 void Server::_acceptNewConnection(void) {
-
-	static int nbr_client = 0;
-
 	int client_fd;
 	sockaddr client_addr;
 	socklen_t client_addrlen = sizeof(client_addr);
@@ -101,15 +98,6 @@ void Server::_acceptNewConnection(void) {
 	   exit(EXIT_FAILURE);
 	}
 
-	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
-	nbr_client++;
-	
-	std::cout << "nbr client from begining= " + itostr(nbr_client) << std::endl;
-	std::cout << "Client connected " << _clients[client_fd]->getUserName() << std::endl;
-	std::cout << "fd = " << client_fd << std::endl;
-	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
-
-
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
 	client_ev.data.fd = client_fd;
@@ -119,6 +107,21 @@ void Server::_acceptNewConnection(void) {
 	   perror("epoll_ctl() failed");
 	   exit(EXIT_FAILURE);
 	}
+}
+
+int		Server::_client_connect(int client_fd, sockaddr client_addr)
+{
+	// verifier si nickname deja pris et si oui, en demander un autre au client
+	static int nbr_client = 0;
+
+	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
+	nbr_client++;
+
+	std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
+	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
+	std::cout << "fd = " << client_fd << std::endl;
+	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
+	return (0);
 }
 
 void Server::_deconnection(int client_fd) {
