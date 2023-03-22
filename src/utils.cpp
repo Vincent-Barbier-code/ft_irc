@@ -10,11 +10,11 @@ std::vector<std::string>    ke_split(std::string const & str, std::string const 
     std::vector<std::string> vec;
     
     size_t index = 0;
-    while (str[index]) {
+    while (index < str.length()) {
 
         size_t end = str.find(pattern, index);
         std::string el = str.substr(index, end - index);
-        index = end + 2;
+        index = end == std::string::npos ? end : end + pattern.size();
         vec.push_back(el);
     }
     return vec;

@@ -27,6 +27,7 @@ void Message::_initParsers(void) {
         return ;
     _parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
+    _parsers["NICK"] = &Message::_parseNICK;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -52,7 +53,7 @@ Message::Message(std::string const & raw_msg) {
 
     _raw = raw_msg;
     _cmd = _raw.substr(0, _raw.find(' '));
-    //_initParams();
+    _initParams();
 }
 
 
@@ -64,6 +65,18 @@ void Message::_initParams() {
     
 }
 
+// --------------------- operator -------------------------
+
+
+std::ostream & operator<<(std::ostream & o, Message const & msg) {
+    o   << WHITE "RAW_MSG: " PURPLE << std::setw(50) << msg.getRaw()
+        << WHITE "  |   CMD: " PURPLE << std::setw(5)  << msg.getCmd() << WHITE
+        << "  |   PARAMS: "PURPLE << msg.paramsToString() << WHITE  << std::endl; 
+
+    return o;
+}
+
+
 
 // ----------------------- Getters ----------------------------
 
@@ -73,6 +86,24 @@ std::string const & Message::getCmd() const {
 
 std::string const & Message::getRaw() const {
     return _raw;
+}
+
+
+// --------------------- Members other --------------------------
+
+std::string Message::paramsToString() const {
+
+    std::string s;
+
+    for (size_t i = 0; i < _params.size(); i++) {
+        s += _params[i].getName();
+        s += ": ";
+        s += _params[i].getValue();
+        if (i < _params.size() - 1)
+            s += ", ";
+    }
+
+    return s;
 }
 
 

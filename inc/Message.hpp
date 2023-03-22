@@ -7,8 +7,11 @@
 #include <map>
 #include <list>
 #include <stdexcept>
+#include <iostream>
+#include <iomanip>
 
 #include "utils.hpp"
+#include "color.hpp"
 
 class Param
 {
@@ -26,6 +29,8 @@ class Param
 
 class Message {
 
+    friend std::ostream & operator<<(std::ostream & o, Message const & msg);
+
     typedef void (Message::*func_type)(void);
 
     public:
@@ -34,6 +39,8 @@ class Message {
 
         std::string const & getRaw() const;
         std::string const & getCmd() const;
+        
+        std::string paramsToString() const;
 
     private:
         
@@ -48,11 +55,14 @@ class Message {
 
         Message(std::string const & raw_msg);
 
+
         void _initParams();
         void _parseCAP();
         void _parseNICK();
         void _parseUSER();
 
 };
+
+std::ostream & operator<<(std::ostream & o, Message const & msg);
 
 #endif

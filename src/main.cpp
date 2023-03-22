@@ -16,6 +16,14 @@ int main(int argc, char *argv[]) {
 
 	Server server(port);
 	signal(SIGQUIT, sigStop);
+
+	//std::string s = "Je suis  la et toi t es ou !";
+
+	//std::vector<std::string> vec = ke_split(s, " ");
+
+	//for (std::vector<std::string>::const_iterator it = vec.begin(); it != vec.end(); it++)
+	//	std::cout << *it << std::endl;
+
 	server.start();
     return 0;
 }
