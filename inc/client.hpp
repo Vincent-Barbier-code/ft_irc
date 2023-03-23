@@ -10,10 +10,15 @@ class  Client {
   private:
 	int								_fd;
 	struct sockaddr_in				_addr;
-	std::string						_userName;
 	std::string						_nickName;
+	std::string						_userName;
+	std::string 					_hostName;
+	std::string 					_serverName;
+	std::string						_realname;
+
 	std::string						_currentChannel;
 	bool							_isLoggedIn;
+	bool							_isRegistered;
 	
 	void		sendNumericReply(int code);
 	std::string	getNumericReplyMessage(int code);
@@ -27,7 +32,7 @@ class  Client {
 	std::string getUserName();
 	std::string getNickName();
 	bool		isConnected() const;
-	bool		isLoggedIn() const;
+	bool		isRegistered() const;
 
 	// channel 		getCurrentChannel();
 	// channel 		joinChannel(const std::string &channel_name);

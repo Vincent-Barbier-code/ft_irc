@@ -40,3 +40,15 @@ std::string shrinkNBlank(std::string const & str, size_t n /* = std::string::npo
 
     return s;
 }
+
+bool isValid(std::string const & str) {
+    size_t i = 0;
+    if (str.empty() || str == "\"\"" || str == "\" \"" )
+        return false;
+    while (i < str.length()) {
+        if (isprint(str.at(i)) == 0)
+            return false;
+        i++;
+    }
+    return true;
+}

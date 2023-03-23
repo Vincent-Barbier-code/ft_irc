@@ -133,6 +133,13 @@ void Message::_parseUSER(void) {
         throw std::invalid_argument("Invalid realname no ':' at the beginning");
     realname.erase(0, 1);
 
+    if (!isValid(realname))
+        throw std::invalid_argument("Invalid realname");
+    else if (realname.size() > 50)
+        throw std::invalid_argument("Realname too long");
+    else if (!isValid(space_splited[1]))
+        throw std::invalid_argument("Invalid username");
+
     _params.push_back(Param("username", space_splited[1]));
     _params.push_back(Param("hostname", space_splited[2]));
     _params.push_back(Param("servername", space_splited[3]));

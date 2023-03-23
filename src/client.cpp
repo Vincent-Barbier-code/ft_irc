@@ -15,7 +15,7 @@ Client::Client(int fd, sockaddr_in addr, std::string userName, std::string nickN
 	if (clientMap.find(nickName) != clientMap.end())
 		throw NicknameInUseException();
 	_nickName = nickName;
-	_isLoggedIn = true;
+	_isRegistered = false;
 	clientMap[_nickName] = *this;
 	}
 	catch (const NicknameInUseException& e) 
@@ -59,14 +59,14 @@ bool Client::isConnected() const {
     return true;
 }
 
-bool Client::isLoggedIn() const {
-	return (this->_isLoggedIn);
+bool Client::isRegistered() const {
+	return (_isRegistered);
 }
 
 
 //Commande : NICK
 // Paramètres : <nicknamenyme>
-void	Client::nick(std::string nickname){
+void Client::nick(std::string nickname){
 	try 
 	{
 		std::string ancienNickname = _nickName;
@@ -81,7 +81,6 @@ void	Client::nick(std::string nickname){
 			throw NicknameInUseException();
 		}
 		_nickName = nickname;
-		_isLoggedIn = true;
 		sendNumericReply(RPL_WELCOME);
 		if (!ancienNickname.empty())
 			clientMap.erase(ancienNickname);
@@ -96,6 +95,7 @@ void	Client::nick(std::string nickname){
 		sendNumericReply(ERR_NICKNAMEINUSE);
 	}
 }
+
 
 void	Client::sendNumericReply(int code){
 	std::string message = getNumericReplyMessage(code);
@@ -114,6 +114,10 @@ std::string	Client::getNumericReplyMessage(int code){
 			return "Erroneous nickname\r\n";
 		case ERR_NICKNAMEINUSE:
 			return _nickName + " :Nickname is already in use\r\n";
+		case ERR_NEEDMOREPARAMS:
+			return "<command> :Not enough parameters\r\n";
+		case ERR_ALREADYREGISTRED:
+			return ":You may not reregister\r\n";
 	}
 }
 
