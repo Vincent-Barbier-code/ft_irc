@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/23 17:00:13 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/23 18:49:16 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,22 @@
 class  Server {
 
   public:
-	Server(int port);
+	Server(int port, std::string password);
 	~Server();
 	
-	int 		getFd();
-	sockaddr_in getAddr();
+	int 		getFd() const;
+	sockaddr_in getAddr() const;
+	std::string	getPass() const;
 	void 		start(void);
 	void 		startOld(void);
 	void 		stop(void);
-
 
   private:
   	int							_server_fd;
 	sockaddr_in					_addr;
 	int							_epoll_fd;
 	std::map<int, ClientPtr>	_clients;
-	
+	std::string					_password;
 	
 	Server();
 

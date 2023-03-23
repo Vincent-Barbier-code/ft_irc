@@ -1,7 +1,7 @@
 #include "client.hpp"
 #include "struct.hpp"
 
-Client::Client(): _fd(0), _addr(), _userName(), _nickName(), _isLoggedIn(false)
+Client::Client(): _fd(0), _addr(), _userName(), _nickName(), _isLoggedIn(false), _isAuth(false)
 {
 }
 
@@ -63,6 +63,16 @@ bool Client::isLoggedIn() const {
 	return (this->_isLoggedIn);
 }
 
+//Commande : PASS
+//Paramètres : <password>
+int	Client::pass(std::string password, Server serv) {
+	if (_isAuth)
+		return (ERR_ALREADYREGISTRED);
+	else if (serv->getPass() == password)
+		_isAuth = true;
+	else
+		return (ERR_PASSWDMISMATCH);
+}
 
 //Commande : NICK
 // Paramètres : <nicknamenyme>

@@ -14,7 +14,7 @@ class  Client {
 	std::string						_nickName;
 	std::string						_currentChannel;
 	bool							_isLoggedIn;
-	
+	bool							_isAuth;
 	void		sendNumericReply(int code);
 	std::string	getNumericReplyMessage(int code);
 
