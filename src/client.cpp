@@ -63,7 +63,6 @@ bool Client::isLoggedIn() const {
 	return (this->_isLoggedIn);
 }
 
-
 //Commande : NICK
 // Paramètres : <nicknamenyme>
 void	Client::nick(std::string nickname){

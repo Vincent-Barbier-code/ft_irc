@@ -115,8 +115,13 @@ int		Server::_clientConnect(int client_fd, sockaddr client_addr)
 	// verifier si nickname deja pris et si oui, en demander un autre au client
 	static int nbr_client = 0;
 
+	// if(findClientByNickName(//nickname))
+	// 	sendNumericReply(ERR_NICKNAMEINUSE);
+	// else
+	// {
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
 	nbr_client++;
+	// }
 
 	std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
 	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
