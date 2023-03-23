@@ -63,7 +63,7 @@ void Server::start() {
 			if ((&ready_events)[i].data.fd ==_server_fd)
 				_acceptNewConnection();
 			else
-				_treat_client_event((&ready_events)[i]);
+				_treatClientEvent((&ready_events)[i]);
 		}
 	}
 }
@@ -109,7 +109,7 @@ void Server::_acceptNewConnection(void) {
 	}
 }
 
-int		Server::_client_connect(int client_fd, sockaddr client_addr)
+int		Server::_clientConnect(int client_fd, sockaddr client_addr)
 {
 	// verifier si nickname deja pris et si oui, en demander un autre au client
 	static int nbr_client = 0;
@@ -162,7 +162,7 @@ void	Server::stop()
 
 // ---------------- Manage client events  ---------------------
 
-void Server::_treat_client_event(epoll_event const & client_ev) {
+void Server::_treatClientEvent(epoll_event const & client_ev) {
 	
 	std::string data;
 	int 		size = 512;

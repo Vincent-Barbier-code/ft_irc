@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/21 01:22:10 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/23 17:00:13 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ class  Server {
 
 	void	_initEpoll(void);
 	void	_acceptNewConnection(void);
-	void	_treat_client_event(epoll_event const & client_ev);
+	void	_treatClientEvent(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
 	void	_execRawMsgs(std::string const & raw_msgs);
-	int		_client_connect(int client_fd, sockaddr client_addr);
+	int		_clientConnect(int client_fd, sockaddr client_addr);
 };
 #endif
 

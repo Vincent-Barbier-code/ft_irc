@@ -122,6 +122,3 @@ Client 	*findClientByNickName(std::string const nickName){
 		return &clientMap[nickName];
 	return NULL;
 }
-
-
-
