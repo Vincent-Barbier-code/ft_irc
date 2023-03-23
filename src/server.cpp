@@ -98,6 +98,7 @@ void Server::_acceptNewConnection(void) {
 	   exit(EXIT_FAILURE);
 	}
 
+	_clientConnect(client_fd, client_addr);
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
 	client_ev.data.fd = client_fd;
