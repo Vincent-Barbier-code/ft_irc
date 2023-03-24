@@ -3,22 +3,13 @@
 #define CLIENT_HPP
 # pragma once
 
-#include "ft_irc.hpp"
+#include "struct.hpp"
 
 class  Client {
 
-  private:
-	int								_fd;
-	struct sockaddr_in				_addr;
-	std::string						_userName;
-	std::string						_nickName;
-	std::string						_currentChannel;
-	bool							_isLoggedIn;
-	
-	void		sendNumericReply(int code);
-	std::string	getNumericReplyMessage(int code);
 
   public:
+	Client();
 	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
 	~Client();
 	
@@ -41,24 +32,19 @@ class  Client {
 	// void 			disconnect();
 
 	void		nick(std::string nick);
-	class InvalidNicknameException : public std::exception {
-	public:
-		const char* what() const throw() {
-			return "Invalid nickname";
-		}
-	};
 
-	class NicknameInUseException : public std::exception {
-	public:
-		const char* what() const throw() {
-			return "Nickname already in use";
-		}
-	};
+  private:
+	int								_fd;
+	struct sockaddr_in				_addr;
+	std::string						_userName;
+	std::string						_nickName;
+	std::string						_currentChannel;
+	bool							_isLoggedIn;
 
-	Client();
+	void							_sendNumericReply(int code);
+	std::string						_getNumericReplyMessage(int code);
 };
 
-	Client		*findClientByNickName(std::string const nickName);
-
 	typedef Client* ClientPtr;
+
 #endif

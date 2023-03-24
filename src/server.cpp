@@ -98,7 +98,10 @@ void Server::_acceptNewConnection(void) {
 	   exit(EXIT_FAILURE);
 	}
 
-	_clientConnect(client_fd, client_addr);
+	static int i = 0;
+
+	_clientConnect(client_fd, client_addr, "username" + itostr(i) , "nickname" + itostr(i));
+	i++;
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
 	client_ev.data.fd = client_fd;
@@ -110,18 +113,17 @@ void Server::_acceptNewConnection(void) {
 	}
 }
 
-int		Server::_clientConnect(int client_fd, sockaddr client_addr)
+int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname)
 {
 	// verifier si nickname deja pris et si oui, en demander un autre au client
 	static int nbr_client = 0;
 
-	// if(findClientByNickName(//nickname))
-	// 	sendNumericReply(ERR_NICKNAMEINUSE);
-	// else
-	// {
-	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), "user_" + itostr(nbr_client), "nickname_" + itostr(nbr_client));
-	nbr_client++;
-	// }
+		_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
+		nbr_client++;
+
+	// if(Server::_findClientByNickName(nickname))
+	// 	sendNumericReply(ERR_NICKNAMEINUSE); VERIFIER LE NICKNAME 
+
 
 	std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
 	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
@@ -211,6 +213,37 @@ void Server::_execRawMsgs(std::string const & raw_msgs) {
 	
 }
 
+// --------------------- Find_client -----------------
+
+Client 	*Server::_findClientByNickName(std::string const nickName)
+{
+	std::map<int, ClientPtr>::iterator it = _clients.begin();
+	std::map<int, ClientPtr>::iterator ite = _clients.end();
+
+	while(it != ite)
+	{
+		if (it->second->getNickName() == nickName)
+			return (it->second);
+		it++;
+	}
+	return (NULL);
+}
+
+Client 	*Server::_findClientByFd(int fd)
+{
+	std::map<int, ClientPtr>::iterator it = _clients.begin();
+	std::map<int, ClientPtr>::iterator ite = _clients.end();
+
+	while(it != ite)
+	{
+		if (it->first == fd)
+			return (it->second);
+		it++;
+	}
+	return (NULL);
+}
+
+// --------------------- Setters -----------------
 
 // --------------------- Getters -----------------
 

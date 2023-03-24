@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/23 17:00:13 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:18:43 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ class  Server {
 	void	_treatClientEvent(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
 	void	_execRawMsgs(std::string const & raw_msgs);
-	int		_clientConnect(int client_fd, sockaddr client_addr);
+	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
+	Client	*_findClientByNickName(std::string const nickName);
+	Client	*_findClientByFd(int fd);
+
 };
 #endif
 
