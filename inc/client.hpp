@@ -15,12 +15,12 @@ class  Client {
 	std::string 					_hostName;
 	std::string 					_serverName;
 	std::string						_realName;
-
 	std::string						_currentChannel;
 	bool							_isRegistered;
 	bool							_isAuth;
 	void							_sendNumericReply(int code);
 	std::string						_getNumericReplyMessage(int code);
+	
   public:
 	Client();
 	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
@@ -49,7 +49,7 @@ class  Client {
 
 	int			pass(std::string const &clientPass, std::string const &serverPass);
 	void		nick(std::string nick);
-	void 	user(std::string const & username, std::string const & hostname,
+	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 
 
