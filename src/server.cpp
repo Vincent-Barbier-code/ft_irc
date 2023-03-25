@@ -11,7 +11,7 @@ Server::Server() {
 Server::~Server(){
 }
 
-Server::Server(int port){
+Server::Server(int port, std::string password): _password(password) {
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd == -1) {
 		perror("socket()");
@@ -221,10 +221,14 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 // --------------------- Getters -----------------
 
-int Server::getFd(){
+int Server::getFd() const {
 	return(_server_fd);
 }
 
-sockaddr_in Server::getAddr(){
+sockaddr_in Server::getAddr() const {
 	return(_addr);
+}
+
+std::string	Server::getPass() const {
+	return(_password);
 }

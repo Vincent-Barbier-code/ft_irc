@@ -18,7 +18,7 @@ class  Client {
 
 	std::string						_currentChannel;
 	bool							_isRegistered;
-	
+	bool							_isAuth;
 	void		sendNumericReply(int code);
 	std::string	getNumericReplyMessage(int code);
 
@@ -47,7 +47,8 @@ class  Client {
 	// void 			connect();
 	// void 			disconnect();
 
-	void	nick(std::string nick);
+	int			pass(std::string const &clientPass, std::string const &serverPass);
+	void		nick(std::string nick);
 	void 	user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 

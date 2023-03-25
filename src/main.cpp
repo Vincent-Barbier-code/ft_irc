@@ -6,15 +6,16 @@
 
 #if MAIN
 int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		std::cerr << "Usage: ./server <port>" << std::endl;
+	if (argc != 3) {
+		std::cerr << "Usage: ./server <port> <password>" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 
+	//il faut proteger le atoi
 	int port = atoi(argv[1]);
 
-	Server server(port);
+	Server server(port, argv[2]);
 	signal(SIGQUIT, sigStop);
 
 	//std::string s = "Je suis  la et toi t es ou !";
