@@ -36,7 +36,6 @@ class  Server {
 	sockaddr_in					_addr;
 	int							_epoll_fd;
 	std::map<int, ClientPtr>	_clients;
-	std::string					_serverName;
 	
 	
 	Server();

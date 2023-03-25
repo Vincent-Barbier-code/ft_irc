@@ -62,7 +62,6 @@ void Message::_initParams() {
 
     if (_parsers.find(_cmd) == _parsers.end()) {
         std::cout << "Invalid command: " << _cmd << std::endl;
-        return ;
         throw std::invalid_argument("Invalid command");
     }
     (this->*_parsers[_cmd])();
