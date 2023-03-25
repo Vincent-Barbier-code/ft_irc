@@ -14,7 +14,3 @@ void    Server::_sendData(int client_fd, std::string const & data) {
 void    Server::_sendData(Client const & client, std::string const & data) {
     _sendData(client.getFd(), data);
 }
-
-std::string const & Server::getServerName() {
-    return _serverName;
-}

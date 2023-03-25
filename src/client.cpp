@@ -1,7 +1,7 @@
 #include "client.hpp"
 #include "struct.hpp"
 
-Client::Client(): _fd(0), _addr(), _userName(), _nickName(), _isRegistered(false), _isAuth(false)
+Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false), _isAuth(false)
 {
 }
 

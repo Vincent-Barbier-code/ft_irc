@@ -211,6 +211,8 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			_clients[client_fd]->nick(paramsV[0]);
 		else if (cmd == "USER") 
 			_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
+		else if (cmd == "PASS")
+			_clients[client_fd]->pass(paramsV[0], getPass());
 
 		
 		

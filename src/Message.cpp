@@ -25,6 +25,7 @@ std::map<std::string, Message::func_type> Message::_parsers;
 void Message::_initParsers(void) {
     if (_isParsersInitialized)
         return ;
+    _parsers["PASS"] = &Message::_parsePASS;
     _parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
@@ -62,7 +63,8 @@ void Message::_initParams() {
 
     if (_parsers.find(_cmd) == _parsers.end()) {
         std::cout << "Invalid command: " << _cmd << std::endl;
-        throw std::invalid_argument("Invalid command");
+        return ;
+        //throw std::invalid_argument("Invalid command");
     }
     (this->*_parsers[_cmd])();
     
@@ -129,6 +131,11 @@ std::string Message::paramsToString() const {
 
 
 // ---------------------- Parsers -----------------------
+
+void Message::_parsePASS(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+    _params.push_back(Param("password", space_splited[1]));
+}
 
 void Message::_parseCAP(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
