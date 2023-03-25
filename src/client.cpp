@@ -65,13 +65,14 @@ bool Client::isLoggedIn() const {
 
 //Commande : PASS
 //Paramètres : <password>
-int	Client::pass(std::string password, Server serv) {
+int	Client::pass(std::string const &clientPass, std::string const &serverPass) {
 	if (_isAuth)
 		return (ERR_ALREADYREGISTRED);
-	else if (serv->getPass() == password)
+	else if (clientPass == serverPass) {
 		_isAuth = true;
-	else
-		return (ERR_PASSWDMISMATCH);
+		return (0);
+	}
+	return (ERR_PASSWDMISMATCH);
 }
 
 //Commande : NICK

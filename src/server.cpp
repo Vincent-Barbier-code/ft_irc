@@ -11,7 +11,7 @@ Server::Server() {
 Server::~Server(){
 }
 
-Server::Server(int port, std::string password) _password(password) {
+Server::Server(int port, std::string password): _password(password) {
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd == -1) {
 		perror("socket()");

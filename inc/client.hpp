@@ -40,6 +40,7 @@ class  Client {
 	// void 			connect();
 	// void 			disconnect();
 
+	int			pass(std::string const &clientPass, std::string const &serverPass);
 	void		nick(std::string nick);
 	class InvalidNicknameException : public std::exception {
 	public:
