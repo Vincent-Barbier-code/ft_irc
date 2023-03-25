@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/25 17:20:05 by mvue             ###   ########.fr       */
+/*   Updated: 2023/03/24 22:18:43 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,12 @@ class  Server {
 	void	_acceptNewConnection(void);
 	void	_treatClientEvent(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
-	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
-	int		_clientConnect(int client_fd, sockaddr client_addr);
-	void	_sendData(int client_fd, std::string const & data);
 	void	_sendData(Client const & client, std::string const & data);
+	void	_sendData(int client_fd, std::string const & data);
+	Client	*_findClientByFd(int fd);
+	Client	*_findClientByNickName(std::string const nickName);
+	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
+	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
 };
 #endif
 
