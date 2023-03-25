@@ -21,6 +21,9 @@ Server::Server(int port){
 	_addr.sin_addr.s_addr = INADDR_ANY;
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(port);
+
+	_serverName = "localhost"; // A CHANGER en fonction de l'ip du serveur
+
 	_clients = std::map<int, ClientPtr>();
 
 	if (setsockopt(_server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &_addr, sizeof(_addr))) {

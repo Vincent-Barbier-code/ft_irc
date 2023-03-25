@@ -50,8 +50,9 @@ Message::Message(std::string const & raw_msg) {
         _initParsers(); // static function to init the map of parsers
 
     // - - - - - -
-
-    _raw = raw_msg;
+    _rawWPrefix = raw_msg;
+    _raw = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(_rawWPrefix.find(' ') + 1) : _rawWPrefix;
+    _prefix = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(1, _rawWPrefix.find(' ') - 1) : "";
     _cmd = _raw.substr(0, _raw.find(' '));
     _initParams();
 }
@@ -59,8 +60,11 @@ Message::Message(std::string const & raw_msg) {
 
 void Message::_initParams() {
 
-    if (_parsers.find(_cmd) == _parsers.end()) 
+    if (_parsers.find(_cmd) == _parsers.end()) {
+        std::cout << "Invalid command: " << _cmd << std::endl;
+        return ;
         throw std::invalid_argument("Invalid command");
+    }
     (this->*_parsers[_cmd])();
     
 }
@@ -79,6 +83,14 @@ std::ostream & operator<<(std::ostream & o, Message const & msg) {
 
 
 // ----------------------- Getters ----------------------------
+
+std::string const & Message::getRawWPrefix() const {
+    return _rawWPrefix;
+}
+
+std::string const & Message::getPrefix() const {
+    return _prefix;
+}
 
 std::string const & Message::getCmd() const {
     return _cmd;

@@ -26,8 +26,8 @@ class  Server {
 	
 	int 		getFd();
 	sockaddr_in getAddr();
+	std::string	const & getServerName();
 	void 		start(void);
-	void 		startOld(void);
 	void 		stop(void);
 
 
@@ -36,6 +36,7 @@ class  Server {
 	sockaddr_in					_addr;
 	int							_epoll_fd;
 	std::map<int, ClientPtr>	_clients;
+	std::string					_serverName;
 	
 	
 	Server();
@@ -46,6 +47,8 @@ class  Server {
 	void	_deconnection(int client_fd);
 	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
 	int		_clientConnect(int client_fd, sockaddr client_addr);
+	void	_sendData(int client_fd, std::string const & data);
+	void	_sendData(Client const & client, std::string const & data);
 };
 #endif
 

@@ -37,8 +37,10 @@ class Message {
 
         static std::vector<Message> parseAllMsg(std::string const & raw_msgs);
 
+        std::string const & getRawWPrefix() const;
         std::string const & getRaw() const;
         std::string const & getCmd() const;
+        std::string const & getPrefix() const;
         std::vector<Param> const & getParams() const;
         std::vector<std::string>   getParamsValues() const;
         
@@ -51,9 +53,12 @@ class Message {
 
         static void _initParsers();
         
-        std::string _raw;
-        std::string _cmd;
-        std::vector<Param> _params;
+        std::string _rawWPrefix; // raw message with prefix
+        std::string _raw; // raw message without prefix
+        std::string _cmd; // command
+        std::string _prefix; // prefix
+        std::vector<Param> _params; // command params
+        
 
         Message(std::string const & raw_msg);
 
