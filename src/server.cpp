@@ -192,16 +192,24 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 			break;
 	}
 	
-	_execRawMsgs(data);
+	_execRawMsgs(data, client_fd);
 }
 
-void Server::_execRawMsgs(std::string const & raw_msgs) {
+void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
 		//std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
 		std::cout << *it << std::endl;
+		std::string const & cmd = it->getCmd();
+		std::vector<std::string> paramsV = it->getParamsValues();
+
+		if (cmd == "NICK")
+			_clients[client_fd]->nick(paramsV[0]);
+		else if (cmd == "USER") 
+			_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
+		
 	}
 	
 }

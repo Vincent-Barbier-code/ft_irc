@@ -71,7 +71,7 @@ void Message::_initParams() {
 std::ostream & operator<<(std::ostream & o, Message const & msg) {
     o   << WHITE "RAW_MSG: " PURPLE << std::setw(50) << msg.getRaw()
         << WHITE "  |   CMD: " PURPLE << std::setw(5)  << msg.getCmd() << WHITE
-        << "  |   PARAMS: "PURPLE << msg.paramsToString() << WHITE  << std::endl; 
+        << "  |   PARAMS: " PURPLE << msg.paramsToString() << WHITE  << std::endl; 
 
     return o;
 }
@@ -88,6 +88,16 @@ std::string const & Message::getRaw() const {
     return _raw;
 }
 
+std::vector<Param> const & Message::getParams() const {
+    return _params;
+}
+
+std::vector<std::string> Message::getParamsValues() const {
+    std::vector<std::string> values;
+    for (size_t i = 0; i < _params.size(); i++)
+        values.push_back(_params[i].getValue());
+    return values;
+}
 
 // --------------------- Members other --------------------------
 
@@ -129,16 +139,6 @@ void Message::_parseUSER(void) {
         realname += " " + space_splited[i];
     }
     
-    if (realname[0] != ':')
-        throw std::invalid_argument("Invalid realname no ':' at the beginning");
-    realname.erase(0, 1);
-
-    if (!isValid(realname))
-        throw std::invalid_argument("Invalid realname");
-    else if (realname.size() > 50)
-        throw std::invalid_argument("Realname too long");
-    else if (!isValid(space_splited[1]))
-        throw std::invalid_argument("Invalid username");
 
     _params.push_back(Param("username", space_splited[1]));
     _params.push_back(Param("hostname", space_splited[2]));

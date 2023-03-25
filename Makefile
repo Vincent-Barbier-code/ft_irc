@@ -19,6 +19,7 @@ INCDIR := ./inc
 SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/server.cpp \
 		$(SRCDIR)/client.cpp \
+		$(SRCDIR)/client2.cpp \
 		$(SRCDIR)/utils.cpp \
 		$(SRCDIR)/Message.cpp 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))

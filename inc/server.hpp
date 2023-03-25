@@ -44,7 +44,7 @@ class  Server {
 	void	_acceptNewConnection(void);
 	void	_treatClientEvent(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
-	void	_execRawMsgs(std::string const & raw_msgs);
+	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
 	int		_clientConnect(int client_fd, sockaddr client_addr);
 };
 #endif

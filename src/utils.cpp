@@ -42,9 +42,14 @@ std::string shrinkNBlank(std::string const & str, size_t n /* = std::string::npo
 }
 
 bool isValid(std::string const & str) {
-    size_t i = 0;
-    if (str.empty() || str == "\"\"" || str == "\" \"" )
+    
+    if (str.empty())
         return false;
+    
+    if (str.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
+        return false;
+
+    size_t i = 0;
     while (i < str.length()) {
         if (isprint(str.at(i)) == 0)
             return false;

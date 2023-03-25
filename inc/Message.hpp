@@ -39,6 +39,8 @@ class Message {
 
         std::string const & getRaw() const;
         std::string const & getCmd() const;
+        std::vector<Param> const & getParams() const;
+        std::vector<std::string>   getParamsValues() const;
         
         std::string paramsToString() const;
 

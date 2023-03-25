@@ -14,10 +14,9 @@ class  Client {
 	std::string						_userName;
 	std::string 					_hostName;
 	std::string 					_serverName;
-	std::string						_realname;
+	std::string						_realName;
 
 	std::string						_currentChannel;
-	bool							_isLoggedIn;
 	bool							_isRegistered;
 	
 	void		sendNumericReply(int code);
@@ -31,6 +30,9 @@ class  Client {
 	sockaddr_in getAddr();
 	std::string getUserName();
 	std::string getNickName();
+	std::string getHostName();
+	std::string getServerName();
+	std::string getRealName();
 	bool		isConnected() const;
 	bool		isRegistered() const;
 
@@ -45,7 +47,10 @@ class  Client {
 	// void 			connect();
 	// void 			disconnect();
 
-	void		nick(std::string nick);
+	void	nick(std::string nick);
+	void 	user(std::string const & username, std::string const & hostname,
+                  std::string const & servername, std::string realname);
+
 	class InvalidNicknameException : public std::exception {
 	public:
 		const char* what() const throw() {
