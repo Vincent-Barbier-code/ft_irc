@@ -9,7 +9,7 @@ void	Client::_sendNumericReply(int code){
 	//send MESSAGE KEVIN;
 }
 
-std::string Client::_getNumericReplyMessage(int code){
+std::string Client::_getNumericReplyMessage(int code) const{
 	std::string message = "";
 	switch (code)
 	{

@@ -17,7 +17,7 @@ Client::~Client()
 {
 }
 
-int Client::getFd()
+int Client::getFd() const
 {
 	return (this->_fd);
 }
@@ -27,12 +27,12 @@ sockaddr_in Client::getAddr()
 	return (this->_addr);
 }
 
-std::string Client::getUserName()
+std::string Client::getUserName() const
 {
 	return (this->_userName);
 }
 
-std::string Client::getNickName()
+std::string Client::getNickName() const
 {
 	return (this->_nickName);
 }

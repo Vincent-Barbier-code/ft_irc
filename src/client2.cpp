@@ -31,14 +31,14 @@ void Client::user(std::string const & username, std::string const & hostname,
     std::cout << "nickname: " << _nickName << std::endl; 
 }
 
-std::string Client::getHostName() {
+std::string Client::getHostName() const{
     return _hostName;
 }
 
-std::string Client::getServerName() {
+std::string Client::getServerName() const {
     return _serverName;
 }
 
-std::string Client::getRealName() {
+std::string Client::getRealName() const{
     return _realName;
 }

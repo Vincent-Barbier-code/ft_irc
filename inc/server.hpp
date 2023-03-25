@@ -30,6 +30,7 @@ class  Server {
 	void 		start(void);
 	void 		stop(void);
 
+
   private:
   	int							_server_fd;
 	sockaddr_in					_addr;
@@ -49,6 +50,10 @@ class  Server {
 	Client	*_findClientByNickName(std::string const nickName);
 	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
+
+	void		_sendNumericReply(int code, Client const & client);
+	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
+	//void 	_sendWelcomeMsg(Client const & client);
 };
 #endif
 
