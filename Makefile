@@ -23,7 +23,9 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/client2.cpp \
 		$(SRCDIR)/utils.cpp \
 		$(SRCDIR)/Message.cpp \
-		$(SRCDIR)/replyClient.cpp 
+		$(SRCDIR)/replyClient.cpp \
+		$(SRCDIR)/server2.cpp
+
 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
 DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))

@@ -15,9 +15,6 @@
 
 class Param
 {
-    private:
-        std::string _name;
-        std::string _value;
     public:
         Param(std::string const &name, std::string const &value);
         Param(Param const &src);
@@ -25,6 +22,9 @@ class Param
 
         std::string const & getName() const;
         std::string const & getValue() const;
+    private:
+        std::string _name;
+        std::string _value;
 };
 
 class Message {

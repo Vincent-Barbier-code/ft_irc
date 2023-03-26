@@ -18,22 +18,23 @@ class  Client {
 	bool							_isRegistered;
 	bool							_isAuth;
 	void							_sendNumericReply(int code);
-	std::string						_getNumericReplyMessage(int code);
 	
   public:
 	Client();
 	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
 	~Client();
 	
-	int 		getFd();
+	int 		getFd() const;
 	sockaddr_in getAddr();
-	std::string getUserName();
-	std::string getNickName();
-	std::string getHostName();
-	std::string getServerName();
-	std::string getRealName();
+	std::string getUserName() const; 
+	std::string getNickName() const;
+	std::string getHostName() const; 
+	std::string getServerName() const;
+	std::string getRealName() const;
 	bool		isConnected() const;
 	bool		isRegistered() const;
+
+	std::string						_getNumericReplyMessage(int code) const;
 
 	// channel 		getCurrentChannel();
 	// channel 		joinChannel(const std::string &channel_name);
@@ -52,9 +53,21 @@ class  Client {
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 
-
+	class ClientException : public std::exception {
+		private:
+			int _code;
+		public:
+			ClientException(int code) : _code(code) {};
+			virtual const char* what() const throw() {
+				return "ClientException";
+			}
+			int getCode() const throw() {
+				return _code;
+			}
+	};
 };
 
 	typedef Client* ClientPtr;
+	typedef Client::ClientException clerr;
 
 #endif

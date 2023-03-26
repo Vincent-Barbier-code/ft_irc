@@ -209,8 +209,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::cout << *it << std::endl;
 		std::string const & cmd = it->getCmd();
 		std::vector<std::string> paramsV = it->getParamsValues();
-		
-
+		try {
 		if (cmd == "NICK")
 			_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
 		else if (cmd == "USER") 
@@ -222,6 +221,13 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			_clients[client_fd]->quit(paramsV[0]);
 			_deconnection(client_fd);
 		}
+        	}
+		catch(const Client::ClientException& e)
+		{
+			//_clients[client_fd]->_sendNumericReply(e.getCode());
+			_sendNumericReply(e.getCode(), *_clients.at(client_fd));
+		}
+
 	}
 }
 

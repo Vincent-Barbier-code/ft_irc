@@ -1,6 +1,5 @@
 #include "server.hpp"
 
-
 void    Server::_sendData(int client_fd, std::string const & data) {
 
     std::cout << "send data to " << client_fd << std::endl;
