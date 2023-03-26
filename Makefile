@@ -1,6 +1,7 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
 NAME := ft_irc
 PORT := 6667
+PSWD := 1234
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -g3 -std=c++98 -ansi -Wshadow
 DEBUG := -g3 -fsanitize=address
@@ -82,7 +83,7 @@ re: fclean all
 
 # Cible pour exécuter le programme
 run: $(NAME)
-	./$(NAME) $(PORT)
+	./$(NAME) $(PORT) $(PSWD)
 
 # Règle pour le formatage du code avec clang-format
 format:

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/24 22:18:43 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:27:47 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #define SERVER_HPP
 # pragma once
 
-#include "client.hpp"
 #include "utils.hpp"
+#include "client.hpp"
 #include "Message.hpp"
 #include <iomanip>
 class  Server {
@@ -49,6 +49,8 @@ class  Server {
 	Client	*_findClientByNickName(std::string const nickName);
 	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
+	void	_sendMsgToCLient(Client const & client, std::string const & msg);
+	void 	_serverNumericReply(int code, Client const & client);
 };
 #endif
 

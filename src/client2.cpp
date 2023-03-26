@@ -9,7 +9,6 @@ void Client::user(std::string const & username, std::string const & hostname,
     if (realname[0] != ':')
         throw std::invalid_argument("USER: Invalid realname no ':' at the beginning");
     realname.erase(0, 1);
-
     if (!isValid(realname))
         throw std::invalid_argument("USER: Invalid realname");
     else if (realname.size() > 50)

@@ -14,3 +14,15 @@ void    Server::_sendData(int client_fd, std::string const & data) {
 void    Server::_sendData(Client const & client, std::string const & data) {
     _sendData(client.getFd(), data);
 }
+
+void Server::_sendMsgToCLient(Client const & client, std::string const & msg) {
+    std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
+    _sendData(client.getFd(), data);
+}
+
+void	Server::_sendNumericReply(int code, Client const & client){
+	std::string message = client._getNumericReplyMessage(code);
+	std::cout << "Sending message to client " << client.getNickName() << ": " << message << std::endl;
+
+	_sendMsgToCLient(client, message);
+}

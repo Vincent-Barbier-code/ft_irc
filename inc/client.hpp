@@ -3,8 +3,7 @@
 #define CLIENT_HPP
 # pragma once
 
-#include "struct.hpp"
-
+#include "ft_irc.hpp"
 class  Client {
 
   private:
@@ -48,7 +47,8 @@ class  Client {
 	// void 			disconnect();
 
 	int			pass(std::string const &clientPass, std::string const &serverPass);
-	void		nick(std::string nick);
+	int			nick(std::string const nick, Client const *client);
+	int			quit(std::string const &msg);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 

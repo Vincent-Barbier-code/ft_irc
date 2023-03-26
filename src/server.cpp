@@ -123,10 +123,6 @@ int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string use
 		_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
 		nbr_client++;
 
-	// if(Server::_findClientByNickName(nickname))
-	// 	sendNumericReply(ERR_NICKNAMEINUSE); VERIFIER LE NICKNAME 
-
-
 	std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
 	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
 	std::cout << "fd = " << client_fd << std::endl;
@@ -214,14 +210,19 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::string const & cmd = it->getCmd();
 		std::vector<std::string> paramsV = it->getParamsValues();
 		
-		// if (cmd == "NICK")
-		// 	_clients[client_fd]->nick(paramsV[0]);
-		if (cmd == "USER") 
+
+		if (cmd == "NICK")
+			_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
+		else if (cmd == "USER") 
 			_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
 		else if (cmd == "PASS")
 			_clients[client_fd]->pass(paramsV[0], getPass());
+		else if (cmd == "QUIT")
+		{
+			_clients[client_fd]->quit(paramsV[0]);
+			_deconnection(client_fd);
+		}
 	}
-	
 }
 
 // --------------------- Find_client -----------------

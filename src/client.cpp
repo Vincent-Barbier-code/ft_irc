@@ -66,16 +66,23 @@ int	Client::pass(std::string const &clientPass, std::string const &serverPass) {
 
 //Commande : NICK
 // Paramètres : <nicknamenyme>
-int	Client::nick(std::string const nick)
+int	Client::nick(std::string const nick, const Client *client)
 {
-	if (nick.size() > 9)
+	if (client)
+		return (ERR_NICKNAMEINUSE);
+	if (MAX_NICKNAME_LENGTH > 9)
 		return (ERR_ERRONEUSNICKNAME);
 	else if (!nick.size())
 		return (ERR_NONICKNAMEGIVEN);
-	else {
+	else
 		_nickName = nick;
-		_isRegistered = true;
-	}
+	return (0);
 }
 
-
+//commande : QUIT
+//Paramètres : [ <Quit message> ]
+int	Client::quit(const std::string &message) {
+	(void) message;
+	_isRegistered = false;
+	return (0);
+}
