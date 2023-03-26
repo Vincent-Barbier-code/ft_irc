@@ -66,34 +66,16 @@ int	Client::pass(std::string const &clientPass, std::string const &serverPass) {
 
 //Commande : NICK
 // Paramètres : <nicknamenyme>
-// void	Client::nick(std::string nickname){
-// 	try 
-// 	{
-// 		std::string ancienNickname = _nickName;
+int	Client::nick(std::string const nick)
+{
+	if (nick.size() > 9)
+		return (ERR_ERRONEUSNICKNAME);
+	else if (!nick.size())
+		return (ERR_NONICKNAMEGIVEN);
+	else {
+		_nickName = nick;
+		_isRegistered = true;
+	}
+}
 
-// 		if (nickname.empty())
-// 			throw Exception();
-// 		if (nickname.size() > 9)
-// 			throw InvalidNicknameException();
-// 		if (clientMap.find(nickname) != clientMap.end())
-// 		{
-// 			// std::cout << "Nickname already in use" << std::endl;
-// 			throw NicknameInUseException();
-// 		}
-// 		_nickName = nickname;
-// 		_isLoggedIn = true;
-// 		sendNumericReply(RPL_WELCOME);
-// 		if (!ancienNickname.empty())
-// 			clientMap.erase(ancienNickname);
-// 		clientMap[nickname] = *this;
-// 	} 
-// 	catch (const InvalidNicknameException& e)
-// 	{
-// 		sendNumericReply(ERR_ERRONEUSNICKNAME);
-// 	}
-// 	catch (const NicknameInUseException& e) 
-// 	{
-// 		sendNumericReply(ERR_NICKNAMEINUSE);
-// 	}
-// }
 

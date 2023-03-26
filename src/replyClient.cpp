@@ -43,7 +43,9 @@ std::string Client::_getNumericReplyMessage(int code){
 		case RPL_ENDOFMOTD:
 			message = "376 :End of /MOTD command.";
 			break;
-
+		case ERR_NONICKNAMEGIVEN:
+			message = "431 :No nickname given";
+			break;
 	}
 	return (message);
 }
