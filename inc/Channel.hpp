@@ -2,11 +2,23 @@
 # define CHANNEL_HPP
 # pragma once
 
-#include "Client.hpp"
+#include <vector>
+#include <string>
+#include "client.hpp"
+
+class Client;
+
 class	Channel {
 	public :
 		Channel();
-		Channel(std::string name, std::string const &topic, std::string const &creator); 
+		Channel(std::string name, std::string const &topic, Client const &creator); 
+
+		Channel & operator=(Channel const & rhs);
+
+		//getters
+		std::string		getName() const;
+		std::string		getTopic() const;
+		
 		//creator needed to set the first operator
 	private :
 	//variables
@@ -29,6 +41,6 @@ class	Channel {
 		std::vector<int>	_inviteList; //list of users invited to the channel
 		std::vector<int>	_operatorList; //list of users with operator status
 		std::vector<int>	_voiceList; //list of users with voice status
-}
+};
 
 #endif
