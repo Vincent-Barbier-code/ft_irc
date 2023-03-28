@@ -45,9 +45,9 @@ class  Client {
 	// void 			connect();
 	// void 			disconnect();
 
-	int			pass(std::string const &clientPass, std::string const &serverPass);
-	int			nick(std::string const nick, Client const *client);
-	int			quit();
+	void		pass(std::string const &clientPass, std::string const &serverPass);
+	void		nick(std::string const nick, Client const *client);
+	void		quit();
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 

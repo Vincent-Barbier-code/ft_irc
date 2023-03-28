@@ -54,19 +54,18 @@ bool Client::isRegistered() const {
 
 //Commande : PASS
 //Paramètres : <password>
-int	Client::pass(std::string const &clientPass, std::string const &serverPass) {
+void	Client::pass(std::string const &clientPass, std::string const &serverPass) {
 	if (_isAuth)
 		throw (ERR_ALREADYREGISTRED);
 	else if (clientPass == serverPass) {
 		_isAuth = true;
-		return (0);
 	}
 	throw (ERR_PASSWDMISMATCH);
 }
 
 //Commande : NICK
 // Paramètres : <nicknamenyme>
-int	Client::nick(std::string const nick, const Client *client)
+void	Client::nick(std::string const nick, const Client *client)
 {
 	if (client)
 		throw (ERR_NICKNAMEINUSE);
@@ -76,12 +75,10 @@ int	Client::nick(std::string const nick, const Client *client)
 		throw (ERR_NONICKNAMEGIVEN);
 	else
 		_nickName = nick;
-	return (0);
 }
 
 //commande : QUIT
 //Paramètres : [ <Quit message> ]
-int	Client::quit() {
+void	Client::quit() {
 	_isRegistered = false;
-	return (0);
 }
