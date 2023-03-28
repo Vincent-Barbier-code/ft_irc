@@ -3,7 +3,8 @@
 #define CLIENT_HPP
 # pragma once
 
-#include "ft_irc.hpp"
+#include "struct.hpp"
+#include "server.hpp"
 class  Client {
 
   private:

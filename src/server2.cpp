@@ -27,8 +27,15 @@ void	Server::_sendNumericReply(int code, Client const & client){
 
 
 void 		Server::_sendWelcomeMsg(Client const & client) {
-    std::string message = client._getNumericReplyMessage(RPL_WELCOME);
-	std::cout << "Sending Welcome message to client "; 
-    
-    _sendMsgToCLient(client, message);
+	std::cout << "Welcoming: "; 
+    _sendNumericReply(RPL_WELCOME, client);
+
+}
+
+void    Server::addChannel(Channel const & channel) {
+    //exemple -> addChannel(Channel("#general", "Welcome to the general channel", client));
+    std::cout << "adding channel: " << channel.getName() << std::endl;
+    _channels[channel.getName()] = channel;
+
+    std::cout << "Topic of new channel: " << _channels[channel.getName()].getTopic() << std::endl;
 }

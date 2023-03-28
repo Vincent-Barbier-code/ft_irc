@@ -18,6 +18,11 @@
 #include "client.hpp"
 #include "Message.hpp"
 #include <iomanip>
+#include "Channel.hpp"
+
+class Client;
+class Channel;
+
 class  Server {
 
   public:
@@ -33,13 +38,16 @@ class  Server {
 	void 		start(void);
 	void 		stop(void);
 
+	void 		addChannel(Channel const & channel);
+
 
   private:
   	int							_server_fd;
 	sockaddr_in					_addr;
 	int							_epoll_fd;
-	std::map<int, ClientPtr>	_clients;
+	std::map<int, Client *>		_clients;
 	std::string					_password;
+	std::map<std::string, Channel>	_channels;
 	
 	Server();
 
@@ -58,6 +66,7 @@ class  Server {
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
+
 };
 #endif
 
