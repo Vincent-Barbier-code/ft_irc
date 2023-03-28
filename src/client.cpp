@@ -69,7 +69,7 @@ void	Client::nick(std::string const nick, const Client *client)
 {
 	if (client)
 		throw (ERR_NICKNAMEINUSE);
-	if (MAX_NICKNAME_LENGTH > 9)
+	else if (MAX_NICKNAME_LENGTH > 9)
 		throw (ERR_ERRONEUSNICKNAME);
 	else if (!nick.size())
 		throw (ERR_NONICKNAMEGIVEN);

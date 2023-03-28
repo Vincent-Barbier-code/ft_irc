@@ -3,7 +3,6 @@
 #define CLIENT_HPP
 # pragma once
 
-#include "struct.hpp"
 #include "server.hpp"
 class  Client {
 

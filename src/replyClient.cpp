@@ -2,20 +2,12 @@
 #include "macro.hpp"
 #include "utils.hpp"
 
-// void	Client::_sendNumericReply(int code){
-// 	std::string message = _getNumericReplyMessage(code);
-// 	std::cout << "Sending message to client " << _nickName << ": " << message << std::endl;
-	
-// 	//send MESSAGE KEVIN;
-// }
-
-
 std::string Server::_getNumericReplyMessage(int code, Client const &client) const{
 	std::string message = "";
 	switch (code)
 	{
 		case RPL_WELCOME:
-			message = "001 " + client.getNickName() + " :Welcome on the Marine, Vincent and Kevin IRC Server, my dare " + this->getNickName();
+			message = "001 " + client.getNickName() + " :Welcome on the Marine, Vincent and Kevin IRC Server, my dare " + client.getNickName();
 			break;
 		case RPL_YOURHOST:
 			message = "002 " + client.getNickName() + " :Your host is " + client.getNickName();

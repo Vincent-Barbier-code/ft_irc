@@ -17,7 +17,6 @@
 #include <iostream>
 #include <map>
 #include <string>
-
 // c librairies
 #include <cstdio>
 #include <cstdlib>

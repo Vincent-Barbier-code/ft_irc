@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/28 16:36:34 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/29 01:25:40 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define SERVER_HPP
 # pragma once
 
+#include <ft_irc.hpp>
 #include "utils.hpp"
 #include "client.hpp"
 #include "Message.hpp"
@@ -51,18 +52,16 @@ class  Server {
 	
 	Server();
 
-	void	_initEpoll(void);
-	void	_acceptNewConnection(void);
-	void	_treatClientEvent(epoll_event const & client_ev);
-	void	_deconnection(int client_fd);
-	Client	*_findClientByFd(int fd);
-	Client	*_findClientByNickName(std::string const nickName);
-	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
-	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
-	void	_sendMsgToCLient(Client const & client, std::string const & msg);
-	void	_sendNumericReply(int code, Client const & client);
-	std::string _getNumericReplyMessage(int code, Client const &client) const;
+	void		_initEpoll(void);
+	void		_acceptNewConnection(void);
+	void		_treatClientEvent(epoll_event const & client_ev);
+	void		_deconnection(int client_fd);
+	Client		*_findClientByFd(int fd);
+	Client		*_findClientByNickName(std::string const nickName);
+	int			_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
+	void		_execRawMsgs(std::string const & raw_msgs, int client_fd);
 
+	std::string _getNumericReplyMessage(int code, Client const &client) const;
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
