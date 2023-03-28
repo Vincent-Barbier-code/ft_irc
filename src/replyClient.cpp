@@ -14,7 +14,7 @@ std::string Client::_getNumericReplyMessage(int code) const{
 	switch (code)
 	{
 		case RPL_WELCOME:
-			message = "001 " + this->getNickName() + " :Welcome to the Internet Relay Network " + this->getNickName();
+			message = "001 " + this->getNickName() + " :Welcome on the Marine, Vincent and Kevin IRC Server, my dare " + this->getNickName();
 			break;
 		case RPL_YOURHOST:
 			message = "002 " + this->getNickName() + " :Your host is " + this->getNickName();

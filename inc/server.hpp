@@ -53,7 +53,7 @@ class  Server {
 
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
-	//void 	_sendWelcomeMsg(Client const & client);
+	void 		_sendWelcomeMsg(Client const & client);
 };
 #endif
 
