@@ -21,6 +21,9 @@
 class  Server {
 
   public:
+	
+	static void	sendData(Client const & client, std::string const & data);
+
 	Server(int port, std::string password);
 	~Server();
 	
@@ -44,8 +47,6 @@ class  Server {
 	void	_acceptNewConnection(void);
 	void	_treatClientEvent(epoll_event const & client_ev);
 	void	_deconnection(int client_fd);
-	void	_sendData(Client const & client, std::string const & data);
-	void	_sendData(int client_fd, std::string const & data);
 	Client	*_findClientByFd(int fd);
 	Client	*_findClientByNickName(std::string const nickName);
 	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
