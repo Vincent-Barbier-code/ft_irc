@@ -20,7 +20,7 @@ void Server::_sendMsgToCLient(Client const & client, std::string const & msg) {
 }
 
 void	Server::_sendNumericReply(int code, Client const & client){
-	std::string message = client._getNumericReplyMessage(code);
+	std::string message = _getNumericReplyMessage(code, client);
 	std::cout << "Sending message to client " << client.getNickName() << ": " << message << std::endl;
 
 	_sendMsgToCLient(client, message);

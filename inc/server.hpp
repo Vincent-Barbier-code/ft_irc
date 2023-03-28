@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/26 17:27:47 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/28 16:36:34 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ class  Server {
 	int		_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void	_execRawMsgs(std::string const & raw_msgs, int client_fd);
 	void	_sendMsgToCLient(Client const & client, std::string const & msg);
-	void 	_serverNumericReply(int code, Client const & client);
+	void	_sendNumericReply(int code, Client const & client);
+	std::string _getNumericReplyMessage(int code, Client const &client) const;
+
 };
 #endif
 

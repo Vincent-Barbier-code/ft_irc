@@ -34,8 +34,6 @@ class  Client {
 	bool		isConnected() const;
 	bool		isRegistered() const;
 
-	std::string						_getNumericReplyMessage(int code) const;
-
 	// channel 		getCurrentChannel();
 	// channel 		joinChannel(const std::string &channel_name);
 	// channel 		leaveChannel();
