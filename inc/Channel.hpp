@@ -8,8 +8,8 @@ class	Channel {
 		Channel();
 		Channel(std::string name, std::string const &topic, std::string const &creator); 
 		//creator needed to set the first operator
-	
 	private :
+	//variables
 		std::string	_name;
 		std::string	_topic; //max 200 characters
 		std::string	_password; //only used if keyMask is set
@@ -24,11 +24,11 @@ class	Channel {
 		bool		_secretMask; //when set, channel name won't be displayed in the channel list nor in the WHO list
 		bool		_userLimitMask; //when set, only users up to the user limit can join
 		//Lists
-		std::vector<ClientPtr>	_userList; //list of users in the channel
-		std::vector<ClientPtr>	_banList; //list of users banned from the channel
-		std::vector<ClientPtr>	_inviteList; //list of users invited to the channel
-		std::vector<ClientPtr>	_operatorList; //list of users with operator status
-		std::vector<ClientPtr>	_voiceList; //list of users with voice status
+		std::vector<int>	_userList; //list of users in the channel
+		std::vector<int>	_banList; //list of users banned from the channel
+		std::vector<int>	_inviteList; //list of users invited to the channel
+		std::vector<int>	_operatorList; //list of users with operator status
+		std::vector<int>	_voiceList; //list of users with voice status
 }
 
 #endif
