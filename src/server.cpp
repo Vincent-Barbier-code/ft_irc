@@ -219,7 +219,6 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		else if (cmd == "QUIT")
 		{
 			_sendMsgToCLient(*_clients[client_fd], paramsV[0]);
-			_clients[client_fd]->quit();
 			_deconnection(client_fd);
 		}
         	}
