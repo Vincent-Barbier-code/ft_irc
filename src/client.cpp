@@ -76,9 +76,3 @@ void	Client::nick(std::string const nick, const Client *client)
 	else
 		_nickName = nick;
 }
-
-//commande : QUIT
-//Paramètres : [ <Quit message> ]
-void	Client::quit() {
-	_isRegistered = false;
-}
