@@ -68,6 +68,7 @@ void Server::start() {
 				_treatClientEvent((&ready_events)[i]);
 		}
 	}
+	stop();
 }
 
 void Server::_initEpoll() {
@@ -221,6 +222,10 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
 				// il faudra envoyer le message dans les canaux ou le client est present
 				_deconnection(client_fd);
+			}
+			else if (0 && cmd == "PING")
+			{
+				_sendMsgToCLient()
 			}
         }
 		catch(const Client::ClientException& e)

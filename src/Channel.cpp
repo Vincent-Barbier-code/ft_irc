@@ -19,7 +19,7 @@ Channel::Channel(std::string name, std::string const &topic, Client const &creat
     _name = name;
     _topic = topic;
     _password = "";
-    _userCount = 0;
+    _userCount = 1;
     _userLimit = 0;
     _banMask = false;
     _inviteMask = false;
