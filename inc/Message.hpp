@@ -45,6 +45,8 @@ class Message {
         std::string const & getPrefix() const;
         std::vector<Param> const & getParams() const;
         std::vector<std::string>   getParamsValues() const;
+        int getErr() const;
+        
         
         std::string paramsToString() const;
 
@@ -60,6 +62,7 @@ class Message {
         std::string _cmd; // command
         std::string _prefix; // prefix
         std::vector<Param> _params; // command params
+        int _err; // error code
         
 
         Message(std::string const & raw_msg);
@@ -71,6 +74,7 @@ class Message {
         void _parseNICK();
         void _parseUSER();
         void _parseQUIT();
+        void _parseLIST();
 
 };
 

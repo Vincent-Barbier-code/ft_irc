@@ -67,6 +67,8 @@ class  Server {
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
 
+	void        _list(Client const & client);
+
 };
 #endif
 

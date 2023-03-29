@@ -29,6 +29,8 @@ void Message::_initParsers(void) {
     _parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
+    _parsers["QUIT"] = &Message::_parseQUIT;
+    _parsers["LIST"] = &Message::_parseLIST;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -55,6 +57,7 @@ Message::Message(std::string const & raw_msg) {
     _raw = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(_rawWPrefix.find(' ') + 1) : _rawWPrefix;
     _prefix = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(1, _rawWPrefix.find(' ') - 1) : "";
     _cmd = _raw.substr(0, _raw.find(' '));
+    _err = 0;
     _initParams();
 }
 
@@ -110,6 +113,10 @@ std::vector<std::string> Message::getParamsValues() const {
     for (size_t i = 0; i < _params.size(); i++)
         values.push_back(_params[i].getValue());
     return values;
+}
+
+int Message::getErr(void) const {
+    return _err;
 }
 
 // --------------------- Members other --------------------------
@@ -168,9 +175,10 @@ void Message::_parseUSER(void) {
 void Message::_parseQUIT(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
     if (space_splited.size() == 1)
-        return ; // no message after QUIT command, so no need to add a param with
+        return ; // no message after QUIT command
     if (space_splited[1][0] != ':') {
         std::cout << "Invalid QUIT message" << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
         return ;
     }
     std::string message = space_splited[1].substr(1);
@@ -178,4 +186,16 @@ void Message::_parseQUIT(void) {
         message += " " + space_splited[i];
     }
     _params.push_back(Param("message", message));
+}
+
+void Message::_parseLIST(void) {
+    //Cette fonction ne fait rien, oui, elle est vide, mais elle est nécessaire pour que le parser fonctionne
+    //car elle est appelée dans _initParams()
+    //Si vous avez une meilleure idée, je suis preneur
+    //Sinon, je vous laisse avec cette fonction vide
+    //Merci
+    //Bonne journée
+    //A bientôt
+    //Bisous
+    //Je t'aime
 }

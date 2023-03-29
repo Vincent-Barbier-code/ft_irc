@@ -20,7 +20,7 @@ class  Client {
 	bool							_isRegistered;
 	bool							_isAuth;
 	std::map<std::string, Channel &>	_channels;
-	void							_sendNumericReply(int code);
+	//void							_sendNumericReply(int code);
 	
   public:
 	Client();

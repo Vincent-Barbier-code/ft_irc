@@ -206,21 +206,29 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::string const & cmd = it->getCmd();
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
-			if (cmd == "NICK")
+			if (cmd == "NICK") {
+
 				_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
-			else if (cmd == "USER")
-			{
+			}
+			else if (cmd == "USER") {
+
 				_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
 				_sendWelcomeMsg(*_clients.at(client_fd));
 			}
-			else if (cmd == "PASS")
+			else if (cmd == "PASS") {
+
 				_clients[client_fd]->pass(paramsV[0], getPass());
-			else if (cmd == "QUIT") // enlever le 0
-			{
+			}
+			else if (cmd == "QUIT") {
+				if (it->getErr())
+					clerr(it->getErr());
 				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
 				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
 				// il faudra envoyer le message dans les canaux ou le client est present
 				_deconnection(client_fd);
+			}
+			else if (cmd == "LIST") {
+				
 			}
         }
 		catch(const Client::ClientException& e)

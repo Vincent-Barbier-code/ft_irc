@@ -43,3 +43,11 @@ void    Server::addChannel(Channel const & channel) {
 
     std::cout << "Topic of new channel: " << _channels[channel.getName()].getTopic() << std::endl;
 }
+
+void  Server::_list(Client const & client) {
+    std::cout << "Listing channels" << std::endl;
+    for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        std::cout << it->first << " => " << it->second.getName() << std::endl;
+    }
+    (void)client;
+}
