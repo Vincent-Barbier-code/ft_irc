@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/29 01:25:40 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/29 20:50:10 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ class  Server {
 
 	void 		addChannel(Channel const & channel);
 
-
   private:
   	int							_server_fd;
 	sockaddr_in					_addr;
@@ -66,6 +65,10 @@ class  Server {
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
+
+	//channel
+	void    	_createChannel(std::string const & channelName, std::string const & topic, Client const & client);
+
 
 };
 #endif

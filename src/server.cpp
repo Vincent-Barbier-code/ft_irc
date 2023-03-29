@@ -68,6 +68,7 @@ void Server::start() {
 				_treatClientEvent((&ready_events)[i]);
 		}
 	}
+	stop();
 }
 
 void Server::_initEpoll() {
@@ -120,7 +121,7 @@ int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string use
 	// verifier si nickname deja pris et si oui, en demander un autre au client
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
 
-	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
+	std::cout << "Client connected " << _clients.at(client_fd)->getNickName() << std::endl;
 	std::cout << "fd = " << client_fd << std::endl;
 	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
 	return (0);
@@ -207,20 +208,30 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
 			if (cmd == "NICK")
-				_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
+				_clients.at(client_fd)->nick(paramsV[0], _findClientByNickName(paramsV[0]));
 			else if (cmd == "USER")
 			{
-				_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
+				_clients.at(client_fd)->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
 				_sendWelcomeMsg(*_clients.at(client_fd));
 			}
 			else if (cmd == "PASS")
-				_clients[client_fd]->pass(paramsV[0], getPass());
+				_clients.at(client_fd)->pass(paramsV[0], getPass());
 			else if (cmd == "QUIT") // enlever le 0
 			{
 				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
 				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
 				// il faudra envoyer le message dans les canaux ou le client est present
 				_deconnection(client_fd);
+			}
+			else if (cmd == "JOIN")
+			{
+				std::map<std::string, Channel>::iterator it;
+
+				it = _channels.find(paramsV[0]);
+				if ( it == _channels.end())
+					addChannel(Channel(paramsV[0], paramsV[1], *_clients.at(client_fd)));
+				_channels.at(paramsV[0]).addClient(_clients.at(client_fd));
+				_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + paramsV[0]);
 			}
         }
 		catch(const Client::ClientException& e)
@@ -260,6 +271,7 @@ Client 	*Server::_findClientByFd(int fd)
 	}
 	return (NULL);
 }
+
 
 // --------------------- Setters -----------------
 
