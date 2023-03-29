@@ -223,11 +223,9 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				// il faudra envoyer le message dans les canaux ou le client est present
 				_deconnection(client_fd);
 			}
-			else if (0 && cmd == "PING")
-			{
-				_sendMsgToCLient()
-			}
-        }
+			else if (cmd == "PING")
+				_sendMsgToCLient(*_clients.at(client_fd), "PONG " + paramsV[0]);
+		}
 		catch(const Client::ClientException& e)
 		{
 			_sendNumericReply(e.getCode(), *_clients.at(client_fd));

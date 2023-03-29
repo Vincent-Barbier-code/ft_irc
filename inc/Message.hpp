@@ -72,7 +72,6 @@ class Message {
         void _parseUSER();
         void _parseQUIT();
         void _parsePING();
-
 };
 
 std::ostream & operator<<(std::ostream & o, Message const & msg);
