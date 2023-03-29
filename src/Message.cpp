@@ -164,3 +164,18 @@ void Message::_parseUSER(void) {
     _params.push_back(Param("realname", realname));
 
 }
+
+void Message::_parseQUIT(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+    if (space_splited.size() == 1)
+        return ; // no message after QUIT command, so no need to add a param with
+    if (space_splited[1][0] != ':') {
+        std::cout << "Invalid QUIT message" << std::endl;
+        return ;
+    }
+    std::string message = space_splited[1].substr(1);
+    for (size_t i = 2; i < space_splited.size(); i++) {
+        message += " " + space_splited[i];
+    }
+    _params.push_back(Param("message", message));
+}

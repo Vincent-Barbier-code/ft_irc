@@ -210,14 +210,16 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
 			else if (cmd == "USER")
 			{
-				_sendWelcomeMsg(*_clients.at(client_fd));
 				_clients[client_fd]->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
+				_sendWelcomeMsg(*_clients.at(client_fd));
 			}
 			else if (cmd == "PASS")
 				_clients[client_fd]->pass(paramsV[0], getPass());
-			else if (cmd == "QUIT" && 0) // enlever le 0
+			else if (cmd == "QUIT") // enlever le 0
 			{
-				_sendMsgToCLient(*_clients[client_fd], paramsV[0]); // a PARSER
+				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
+				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
+				// il faudra envoyer le message dans les canaux ou le client est present
 				_deconnection(client_fd);
 			}
         }

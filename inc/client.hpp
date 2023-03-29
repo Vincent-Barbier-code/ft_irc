@@ -4,6 +4,7 @@
 # pragma once
 
 #include "server.hpp"
+#include "Channel.hpp"
 class  Client {
 
   private:
@@ -17,6 +18,7 @@ class  Client {
 	std::string						_currentChannel;
 	bool							_isRegistered;
 	bool							_isAuth;
+	std::map<std::string, Channel &>	_channels;
 	void							_sendNumericReply(int code);
 	
   public:
