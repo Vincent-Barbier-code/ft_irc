@@ -68,6 +68,7 @@ class Message {
         void _parseCAP();
         void _parseNICK();
         void _parseUSER();
+        void _parseQUIT();
 
 };
 
