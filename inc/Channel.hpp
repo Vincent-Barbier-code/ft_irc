@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "client.hpp"
+#include "utils.hpp"
 
 class Client;
 
@@ -19,7 +20,15 @@ class	Channel {
 		//getters
 		std::string		getName() const;
 		std::string		getTopic() const;
-		
+		std::string		getPassword() const;
+		int				getkeyMask() const;
+		int 			getinviteMask() const;
+		int				getbanMask() const;
+
+
+		int			isInInviteList(int fd) const;
+		int 		isInBanList(int fd) const;
+		std::string getUserList() const ;
 		//creator needed to set the first operator
 	private :
 	//variables

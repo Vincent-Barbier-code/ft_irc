@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/29 20:50:10 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/29 22:19:08 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "Message.hpp"
 #include <iomanip>
 #include "Channel.hpp"
+#include <algorithm>
 
 class Client;
 class Channel;

@@ -57,3 +57,43 @@ std::string Channel::getName() const {
 std::string Channel::getTopic() const {
     return _topic;
 }
+
+std::string Channel::getPassword() const {
+    return _password;
+}
+
+int Channel::getkeyMask() const {
+    return _keyMask;
+}
+
+int Channel::getinviteMask() const{
+    return _inviteMask;
+}
+
+int Channel::isInInviteList(int fd) const {
+    for (std::vector<int>::const_iterator it = _inviteList.begin(); it != _inviteList.end(); it++) {
+        if (*it == fd)
+            return 1;
+    }
+    return 0;
+}
+
+int Channel::isInBanList(int fd) const {
+    for (std::vector<int>::const_iterator it = _banList.begin(); it != _banList.end(); it++) {
+        if (*it == fd)
+            return 1;
+    }
+    return 0;
+}
+
+int Channel::getbanMask() const {
+    return _banMask;
+}
+
+std::string Channel::getUserList() const {
+    std::string userList;
+    for (std::vector<int>::const_iterator it = _userList.begin(); it != _userList.end(); it++) {
+        userList += " " + itostr(*it);
+    }
+    return userList;
+}

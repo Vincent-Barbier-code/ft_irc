@@ -39,6 +39,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NONICKNAMEGIVEN:
 			message = "431 :No nickname given";
 			break;
+		case ERR_BADCHANNELKEY:
+			message = "475 " + client.getNickName() + " :Cannot join channel wrong password";
+			break;
 	}
 	return (message);
 }

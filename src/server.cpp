@@ -225,13 +225,30 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			}
 			else if (cmd == "JOIN")
 			{
-				std::map<std::string, Channel>::iterator it;
+				std::map<std::string, Channel>::iterator it2;
 
-				it = _channels.find(paramsV[0]);
-				if ( it == _channels.end())
+				// if mode invitation only, check if client is invited to do
+				if (_channels.at(paramsV[0]).getinviteMask() == 1)
+					if (!_channels.at(paramsV[0]).isInInviteList(client_fd))
+						throw Client::ClientException(ERR_INVITEONLYCHAN);
+				// if not banned to do
+				if (_channels.at(paramsV[0]).getbanMask() == 1)
+					if (_channels.at(paramsV[0]).isInBanList(client_fd))
+						throw Client::ClientException(ERR_BANNEDFROMCHAN);
+				it2 = _channels.find(paramsV[0]);
+				if (it2 == _channels.end())
+				{
+					if (_channels.at(paramsV[0]).getkeyMask() == 1)
+					{
+						if (paramsV[1] != _channels.at(paramsV[0]).getPassword())
+							throw Client::ClientException(ERR_BADCHANNELKEY);
+					}
 					addChannel(Channel(paramsV[0], paramsV[1], *_clients.at(client_fd)));
-				_channels.at(paramsV[0]).addClient(_clients.at(client_fd));
+				}
+				// _channels.at(paramsV[0]).addClient(_clients.at(client_fd));
 				_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + paramsV[0]);
+				_sendMsgToCLient(*_clients.at(client_fd), "RPL_TOPIC " + paramsV[0] + " " + _channels.at(paramsV[0]).getTopic());
+				_sendMsgToCLient(*_clients.at(client_fd), "RPL_NAMREPLY " + paramsV[0] + " " + _channels.at(paramsV[0]).getUserList());
 			}
         }
 		catch(const Client::ClientException& e)
