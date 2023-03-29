@@ -14,7 +14,8 @@
 #define SERVER_HPP
 # pragma once
 
-#include <ft_irc.hpp>
+#include "macro.hpp"
+#include "ft_irc.hpp"
 #include "utils.hpp"
 #include "client.hpp"
 #include "Message.hpp"

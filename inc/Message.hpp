@@ -2,6 +2,7 @@
 # define MESSAGE_HPP
 # pragma once
 
+
 #include <string>
 #include <vector>
 #include <map>
@@ -9,6 +10,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
+#include "macro.hpp"
 
 #include "utils.hpp"
 #include "color.hpp"

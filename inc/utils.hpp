@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdexcept>
 #include <sstream>
+#include "macro.hpp"
 
 std::string              itostr(int i);
 std::string              shrinkNBlank(std::string const &str, size_t n = std::string::npos);

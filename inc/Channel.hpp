@@ -2,6 +2,7 @@
 # define CHANNEL_HPP
 # pragma once
 
+#include "macro.hpp"
 #include <vector>
 #include <string>
 #include "client.hpp"

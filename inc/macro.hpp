@@ -1,6 +1,9 @@
 #ifndef MACRO_HPP
 #define MACRO_HPP
 # pragma once
+
+#define clerr(code) throw Client::ClientException(code)
+
 // default macro
 #define MAX_CLIENTS 100
 #define BUFFER_SIZE 1024
