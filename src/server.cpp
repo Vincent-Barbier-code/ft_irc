@@ -207,9 +207,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
 			if (cmd == "NICK")
-			{
 				_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
-			}
 			else if (cmd == "USER")
 			{
 				_sendWelcomeMsg(*_clients.at(client_fd));
