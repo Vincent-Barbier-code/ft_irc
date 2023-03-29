@@ -228,7 +228,9 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_deconnection(client_fd);
 			}
 			else if (cmd == "LIST") {
-				
+				//addChannel(Channel("#general", "Welcome to the general channel", *_clients.at(client_fd)));
+				//addChannel(Channel("#zizi", "Welcome to zizi channel", *_clients.at(client_fd)));
+				_list(*_clients.at(client_fd));
 			}
         }
 		catch(const Client::ClientException& e)

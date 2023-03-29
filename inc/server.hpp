@@ -22,6 +22,7 @@
 #include <iomanip>
 #include "Channel.hpp"
 
+
 class Client;
 class Channel;
 
@@ -68,6 +69,9 @@ class  Server {
 	void 		_sendWelcomeMsg(Client const & client);
 
 	void        _list(Client const & client);
+	void		_sendListStart(Client const & client);
+	void		_sendList(Client const & client, Channel const & channel);
+	void		_sendListEnd(Client const & client);
 
 };
 #endif

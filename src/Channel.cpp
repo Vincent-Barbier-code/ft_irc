@@ -57,3 +57,7 @@ std::string Channel::getName() const {
 std::string Channel::getTopic() const {
     return _topic;
 }
+
+std::vector<int> Channel::getUserList() const {
+    return _userList;
+}

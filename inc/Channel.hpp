@@ -19,6 +19,7 @@ class	Channel {
 		//getters
 		std::string		getName() const;
 		std::string		getTopic() const;
+		std::vector<int>	getUserList() const;
 		
 		//creator needed to set the first operator
 	private :
