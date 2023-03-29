@@ -71,6 +71,7 @@ class Message {
         void _parseNICK();
         void _parseUSER();
         void _parseQUIT();
+        void _parsePING();
 
 };
 

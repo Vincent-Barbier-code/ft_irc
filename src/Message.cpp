@@ -29,6 +29,7 @@ void Message::_initParsers(void) {
     _parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
+    _parsers["PING"] = &Message::_parsePING;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -178,4 +179,11 @@ void Message::_parseQUIT(void) {
         message += " " + space_splited[i];
     }
     _params.push_back(Param("message", message));
+}
+
+void Message::_parsePING(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+    if (space_splited.size() == 1)
+        throw std::runtime_error("PARSE PING ARGUMENT PAS SUFFISANT") ; // a remplacer par le setting de la variable d'erreur
+    _params.push_back(Param("server", space_splited[1]));
 }
