@@ -118,12 +118,8 @@ void Server::_acceptNewConnection(void) {
 int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname)
 {
 	// verifier si nickname deja pris et si oui, en demander un autre au client
-	static int nbr_client = 0;
+	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
 
-		_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
-		nbr_client++;
-
-	std::cout << "nbr client = " + itostr(nbr_client) << std::endl;
 	std::cout << "Client connected " << _clients[client_fd]->getNickName() << std::endl;
 	std::cout << "fd = " << client_fd << std::endl;
 	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
