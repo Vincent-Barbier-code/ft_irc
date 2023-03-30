@@ -133,6 +133,11 @@ void Server::_deconnection(int client_fd) {
 		perror("epoll_ctl() failed");
 		exit(EXIT_FAILURE);
 	}
+	std::map<std::string, Channel>::iterator it = _channels.begin();
+
+	for (_channels.begin(); it != _channels.end(); it++) {
+		it->second.removeUser(client_fd);
+	}
 	close(client_fd);
 	delete _clients[client_fd];
 	_clients.erase(client_fd);

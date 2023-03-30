@@ -24,11 +24,13 @@ class	Channel {
 		int				getkeyMask() const;
 		int 			getinviteMask() const;
 		int				getbanMask() const;
+		std::vector<int> getUserList() const ;
 
 
 		int			isInInviteList(int fd) const;
 		int 		isInBanList(int fd) const;
-		std::string getUserList() const ;
+		void		addUser(int fd);
+		void		removeUser(int fd);
 		//creator needed to set the first operator
 	private :
 	//variables

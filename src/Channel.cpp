@@ -70,6 +70,23 @@ int Channel::getinviteMask() const{
     return _inviteMask;
 }
 
+std::vector<int> Channel::getUserList() const {
+    return _userList;
+}
+
+void Channel::addUser(int fd) {
+    _userList.push_back(fd);
+}
+
+void Channel::removeUser(int fd) {
+    for (std::vector<int>::iterator it = _userList.begin(); it != _userList.end(); it++) {
+        if (*it == fd) {
+            _userList.erase(it);
+            break;
+        }
+    }
+}
+
 int Channel::isInInviteList(int fd) const {
     for (std::vector<int>::const_iterator it = _inviteList.begin(); it != _inviteList.end(); it++) {
         if (*it == fd)
@@ -90,10 +107,3 @@ int Channel::getbanMask() const {
     return _banMask;
 }
 
-std::string Channel::getUserList() const {
-    std::string userList;
-    for (std::vector<int>::const_iterator it = _userList.begin(); it != _userList.end(); it++) {
-        userList += " " + itostr(*it);
-    }
-    return userList;
-}

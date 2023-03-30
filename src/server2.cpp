@@ -47,23 +47,30 @@ void    Server::addChannel(Channel const & channel) {
 
 void Server::_parseJoin(int client_fd, std::string const & name)
 {
+	(void)(client_fd);
 	if (name.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
-	if (name[0] != '#' || name[0] != '&')
+	if (name[0] != '#' && name[0] != '&')
 		clerr(ERR_NOSUCHCHANNEL);
 	if (name.size() > 200)
 		clerr(ERR_NOSUCHCHANNEL);
 	if (name.find(',') != std::string::npos || name.find(' ') != std::string::npos)
 		clerr(ERR_NOSUCHCHANNEL);
-	// if mode invitation only, check if client is invited to do
-	if (_channels.at(name).getinviteMask() == 1)
-		if (!_channels.at(name).isInInviteList(client_fd))
-			clerr(ERR_INVITEONLYCHAN);
-	// if not banned to do
-	if (_channels.at(name).getbanMask() == 1)
-		if (_channels.at(name).isInBanList(client_fd))
-			clerr(ERR_BANNEDFROMCHAN);
+}
 
+std::string Server::_getUserNameList(Channel channel) const
+{
+    std::string userList = "";
+	int client_fd;
+
+	if (channel.getUserList().size() == 0)
+		userList += _clients.at(client_fd)->getNickName();
+    for (size_t i = 1; i < channel.getUserList().size(); i++) {
+		client_fd = channel.getUserList().at(i);
+		std::cout << "----------------------------client_fd: " << client_fd << std::endl;
+        userList += " " + _clients.at(client_fd)->getNickName();
+    }
+    return userList;
 }
 
 
@@ -72,22 +79,27 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 	std::map<std::string, Channel>::iterator it2;
 
 	_parseJoin(client_fd, name);
-	std::cout << "parserJOIN" << std::endl;
 	it2 = _channels.find(name);
 	if (it2 == _channels.end())
+		addChannel(Channel(name, "" , *_clients.at(client_fd)));
+	else
 	{
 		if (_channels.at(name).getkeyMask() == 1)
 		{
 			if (key != _channels.at(name).getPassword())
 				clerr(ERR_BADCHANNELKEY);
 		}
-		addChannel(Channel(name, key, *_clients.at(client_fd)));
-		std::cout << "A2" << std::endl;
-
+		// if mode invitation only, check if client is invited
+		if (_channels.at(name).getinviteMask() == 1)
+			if (!_channels.at(name).isInInviteList(client_fd))
+				clerr(ERR_INVITEONLYCHAN);
+		// if not banned
+		if (_channels.at(name).getbanMask() == 1)
+			if (_channels.at(name).isInBanList(client_fd))
+				clerr(ERR_BANNEDFROMCHAN);
+		_channels.at(name).addUser(client_fd);
 	}
-	std::cout << "Adding client " << _clients.at(client_fd)->getNickName() << " to channel " << name << std::endl;
-	// _channels.at(name).addClient(_clients.at(client_fd));
 	_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
-	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " " + _channels.at(name).getUserList());
+	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(_channels.at(name)));
 }
