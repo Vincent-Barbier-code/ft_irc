@@ -29,6 +29,7 @@ void Message::_initParsers(void) {
     _parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
+    _parsers["JOIN"] = &Message::_parseJOIN;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -178,4 +179,14 @@ void Message::_parseQUIT(void) {
         message += " " + space_splited[i];
     }
     _params.push_back(Param("message", message));
+}
+
+void Message::_parseJOIN(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+
+    if (space_splited.size() > 1)
+        _params.push_back(Param("channel", space_splited[1]));
+    
+    if (space_splited.size() > 2)
+        _params.push_back(Param("key", space_splited[2]));
 }
