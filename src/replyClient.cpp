@@ -30,6 +30,7 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		// case RPL_MOTD:
 		// 	message = "372 " + client.getNickName() + " :- " + client.getServer()->getMotd();
 		// 	break;
+		
 		case RPL_MOTDSTART:
 			message = "375 " + client.getServerName() + " :- Message of the day -";
 			break;
@@ -42,6 +43,7 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_BADCHANNELKEY:
 			message = "475 " + client.getNickName() + " :Cannot join channel wrong password";
 			break;
+
 	}
 	return (message);
 }

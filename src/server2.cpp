@@ -45,36 +45,49 @@ void    Server::addChannel(Channel const & channel) {
 }
 
 
-void Server::_join(int client_fd, std::vector<std::string> paramsV)
+void Server::_parseJoin(int client_fd, std::string const & name)
+{
+	if (name.size() == 0)
+		clerr(ERR_NEEDMOREPARAMS);
+	if (name[0] != '#' || name[0] != '&')
+		clerr(ERR_NOSUCHCHANNEL);
+	if (name.size() > 200)
+		clerr(ERR_NOSUCHCHANNEL);
+	if (name.find(',') != std::string::npos || name.find(' ') != std::string::npos)
+		clerr(ERR_NOSUCHCHANNEL);
+	// if mode invitation only, check if client is invited to do
+	if (_channels.at(name).getinviteMask() == 1)
+		if (!_channels.at(name).isInInviteList(client_fd))
+			clerr(ERR_INVITEONLYCHAN);
+	// if not banned to do
+	if (_channels.at(name).getbanMask() == 1)
+		if (_channels.at(name).isInBanList(client_fd))
+			clerr(ERR_BANNEDFROMCHAN);
+
+}
+
+
+void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
 	std::map<std::string, Channel>::iterator it2;
 
-	if (paramsV[0][0] != '#' || paramsV[0][0] != '&')
-		throw Client::ClientException(ERR_NOSUCHCHANNEL);
-	if (paramsV[0].size() > 50)
-		throw Client::ClientException(ERR_NOSUCHCHANNEL);
-	if (paramsV.size() == 0)
-		throw Client::ClientException(ERR_NEEDMOREPARAMS);
-	// if mode invitation only, check if client is invited to do
-	if (_channels.at(paramsV[0]).getinviteMask() == 1)
-		if (!_channels.at(paramsV[0]).isInInviteList(client_fd))
-			throw Client::ClientException(ERR_INVITEONLYCHAN);
-	// if not banned to do
-	if (_channels.at(paramsV[0]).getbanMask() == 1)
-		if (_channels.at(paramsV[0]).isInBanList(client_fd))
-			throw Client::ClientException(ERR_BANNEDFROMCHAN);
-	it2 = _channels.find(paramsV[0]);
+	_parseJoin(client_fd, name);
+	std::cout << "parserJOIN" << std::endl;
+	it2 = _channels.find(name);
 	if (it2 == _channels.end())
 	{
-		if (_channels.at(paramsV[0]).getkeyMask() == 1)
+		if (_channels.at(name).getkeyMask() == 1)
 		{
-			if (paramsV[1] != _channels.at(paramsV[0]).getPassword())
-				throw Client::ClientException(ERR_BADCHANNELKEY);
+			if (key != _channels.at(name).getPassword())
+				clerr(ERR_BADCHANNELKEY);
 		}
-		addChannel(Channel(paramsV[0], paramsV[1], *_clients.at(client_fd)));
+		addChannel(Channel(name, key, *_clients.at(client_fd)));
+		std::cout << "A2" << std::endl;
+
 	}
-	// _channels.at(paramsV[0]).addClient(_clients.at(client_fd));
-	_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + paramsV[0]);
-	_sendMsgToCLient(*_clients.at(client_fd), "RPL_TOPIC " + paramsV[0] + " " + _channels.at(paramsV[0]).getTopic());
-	_sendMsgToCLient(*_clients.at(client_fd), "RPL_NAMREPLY " + paramsV[0] + " " + _channels.at(paramsV[0]).getUserList());
+	std::cout << "Adding client " << _clients.at(client_fd)->getNickName() << " to channel " << name << std::endl;
+	// _channels.at(name).addClient(_clients.at(client_fd));
+	_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
+	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
+	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " " + _channels.at(name).getUserList());
 }

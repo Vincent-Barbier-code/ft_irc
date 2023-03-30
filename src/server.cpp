@@ -224,7 +224,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_deconnection(client_fd);
 			}
 			else if (cmd == "JOIN")
-				_join(client_fd, paramsV);
+				_join(client_fd, paramsV[0], paramsV[1]);
         }
 		catch(const Client::ClientException& e)
 		{
