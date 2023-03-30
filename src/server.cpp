@@ -68,6 +68,7 @@ void Server::start() {
 				_treatClientEvent((&ready_events)[i]);
 		}
 	}
+	stop();
 }
 
 void Server::_initEpoll() {
@@ -227,7 +228,6 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		{
 			_sendNumericReply(e.getCode(), *_clients.at(client_fd));
 		}
-
 	}
 }
 
@@ -260,6 +260,90 @@ Client 	*Server::_findClientByFd(int fd)
 	}
 	return (NULL);
 }
+
+bool	Server::_isClientOp(Channel const & chan, Client &client) {
+	Channel chan;
+
+	if (!chan.isClientInList(chan.getUserList(), client.getFd()))
+		clerr(ERR_NOTONCHANNEL);
+	if (!chan.isClientInList(chan.getOpList(), client.getFd()))
+		clerr(ERR_CHANOPRIVSNEEDED);
+	return (true);
+}
+
+//j'ai suppose que le parsing a verifie que mode[0] == '+' || '-'
+//RPL_CHANNELMODEIS a faire
+void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string *option, Client &client) {
+	std::map<std::string, Channel>::iterator it;
+	Channel chan;
+
+	it = _channels.find(chanName);
+	if (it == _channels.end())
+		clerr(ERR_NOSUCHCHANNEL);
+	chan = it->second;
+	if (_isClientOp(chan, client)) {
+		char c = mode[1];
+		switch (c) {
+			case 'o':
+				break;
+			case 'p':
+				chan.setPrivateMask(mode[0] == '+');
+				break;
+			case 's':
+				chan.setSecretMask(mode[0] == '+');
+				break;
+			case 'i':
+				chan.setInviteMask(mode[0] == '+');
+				break;
+			case 'm':
+				chan.setModeratedMask(mode[0] == '+');
+				break;
+			case 'l':
+				if (mode[0] == '+') {
+					chan.setUserLimitMask(true);
+					if (option) {
+						if (option[0].size())
+							if (!chan.setUserLimit(option[0]))
+								clerr(ERR_NEEDMOREPARAMS);
+					}
+					else
+						clerr(ERR_NEEDMOREPARAMS);
+				}
+				else
+					chan.setUserLimitMask(false);
+				break;
+			case 'b':
+
+				break;
+			case 'v':
+				chan.setVoiceMask(mode[0] == '+');
+				break;
+			case 'k':
+				if (mode[0] == '+') {
+					chan.setKeyMask(true);
+					if (option) {
+						if (option[0].size())
+							chan.setKey(option[0]);
+					}
+					else 
+						clerr(ERR_NEEDMOREPARAMS);
+				}
+				else
+					chan.setKeyMask(false);
+				break;
+			default :
+				clerr(ERR_UNKNOWNMODE);
+		}
+	}
+}
+
+void Server::mode(std::string const name, std::string const mode, std::string *option, Client &client) {
+	if (name[0] == '&' || name[0] == '#')
+		_modeChannel(name, mode, option, client);
+	else
+		client.modeUser(name, mode);
+}
+
 
 // --------------------- Setters -----------------
 

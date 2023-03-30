@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/29 01:25:40 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/30 19:05:00 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class  Server {
 	void 		stop(void);
 
 	void 		addChannel(Channel const & channel);
-
+	void		mode(std::string const name, std::string const mode, std::string *option, Client &client);
 
   private:
   	int							_server_fd;
@@ -67,6 +67,8 @@ class  Server {
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
 
+	void		_modeChannel(std::string const chanName, std::string const mode, std::string *option, Client &client);
+	bool		_isClientOp(Channel const & chan, Client &client);
 };
 #endif
 

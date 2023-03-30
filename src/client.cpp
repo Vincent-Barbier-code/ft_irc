@@ -1,6 +1,7 @@
 #include "client.hpp"
+#include "Channel.hpp"
 
-Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false), _isAuth(false)
+Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
 {
 }
 
@@ -75,4 +76,20 @@ void	Client::nick(std::string const nick, const Client *client)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 		_nickName = nick;
+}
+
+//Commande : MODE
+// Parametres 1 : <canal> {[+|-]|o|p|s|i|t|n|b|v} [<limite>] [<utilisateur>] [<masque de bannissement >]
+// Parametres 2 : <pseudonyme> {[+|-]i}
+void	Client::modeUser(std::string const name, std::string const mode) {
+	if (name != _nickName)
+		clerr(ERR_USERSDONTMATCH);
+	if (mode[1] == 'i') {
+		if (mode[0] == '+')
+			_isInvisible = true;
+		else
+			_isInvisible = false;
+	}
+	else
+		clerr(ERR_UMODEUNKNOWNFLAG);
 }

@@ -19,6 +19,7 @@ class  Client {
 	std::string						_currentChannel;
 	bool							_isRegistered;
 	bool							_isAuth;
+	bool							_isInvisible;
 	std::map<std::string, Channel &>	_channels;
 	void							_sendNumericReply(int code);
 	
@@ -52,7 +53,7 @@ class  Client {
 	void		nick(std::string const nick, Client const *client);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
-
+	void		modeUser(std::string const name, std::string const mode);
 	class ClientException : public std::exception {
 		private:
 			int _code;

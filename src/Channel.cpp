@@ -13,6 +13,7 @@ Channel::Channel() {
     _privateMask = false;
     _secretMask = false;
     _userLimitMask = false;
+	_moderatedMask = false;
 }
 
 Channel::Channel(std::string name, std::string const &topic, Client const &creator) {
@@ -28,6 +29,7 @@ Channel::Channel(std::string name, std::string const &topic, Client const &creat
     _privateMask = false;
     _secretMask = false;
     _userLimitMask = false;
+	_moderatedMask = false;
     _userList.push_back(creator.getFd());
     _operatorList.push_back(creator.getFd());
 }
@@ -50,10 +52,87 @@ Channel & Channel::operator=(Channel const & rhs) {
     return *this;
 }
 
+bool	Channel::isClientInList(std::vector<int> list, int fdClient) const {
+	std::vector<int>::iterator it = list.begin();
+	std::vector<int>::iterator ite = list.end();
+
+	while (it != ite) {
+		if (*it == fdClient)
+			return (true);
+		it++;
+	}
+	return (false);
+}
+
+//GETTERS
 std::string Channel::getName() const {
     return _name;
 }
 
 std::string Channel::getTopic() const {
     return _topic;
+}
+
+std::vector<int>	Channel::getUserList() const {
+	return _userList;
+}
+
+std::vector<int>	Channel::getBanList() const {
+	return _banList;
+}
+
+std::vector<int>	Channel::getOpList() const {
+	return _operatorList;
+}
+
+//SETTERS
+
+void	Channel::setBanMask(bool mode) {
+	_banMask = mode;
+}
+
+void	Channel::setInviteMask(bool mode) {
+	_inviteMask = mode;
+}
+
+void	Channel::setVoiceMask(bool mode) {
+	_voiceMask = mode;
+}
+
+void	Channel::setKeyMask(bool mode) {
+	_keyMask = mode;
+}
+
+void	Channel::setPrivateMask(bool mode) {
+	_privateMask = mode;
+}
+
+void	Channel::setSecretMask(bool mode) {
+	_secretMask = mode;
+}
+
+void	Channel::setUserLimitMask(bool mode) {
+	_userLimitMask = mode;
+}
+
+void	Channel::setKey(std::string key) {
+	_password = key;
+}
+
+bool	Channel::setUserLimit(std::string limit) {
+	unsigned long int tmp_nb;
+	int	i = 0;
+	
+	while(limit[i]) {
+		if (!isdigit(limit[i]))
+			return (false);
+		i++;
+	}
+	if (i > 10)
+		return (false);
+	tmp_nb = atoi(limit.c_str());
+	if (tmp_nb > 2147483647)
+		return (false);
+	_userLimit = tmp_nb;
+	return (true);
 }
