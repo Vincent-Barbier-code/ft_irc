@@ -199,6 +199,7 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
+	Client const & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
 		//std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
@@ -206,7 +207,10 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::string const & cmd = it->getCmd();
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
-			if (cmd == "NICK") {
+			if (it->getErr()) {
+				clerr(it->getErr());
+			}
+			else if (cmd == "NICK") {
 
 				_clients[client_fd]->nick(paramsV[0], _findClientByNickName(paramsV[0]));
 			}
@@ -220,8 +224,6 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_clients[client_fd]->pass(paramsV[0], getPass());
 			}
 			else if (cmd == "QUIT") {
-				if (it->getErr())
-					clerr(it->getErr());
 				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
 				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
 				// il faudra envoyer le message dans les canaux ou le client est present
@@ -231,6 +233,9 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				//addChannel(Channel("#general", "Welcome to the general channel", *_clients.at(client_fd)));
 				//addChannel(Channel("#zizi", "Welcome to zizi channel", *_clients.at(client_fd)));
 				_list(*_clients.at(client_fd));
+			}
+			else if (cmd == "PRIVMSG") {
+				_sendPrivateMsg(client, paramsV[0], paramsV[1]);
 			}
         }
 		catch(const Client::ClientException& e)

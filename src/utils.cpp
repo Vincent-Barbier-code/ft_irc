@@ -20,6 +20,19 @@ std::vector<std::string>    ke_split(std::string const & str, std::string const 
     return vec;
 }
 
+std::vector<std::string> ke_nSplit(std::string const & str, std::string const & pattern, size_t maxEl) {
+    if (maxEl == 0)
+        throw std::invalid_argument("n must be greater than 0");
+    std::vector<std::string> splited = ke_split(str, pattern);
+    maxEl = maxEl > splited.size() ? splited.size() : maxEl;
+    // i want to concat the last n elements of splited
+    for (size_t i = maxEl; i < splited.size(); i++) {
+        splited[maxEl - 1] += pattern + splited[i];
+    }
+    splited.resize(maxEl);
+    return splited;
+}
+
 
 std::string shrinkNBlank(std::string const & str, size_t n /* = std::string::npos*/) {
 

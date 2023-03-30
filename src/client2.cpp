@@ -30,7 +30,7 @@ void Client::user(std::string const & username, std::string const & hostname,
     std::cout << "nickname: " << _nickName << std::endl; 
 }
 
-std::string Client::getHostName() const{
+std::string Client::getHostName() const {
     return _hostName;
 }
 
@@ -38,6 +38,23 @@ std::string Client::getServerName() const {
     return _serverName;
 }
 
-std::string Client::getRealName() const{
+std::string Client::getRealName() const {
     return _realName;
+}
+
+
+
+void Client::_sendMsgToCLient(Client const & client, std::string const & msg) {
+    std::string data = ":" + client.getNickName() + " " + msg + "\r\n";
+
+    std::cout << BLUE << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
+    Server::sendData(client, data);
+}
+
+void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
+    
+}
+
+void Client::sendPrivateMsg(Channel const & channel, std::string const & msg) const {
+
 }

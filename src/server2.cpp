@@ -71,3 +71,16 @@ void Server::_sendListEnd(Client const & client) {
     std::string msg = itostr(RPL_LISTEND) + " " + client.getNickName() + " End of /LIST";
     _sendMsgToCLient(client, msg);
 }
+
+void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const {
+    std::cout << "sendMsg: " << msg << std::endl;
+
+    std::vector<std::string> destsList = ke_split(dests, std::string(","));
+    for (size_t i = 0; i < destsList.size(); i++) {
+        if (destsList[i][0] == '#' || destsList[i][0] == '&') {
+            sender.sendPrivateMsg(_channels.at(destsList[i]), msg);
+        } else {
+            sender.sendPrivateMsg(*_clients.at(sender.getFd()), msg);
+        }
+    }
+}

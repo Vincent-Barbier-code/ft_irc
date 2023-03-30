@@ -75,6 +75,7 @@ class Message {
         void _parseUSER();
         void _parseQUIT();
         void _parseLIST();
+        void _parsePRIVMSG();
 
 };
 

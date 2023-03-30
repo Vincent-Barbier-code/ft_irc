@@ -20,7 +20,10 @@ class  Client {
 	bool							_isRegistered;
 	bool							_isAuth;
 	std::map<std::string, Channel &>	_channels;
-	//void							_sendNumericReply(int code);
+
+
+	void _sendMsgToCLient(Client const & client, std::string const & msg);
+	
 	
   public:
 	Client();
@@ -52,6 +55,10 @@ class  Client {
 	void		nick(std::string const nick, Client const *client);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
+	
+	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
+	void sendPrivateMsg(Channel const & channel, std::string const & msg) const;
+	
 
 	class ClientException : public std::exception {
 		private:

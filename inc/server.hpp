@@ -72,6 +72,8 @@ class  Server {
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
+	
+	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 
 };
 #endif

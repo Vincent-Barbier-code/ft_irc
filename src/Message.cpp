@@ -31,6 +31,7 @@ void Message::_initParsers(void) {
     _parsers["NICK"] = &Message::_parseNICK;
     _parsers["QUIT"] = &Message::_parseQUIT;
     _parsers["LIST"] = &Message::_parseLIST;
+    _parsers["PRIVMSG"] = &Message::_parsePRIVMSG;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -198,4 +199,17 @@ void Message::_parseLIST(void) {
     //A bientôt
     //Bisous
     //Je t'aime
+}
+
+void Message::_parsePRIVMSG(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+
+    if (space_splited.size() < 3 || space_splited[2][0] != ':') {
+        std::cerr << "Invalid PRIVMSG message" << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
+        return ;
+    }
+
+    _params.push_back(Param("destinations", space_splited[1]));
+    _params.push_back(Param("message", space_splited[2].substr(1)));
 }
