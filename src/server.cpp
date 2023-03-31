@@ -262,8 +262,6 @@ Client 	*Server::_findClientByFd(int fd)
 }
 
 bool	Server::_isClientOp(Channel const & chan, Client &client) {
-	Channel chan;
-
 	if (!chan.isClientInList(chan.getUserList(), client.getFd()))
 		clerr(ERR_NOTONCHANNEL);
 	if (!chan.isClientInList(chan.getOpList(), client.getFd()))
@@ -271,12 +269,75 @@ bool	Server::_isClientOp(Channel const & chan, Client &client) {
 	return (true);
 }
 
-//j'ai suppose que le parsing a verifie que mode[0] == '+' || '-'
+void	Server::_modeO(Channel & chan, std::string const mode, std::string const option) {
+	std::vector<std::string> options;
+	Client	*client_to_op;
+
+	options = ke_split(option, ",");
+	if (options.size() > 3)
+		clerr(ERR_UNKNOWNMODE);
+	std::vector<std::string>::iterator it;
+	for (it = options.begin(); it != options.end(); it++) {
+		if (!(*it).size())
+			clerr(ERR_NEEDMOREPARAMS);
+		client_to_op = _findClientByNickName(*it);
+		if (!client_to_op)
+			clerr(ERR_NOSUCHNICK);
+		if (mode[0] == '+')
+			chan.addClientToList(chan.getOpList(), client_to_op->getFd());
+		else 
+			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd());
+	}
+}
+
+void	Server::_modeB(Channel & chan, std::string const mode, std::string const option) {
+	std::vector<std::string> options;
+	Client	*client_to_ban;
+
+	options = ke_split(option, ",");
+	if (options.size() > 3)
+		clerr(ERR_UNKNOWNMODE);
+	std::vector<std::string>::iterator it;
+	for (it = options.begin(); it != options.end(); it++) {
+		if (!(*it).size())
+			clerr(ERR_NEEDMOREPARAMS);
+		client_to_ban = _findClientByNickName(*it);
+		if (!client_to_ban)
+			clerr(ERR_NOSUCHNICK);
+		if (mode[0] == '+') {
+			chan.addClientToList(chan.getBanList(), client_to_ban->getFd());
+			//if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd()))
+			//	KICK_USER
+		}
+		else 
+			chan.rmClientFromList(chan.getBanList(), client_to_ban->getFd());
+	}
+}
+
+void	Server::_modeK(Channel & chan, std::string const mode, std::string const option) {
+	for (int i = 0; option[i]; i++)
+		if (isspace(option[i]))
+			clerr(ERR_UNKNOWNMODE);
+	if (mode[0] == '+') {
+		chan.setKeyMask(true);
+		if (option.size())
+			chan.setKey(option);
+		else 
+			clerr(ERR_NEEDMOREPARAMS);
+	}
+	else
+		chan.setKeyMask(false);
+}
+
 //RPL_CHANNELMODEIS a faire
-void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string *option, Client &client) {
+void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string const option, Client &client) {
 	std::map<std::string, Channel>::iterator it;
 	Channel chan;
 
+	if (mode.size() && (!(mode[0] == '+') || !(mode[0] == '-')))
+		clerr(ERR_UNKNOWNMODE);
+	if (mode.size() > 2)
+		clerr(ERR_UNKNOWNMODE);
 	it = _channels.find(chanName);
 	if (it == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
@@ -285,6 +346,7 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		char c = mode[1];
 		switch (c) {
 			case 'o':
+				_modeO(chan, mode, option);
 				break;
 			case 'p':
 				chan.setPrivateMask(mode[0] == '+');
@@ -301,10 +363,9 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 			case 'l':
 				if (mode[0] == '+') {
 					chan.setUserLimitMask(true);
-					if (option) {
-						if (option[0].size())
-							if (!chan.setUserLimit(option[0]))
-								clerr(ERR_NEEDMOREPARAMS);
+					if (option.size()) {
+						if (!chan.setUserLimit(option))
+							clerr(ERR_NEEDMOREPARAMS);
 					}
 					else
 						clerr(ERR_NEEDMOREPARAMS);
@@ -313,23 +374,13 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 					chan.setUserLimitMask(false);
 				break;
 			case 'b':
-
+				_modeB(chan, mode, option);
 				break;
 			case 'v':
 				chan.setVoiceMask(mode[0] == '+');
 				break;
 			case 'k':
-				if (mode[0] == '+') {
-					chan.setKeyMask(true);
-					if (option) {
-						if (option[0].size())
-							chan.setKey(option[0]);
-					}
-					else 
-						clerr(ERR_NEEDMOREPARAMS);
-				}
-				else
-					chan.setKeyMask(false);
+				
 				break;
 			default :
 				clerr(ERR_UNKNOWNMODE);
@@ -337,7 +388,7 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 	}
 }
 
-void Server::mode(std::string const name, std::string const mode, std::string *option, Client &client) {
+void Server::mode(std::string const name, std::string const mode, std::string option, Client &client) {
 	if (name[0] == '&' || name[0] == '#')
 		_modeChannel(name, mode, option, client);
 	else

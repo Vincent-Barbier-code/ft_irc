@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/30 19:05:00 by mvue             ###   ########.fr       */
+/*   Updated: 2023/03/31 18:42:48 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class  Server {
 	void 		stop(void);
 
 	void 		addChannel(Channel const & channel);
-	void		mode(std::string const name, std::string const mode, std::string *option, Client &client);
+	void		mode(std::string const name, std::string const mode, std::string option, Client &client);
 
   private:
   	int							_server_fd;
@@ -67,7 +67,10 @@ class  Server {
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
 
-	void		_modeChannel(std::string const chanName, std::string const mode, std::string *option, Client &client);
+	void		_modeO(Channel & chan, std::string const mode, std::string option);
+	void		_modeB(Channel & chan, std::string const mode, std::string option);
+	void		_modeK(Channel & chan, std::string const mode, std::string const option);
+	void		_modeChannel(std::string const chanName, std::string const mode, std::string option, Client &client);
 	bool		_isClientOp(Channel const & chan, Client &client);
 };
 #endif

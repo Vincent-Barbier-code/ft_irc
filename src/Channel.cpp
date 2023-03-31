@@ -64,6 +64,27 @@ bool	Channel::isClientInList(std::vector<int> list, int fdClient) const {
 	return (false);
 }
 
+bool	Channel::addClientToList(std::vector<int> list, int fdClient) {
+	if (isClientInList(list, fdClient))
+		return (false);
+	list.push_back(fdClient);
+	return (true);
+}
+
+bool	Channel::rmClientFromList(std::vector<int> list, int fdClient) {
+	std::vector<int>::iterator it = list.begin();
+	std::vector<int>::iterator ite = list.end();
+
+	while (it != ite) {
+		if (*it == fdClient) {
+			list.erase(it);
+			return (true);
+		}
+		it++;
+	}
+	return (false);
+}
+
 //GETTERS
 std::string Channel::getName() const {
     return _name;
@@ -88,6 +109,10 @@ std::vector<int>	Channel::getOpList() const {
 //SETTERS
 
 void	Channel::setBanMask(bool mode) {
+	_banMask = mode;
+}
+
+void	Channel::setModeratedMask(bool mode) {
 	_banMask = mode;
 }
 

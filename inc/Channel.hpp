@@ -23,7 +23,8 @@ class	Channel {
 		std::vector<int>	getBanList() const;
 		std::vector<int>	getOpList() const;
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
-		
+		bool				addClientToList(std::vector<int> list, int fdClient);
+		bool				rmClientFromList(std::vector<int> list, int fdClient);
 		//setters
 		void				setBanMask(bool mode);
 		void				setInviteMask(bool mode);
@@ -51,7 +52,7 @@ class	Channel {
 		bool		_privateMask; //when set, channel topic won't be displayed in the channel list 
 		bool		_secretMask; //when set, channel name won't be displayed in the channel list nor in the WHO list
 		bool		_userLimitMask; //when set, only users up to the user limit can join
-		bool		_moderatedMask;
+		bool		_moderatedMask; //when set, only operators can speak
 		//Lists
 		std::vector<int>	_userList; //list of users in the channel
 		std::vector<int>	_banList; //list of users banned from the channel
