@@ -76,6 +76,8 @@ class Message {
         void _parseQUIT();
         void _parseLIST();
         void _parsePRIVMSG();
+        void _parseKICK();
+        void _parseINVITE();
 
 };
 

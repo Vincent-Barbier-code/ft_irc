@@ -32,6 +32,8 @@ void Message::_initParsers(void) {
     _parsers["QUIT"] = &Message::_parseQUIT;
     _parsers["LIST"] = &Message::_parseLIST;
     _parsers["PRIVMSG"] = &Message::_parsePRIVMSG;
+    _parsers["KICK"] = &Message::_parseKICK;
+    _parsers["INVITE"] = &Message::_parseINVITE;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -220,4 +222,39 @@ void Message::_parsePRIVMSG(void) {
 
     _params.push_back(Param("destinations", space_splited[1]));
     _params.push_back(Param("message", space_splited[2].substr(1)));
+}
+
+void Message::_parseINVITE(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+
+    if (space_splited.size() == 1) {
+        _err = ERR_NEEDMOREPARAMS;
+        std::cerr << RED "Invalid INVITE NO PARAMS" WHITE << std::endl;
+    }
+    if (space_splited.size() == 2) {
+        _err = ERR_NEEDMOREPARAMS;
+        std::cerr << RED "Invalid INVITE NO CANAL" WHITE << std::endl;
+    }
+
+    if (_err) return;
+
+    _params.push_back(Param("nickname", space_splited[1]));
+    _params.push_back(Param("channel", space_splited[2]));
+}
+
+void Message::_parseKICK(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 4);
+
+    if (space_splited.size() < 3) {
+
+        std::string strerr = "Invalid KICK ";
+        _err               = ERR_NEEDMOREPARAMS;
+        strerr += space_splited.size() == 1 ? "NO PARAMS" : "NO USER";
+        return;
+    }
+
+    _params.push_back(Param("channel", space_splited[1]));
+    _params.push_back(Param("nickname", space_splited[2]));
+    if (space_splited.size() == 4)
+        _params.push_back(Param("comment", space_splited[3].substr(1)));
 }
