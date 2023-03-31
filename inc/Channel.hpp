@@ -16,6 +16,7 @@ class	Channel {
 		Channel(std::string name, std::string const &topic, Client const &creator); 
 
 		Channel & operator=(Channel const & rhs);
+		~Channel();
 
 		//getters
 		std::string		getName() const;
@@ -27,9 +28,14 @@ class	Channel {
 		std::vector<int> getUserList() const ;
 
 
+		int 		isInUserList(int fd) const;
 		int			isInInviteList(int fd) const;
 		int 		isInBanList(int fd) const;
+		int			isInOperatorList(int fd) const;
 		void		addUser(int fd);
+		void		addInvite(int fd);
+		void		addBan(int fd);
+		void		addOperator(int fd);
 		void		removeUser(int fd);
 		//creator needed to set the first operator
 	private :

@@ -9,18 +9,18 @@
 class  Client {
 
   private:
-	int								_fd;
-	struct sockaddr_in				_addr;
-	std::string						_nickName;
-	std::string						_userName;
-	std::string 					_hostName;
-	std::string 					_serverName;
-	std::string						_realName;
-	std::string						_currentChannel;
-	bool							_isRegistered;
-	bool							_isAuth;
+	int									_fd;
+	struct sockaddr_in					_addr;
+	std::string							_nickName;
+	std::string							_userName;
+	std::string 						_hostName;
+	std::string 						_serverName;
+	std::string							_realName;
+	std::string							_currentChannel;
+	bool								_isRegistered;
+	bool								_isAuth;
 	std::map<std::string, Channel &>	_channels;
-	void							_sendNumericReply(int code);
+	void								_sendNumericReply(int code);
 	
   public:
 	Client();
@@ -34,6 +34,7 @@ class  Client {
 	std::string getHostName() const; 
 	std::string getServerName() const;
 	std::string getRealName() const;
+	std::string	setNickName(std::string const &nickName);
 	bool		isConnected() const;
 	bool		isRegistered() const;
 
@@ -49,7 +50,6 @@ class  Client {
 	// void 			disconnect();
 
 	void		pass(std::string const &clientPass, std::string const &serverPass);
-	void		nick(std::string const nick, Client const *client);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 

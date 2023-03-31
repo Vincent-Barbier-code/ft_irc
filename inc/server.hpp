@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/30 20:06:09 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/03/31 18:50:52 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ class  Server {
 	//channel
 	void    	_createChannel(std::string const & channelName, std::string const & topic, Client const & client);
 	void		_parseJoin(int client_fd, std::string const & name);
+	void		_nick(int client_fd, std::string const nick);
 	void		_join(int client_fd, std::string const & name, std::string const & key);
+	void 		_kick(std::string const & channelName, int client_fd, std::string const & comment);
+	void		_invite(int client_fd, std::string const & nickName, std::string const & channelName);
 	std::string _getUserNameList(Channel channel) const;
 };
 #endif

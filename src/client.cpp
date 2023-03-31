@@ -37,6 +37,12 @@ std::string Client::getNickName() const
 	return (this->_nickName);
 }
 
+std::string Client::setNickName(std::string const &nickName)
+{
+	this->_nickName = nickName;
+	return (this->_nickName);
+}
+
 bool Client::isConnected() const {
 	int error = 0;
 	socklen_t len = sizeof(error);
@@ -63,16 +69,4 @@ void	Client::pass(std::string const &clientPass, std::string const &serverPass) 
 	clerr(ERR_PASSWDMISMATCH);
 }
 
-//Commande : NICK
-// Paramètres : <nicknamenyme>
-void	Client::nick(std::string const nick, const Client *client)
-{
-	if (client)
-		clerr(ERR_NICKNAMEINUSE);
-	else if (MAX_NICKNAME_LENGTH > 9)
-		clerr(ERR_ERRONEUSNICKNAME);
-	else if (!nick.size())
-		clerr(ERR_NONICKNAMEGIVEN);
-	else
-		_nickName = nick;
-}
+

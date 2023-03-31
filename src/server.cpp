@@ -118,12 +118,11 @@ void Server::_acceptNewConnection(void) {
 
 int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname)
 {
-	// verifier si nickname deja pris et si oui, en demander un autre au client
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
 
-	std::cout << "Client connected " << _clients.at(client_fd)->getNickName() << std::endl;
-	std::cout << "fd = " << client_fd << std::endl;
-	std::cout << "nbr client connecte = " << _clients.size() << std::endl;
+	// std::cout << "Client connected " << _clients.at(client_fd)->getNickName() << std::endl;
+	// std::cout << "fd = " << client_fd << std::endl;
+	// std::cout << "nbr client connecte = " << _clients.size() << std::endl;
 	return (0);
 }
 
@@ -213,7 +212,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
 			if (cmd == "NICK")
-				_clients.at(client_fd)->nick(paramsV[0], _findClientByNickName(paramsV[0]));
+				_nick(client_fd, paramsV[0]);
 			else if (cmd == "USER")
 			{
 				_clients.at(client_fd)->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
@@ -221,7 +220,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			}
 			else if (cmd == "PASS")
 				_clients.at(client_fd)->pass(paramsV[0], getPass());
-			else if (cmd == "QUIT") // enlever le 0
+			else if (cmd == "QUIT")
 			{
 				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
 				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
@@ -230,6 +229,10 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			}
 			else if (cmd == "JOIN")
 				_join(client_fd, paramsV[0], paramsV[1]);
+			else if (cmd == "KICK")
+				_kick(paramsV[0], client_fd, paramsV[1]);
+			else if(cmd == "INVITE")
+				_invite(client_fd, paramsV[0], paramsV[1]);
         }
 		catch(const Client::ClientException& e)
 		{

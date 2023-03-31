@@ -50,6 +50,9 @@ Channel & Channel::operator=(Channel const & rhs) {
     return *this;
 }
 
+Channel::~Channel() {
+}
+
 std::string Channel::getName() const {
     return _name;
 }
@@ -78,6 +81,18 @@ void Channel::addUser(int fd) {
     _userList.push_back(fd);
 }
 
+void Channel::addOperator(int fd) {
+    _operatorList.push_back(fd);
+}
+
+void Channel::addBan(int fd) {
+    _banList.push_back(fd);
+}
+
+void Channel::addInvite(int fd) {
+    _inviteList.push_back(fd);
+}
+
 void Channel::removeUser(int fd) {
     for (std::vector<int>::iterator it = _userList.begin(); it != _userList.end(); it++) {
         if (*it == fd) {
@@ -89,6 +104,22 @@ void Channel::removeUser(int fd) {
 
 int Channel::isInInviteList(int fd) const {
     for (std::vector<int>::const_iterator it = _inviteList.begin(); it != _inviteList.end(); it++) {
+        if (*it == fd)
+            return 1;
+    }
+    return 0;
+}
+
+int Channel::isInUserList(int fd) const {
+    for (std::vector<int>::const_iterator it = _userList.begin(); it != _userList.end(); it++) {
+        if (*it == fd)
+            return 1;
+    }
+    return 0;
+}
+
+int Channel::isInOperatorList(int fd) const {
+    for (std::vector<int>::const_iterator it = _operatorList.begin(); it != _operatorList.end(); it++) {
         if (*it == fd)
             return 1;
     }
