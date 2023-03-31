@@ -19,9 +19,9 @@
 #include "utils.hpp"
 #include "client.hpp"
 #include "Message.hpp"
-#include <iomanip>
 #include "Channel.hpp"
-
+#include <iomanip>
+#include <list>
 
 class Client;
 class Channel;
@@ -31,6 +31,9 @@ class  Server {
   public:
 	
 	static void	sendData(Client const & client, std::string const & data);
+
+	// template <typename clients_ctn, typename fds_ctn>
+	static std::list<Client *> filterClientsByFd(std::map<int, Client *> const &clients, std::vector<int> const &fds);
 
 	Server(int port, std::string password);
 	~Server();
@@ -59,7 +62,7 @@ class  Server {
 	void		_treatClientEvent(epoll_event const & client_ev);
 	void		_deconnection(int client_fd);
 	Client		*_findClientByFd(int fd);
-	Client		*_findClientByNickName(std::string const nickName);
+	Client		*_findClientByNickName(std::string const nickName) const;
 	int			_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void		_execRawMsgs(std::string const & raw_msgs, int client_fd);
 

@@ -50,6 +50,14 @@ Channel & Channel::operator=(Channel const & rhs) {
     return *this;
 }
 
+bool Channel::operator==(Channel const & rhs) const {
+    return _name == rhs._name;
+}
+
+bool Channel::operator==(std::string const & rhs) const {
+    return _name == rhs;
+}
+
 std::string Channel::getName() const {
     return _name;
 }
@@ -60,4 +68,12 @@ std::string Channel::getTopic() const {
 
 std::vector<int> Channel::getUserList() const {
     return _userList;
+}
+
+std::vector<int> Channel::getOperatorList() const {
+    return _operatorList;
+}
+
+bool Channel::isModerated() const {
+    return false;
 }

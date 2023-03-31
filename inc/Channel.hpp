@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "client.hpp"
+#include "server.hpp"
 
 class Client;
 
@@ -15,11 +16,16 @@ class	Channel {
 		Channel(std::string name, std::string const &topic, Client const &creator); 
 
 		Channel & operator=(Channel const & rhs);
+		bool operator==(Channel const & rhs) const;
+		bool operator==(std::string const & rhs) const;
 
 		//getters
-		std::string		getName() const;
-		std::string		getTopic() const;
+		std::string			getName() const;
+		std::string			getTopic() const;
 		std::vector<int>	getUserList() const;
+		std::vector<int>    getOperatorList() const;
+
+		bool                isModerated() const;
 		
 		//creator needed to set the first operator
 	private :

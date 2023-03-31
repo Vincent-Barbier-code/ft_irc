@@ -3,6 +3,9 @@
 #define CLIENT_HPP
 # pragma once
 
+#include <list>
+#include <algorithm>
+
 #include "macro.hpp"
 #include "server.hpp"
 #include "Channel.hpp"
@@ -22,13 +25,18 @@ class  Client {
 	std::map<std::string, Channel &>	_channels;
 
 
-	void _sendMsgToCLient(Client const & client, std::string const & msg);
+	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
 	
 	
   public:
+
+	typedef std::map<int, Client *> client_map;
+
 	Client();
 	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
 	~Client();
+
+	bool operator==(Client const & rhs) const;
 	
 	int 		getFd() const;
 	sockaddr_in getAddr();
@@ -57,7 +65,7 @@ class  Client {
                   std::string const & servername, std::string realname);
 	
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
-	void sendPrivateMsg(Channel const & channel, std::string const & msg) const;
+	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 	
 
 	class ClientException : public std::exception {

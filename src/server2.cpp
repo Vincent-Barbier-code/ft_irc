@@ -76,11 +76,18 @@ void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, s
     std::cout << "sendMsg: " << msg << std::endl;
 
     std::vector<std::string> destsList = ke_split(dests, std::string(","));
-    for (size_t i = 0; i < destsList.size(); i++) {
-        if (destsList[i][0] == '#' || destsList[i][0] == '&') {
-            sender.sendPrivateMsg(_channels.at(destsList[i]), msg);
+    if (destsList.size() > 30)
+        clerr(ERR_TOOMANYTARGETS);
+    for (std::vector<std::string>::const_iterator dst = destsList.begin(); dst != destsList.end(); ++dst) {
+        if (dst->at(0) == '#' || dst->at(0) == '&') {
+            if (_channels.find(*dst) == _channels.end())
+                clerr(ERR_NOSUCHNICK);
+            sender.sendPrivateMsg(_channels.at(*dst), msg, _clients);
         } else {
-            sender.sendPrivateMsg(*_clients.at(sender.getFd()), msg);
+            Client * client = _findClientByNickName(*dst);
+            if (client == NULL)
+                clerr(ERR_NOSUCHNICK);
+            sender.sendPrivateMsg(*client, msg);
         }
     }
 }

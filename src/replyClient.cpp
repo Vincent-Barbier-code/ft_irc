@@ -39,6 +39,23 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NONICKNAMEGIVEN:
 			message = "431 :No nickname given";
 			break;
+		case ERR_NORECIPIENT:
+			message = "411 :No recipient";
+			break;
+		case ERR_NOTEXTTOSEND:
+			message = "412 :No text to send";
+			break;
+		case ERR_CANNOTSENDTOCHAN:
+			message = "404 " + client.getNickName() + " :Cannot send to channel";
+			break;
+		case ERR_NOSUCHNICK:
+			message = "401 " + client.getNickName() + " :No such nick/channel";
+			break;
+		case ERR_TOOMANYTARGETS:
+			message = "407 " + client.getNickName() + " :Too many targets";
+			break;
+		
+		
 	}
 	return (message);
 }

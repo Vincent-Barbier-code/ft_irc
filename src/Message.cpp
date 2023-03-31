@@ -204,11 +204,19 @@ void Message::_parseLIST(void) {
 void Message::_parsePRIVMSG(void) {
     std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
 
-    if (space_splited.size() < 3 || space_splited[2][0] != ':') {
-        std::cerr << "Invalid PRIVMSG message" << std::endl;
+    if (space_splited.size() == 1) {
         _err = ERR_NEEDMOREPARAMS;
-        return ;
+        std::cerr << RED "Invalid PRIVMSG NO PARAMS" WHITE << std::endl;
     }
+    if (space_splited.size() == 2) {
+        _err = space_splited[1][0] == ':' ? ERR_NORECIPIENT : ERR_NOTEXTTOSEND;
+        if (_err == ERR_NORECIPIENT)
+            std::cerr << RED "Invalid PRIVMSG NO DESTINATION" WHITE << std::endl;
+        else
+            std::cerr << RED "Invalid PRIVMSG NO TEXTTOSEND" WHITE << std::endl;
+    }
+
+    if (_err) return;
 
     _params.push_back(Param("destinations", space_splited[1]));
     _params.push_back(Param("message", space_splited[2].substr(1)));

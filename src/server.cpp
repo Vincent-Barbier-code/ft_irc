@@ -248,10 +248,10 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 // --------------------- Find_client -----------------
 
-Client 	*Server::_findClientByNickName(std::string const nickName)
+Client 	*Server::_findClientByNickName(std::string const nickName) const
 {
-	std::map<int, ClientPtr>::iterator it = _clients.begin();
-	std::map<int, ClientPtr>::iterator ite = _clients.end();
+	std::map<int, ClientPtr>::const_iterator it = _clients.begin();
+	std::map<int, ClientPtr>::const_iterator ite = _clients.end();
 
 	while(it != ite)
 	{
