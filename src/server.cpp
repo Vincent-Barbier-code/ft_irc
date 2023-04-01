@@ -204,6 +204,7 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
+	Client const & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
 		//std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
@@ -211,11 +212,15 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 		std::string const & cmd = it->getCmd();
 		std::vector<std::string> paramsV = it->getParamsValues();
 		try {
-			if (cmd == "NICK")
+            if (it->getErr()) {
+				clerr(it->getErr());
+			}
+			else if (cmd == "NICK")
 				_nick(client_fd, paramsV[0]);
 			else if (cmd == "USER")
 			{
 				_clients.at(client_fd)->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
+
 				_sendWelcomeMsg(*_clients.at(client_fd));
 			}
 			else if (cmd == "PASS")
@@ -233,6 +238,14 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_kick(paramsV[0], client_fd, paramsV[1]);
 			else if(cmd == "INVITE")
 				_invite(client_fd, paramsV[0], paramsV[1]);
+			else if (cmd == "LIST") {
+				//addChannel(Channel("#general", "Welcome to the general channel", *_clients.at(client_fd)));
+				//addChannel(Channel("#zizi", "Welcome to zizi channel", *_clients.at(client_fd)));
+				_list(*_clients.at(client_fd));
+			}
+			else if (cmd == "PRIVMSG") {
+				_sendPrivateMsg(client, paramsV[0], paramsV[1]);
+			}
         }
 		catch(const Client::ClientException& e)
 		{
@@ -244,10 +257,10 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 // --------------------- Find_client -----------------
 
-Client 	*Server::_findClientByNickName(std::string const nickName)
+Client 	*Server::_findClientByNickName(std::string const nickName) const
 {
-	std::map<int, ClientPtr>::iterator it = _clients.begin();
-	std::map<int, ClientPtr>::iterator ite = _clients.end();
+	std::map<int, ClientPtr>::const_iterator it = _clients.begin();
+	std::map<int, ClientPtr>::const_iterator ite = _clients.end();
 
 	while(it != ite)
 	{

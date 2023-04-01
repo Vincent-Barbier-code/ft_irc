@@ -7,6 +7,7 @@
 #include <string>
 #include "client.hpp"
 #include "utils.hpp"
+#include "server.hpp"
 
 class Client;
 
@@ -16,7 +17,10 @@ class	Channel {
 		Channel(std::string name, std::string const &topic, Client const &creator); 
 
 		Channel & operator=(Channel const & rhs);
-		~Channel();
+        ~Channel();
+		bool operator==(Channel const & rhs) const;
+		bool operator==(std::string const & rhs) const;
+		
 
 		//getters
 		std::string		getName() const;
@@ -37,6 +41,13 @@ class	Channel {
 		void		addBan(int fd);
 		void		addOperator(int fd);
 		void		removeUser(int fd);
+		std::string			getName() const;
+		std::string			getTopic() const;
+		std::vector<int>	getUserList() const;
+		std::vector<int>    getOperatorList() const;
+
+		bool                isModerated() const;
+		
 		//creator needed to set the first operator
 	private :
 	//variables

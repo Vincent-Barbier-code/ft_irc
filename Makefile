@@ -26,6 +26,7 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/replyClient.cpp \
 		$(SRCDIR)/server2.cpp \
 		$(SRCDIR)/cmdServer.cpp \
+		$(SRCDIR)/server3.cpp \
 		$(SRCDIR)/Channel.cpp \
 
 

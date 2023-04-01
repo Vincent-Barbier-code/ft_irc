@@ -30,6 +30,11 @@ void Message::_initParsers(void) {
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
     _parsers["JOIN"] = &Message::_parseJOIN;
+    _parsers["QUIT"] = &Message::_parseQUIT;
+    _parsers["LIST"] = &Message::_parseLIST;
+    _parsers["PRIVMSG"] = &Message::_parsePRIVMSG;
+    _parsers["KICK"] = &Message::_parseKICK;
+    _parsers["INVITE"] = &Message::_parseINVITE;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -56,6 +61,7 @@ Message::Message(std::string const & raw_msg) {
     _raw = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(_rawWPrefix.find(' ') + 1) : _rawWPrefix;
     _prefix = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(1, _rawWPrefix.find(' ') - 1) : "";
     _cmd = _raw.substr(0, _raw.find(' '));
+    _err = 0;
     _initParams();
 }
 
@@ -111,6 +117,10 @@ std::vector<std::string> Message::getParamsValues() const {
     for (size_t i = 0; i < _params.size(); i++)
         values.push_back(_params[i].getValue());
     return values;
+}
+
+int Message::getErr(void) const {
+    return _err;
 }
 
 // --------------------- Members other --------------------------
@@ -169,9 +179,10 @@ void Message::_parseUSER(void) {
 void Message::_parseQUIT(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
     if (space_splited.size() == 1)
-        return ; // no message after QUIT command, so no need to add a param with
+        return ; // no message after QUIT command
     if (space_splited[1][0] != ':') {
         std::cout << "Invalid QUIT message" << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
         return ;
     }
     std::string message = space_splited[1].substr(1);
@@ -179,6 +190,74 @@ void Message::_parseQUIT(void) {
         message += " " + space_splited[i];
     }
     _params.push_back(Param("message", message));
+}
+
+void Message::_parseLIST(void) {
+    //Cette fonction ne fait rien, oui, elle est vide, mais elle est nécessaire pour que le parser fonctionne
+    //car elle est appelée dans _initParams()
+    //Si vous avez une meilleure idée, je suis preneur
+    //Sinon, je vous laisse avec cette fonction vide
+    //Merci
+    //Bonne journée
+    //A bientôt
+    //Bisous
+    //Je t'aime
+}
+
+void Message::_parsePRIVMSG(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+
+    if (space_splited.size() == 1) {
+        _err = ERR_NEEDMOREPARAMS;
+        std::cerr << RED "Invalid PRIVMSG NO PARAMS" WHITE << std::endl;
+    }
+    if (space_splited.size() == 2) {
+        _err = space_splited[1][0] == ':' ? ERR_NORECIPIENT : ERR_NOTEXTTOSEND;
+        if (_err == ERR_NORECIPIENT)
+            std::cerr << RED "Invalid PRIVMSG NO DESTINATION" WHITE << std::endl;
+        else
+            std::cerr << RED "Invalid PRIVMSG NO TEXTTOSEND" WHITE << std::endl;
+    }
+
+    if (_err) return;
+
+    _params.push_back(Param("destinations", space_splited[1]));
+    _params.push_back(Param("message", space_splited[2].substr(1)));
+}
+
+void Message::_parseINVITE(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+
+    if (space_splited.size() == 1) {
+        _err = ERR_NEEDMOREPARAMS;
+        std::cerr << RED "Invalid INVITE NO PARAMS" WHITE << std::endl;
+    }
+    if (space_splited.size() == 2) {
+        _err = ERR_NEEDMOREPARAMS;
+        std::cerr << RED "Invalid INVITE NO CANAL" WHITE << std::endl;
+    }
+
+    if (_err) return;
+
+    _params.push_back(Param("nickname", space_splited[1]));
+    _params.push_back(Param("channel", space_splited[2]));
+}
+
+void Message::_parseKICK(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 4);
+
+    if (space_splited.size() < 3) {
+
+        std::string strerr = "Invalid KICK ";
+        _err               = ERR_NEEDMOREPARAMS;
+        strerr += space_splited.size() == 1 ? "NO PARAMS" : "NO USER";
+        return;
+    }
+
+    _params.push_back(Param("channel", space_splited[1]));
+    _params.push_back(Param("nickname", space_splited[2]));
+    if (space_splited.size() == 4)
+        _params.push_back(Param("comment", space_splited[3].substr(1)));
 }
 
 void Message::_parseJOIN(void) {

@@ -17,6 +17,11 @@ Client::~Client()
 {
 }
 
+bool Client::operator==(Client const & rhs) const
+{
+	return (this->_nickName == rhs._nickName);
+}
+
 int Client::getFd() const
 {
 	return (this->_fd);

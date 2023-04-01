@@ -19,9 +19,11 @@
 #include "utils.hpp"
 #include "client.hpp"
 #include "Message.hpp"
+#include "Channel.hpp"
 #include <iomanip>
 #include "Channel.hpp"
 #include <algorithm>
+#include <list>
 
 class Client;
 class Channel;
@@ -31,6 +33,9 @@ class  Server {
   public:
 	
 	static void	sendData(Client const & client, std::string const & data);
+
+	// template <typename clients_ctn, typename fds_ctn>
+	static std::list<Client *> filterClientsByFd(std::map<int, Client *> const &clients, std::vector<int> const &fds);
 
 	Server(int port, std::string password);
 	~Server();
@@ -58,7 +63,7 @@ class  Server {
 	void		_treatClientEvent(epoll_event const & client_ev);
 	void		_deconnection(int client_fd);
 	Client		*_findClientByFd(int fd);
-	Client		*_findClientByNickName(std::string const nickName);
+	Client		*_findClientByNickName(std::string const nickName) const;
 	int			_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void		_execRawMsgs(std::string const & raw_msgs, int client_fd);
 
@@ -75,6 +80,13 @@ class  Server {
 	void 		_kick(std::string const & channelName, int client_fd, std::string const & comment);
 	void		_invite(int client_fd, std::string const & nickName, std::string const & channelName);
 	std::string _getUserNameList(Channel channel) const;
+	void        _list(Client const & client);
+	void		_sendListStart(Client const & client);
+	void		_sendList(Client const & client, Channel const & channel);
+	void		_sendListEnd(Client const & client);
+	
+	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
+
 };
 #endif
 
