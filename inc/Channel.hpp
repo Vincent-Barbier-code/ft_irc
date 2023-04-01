@@ -46,6 +46,21 @@ class	Channel {
 		bool                isModerated() const;
 		
 		//creator needed to set the first operator
+		std::vector<int>	getBanList() const;
+		std::vector<int>	getOpList() const;
+		bool				rmClientFromList(std::vector<int> list, int fdClient);
+		bool				isClientInList(std::vector<int> list, int fdClient) const;
+		bool				addClientToList(std::vector<int> list, int fdClient);
+		void				setBanMask(bool mode);
+		void				setInviteMask(bool mode);
+		void				setVoiceMask(bool mode);
+		void				setPrivateMask(bool mode);
+		void				setKeyMask(bool mode);
+		void				setSecretMask(bool mode);
+		void				setUserLimitMask(bool mode);
+		void				setModeratedMask(bool mode);
+		void				setKey(std::string key);
+		bool				setUserLimit(std::string limit);
 	private :
 	//variables
 		std::string	_name;
@@ -56,11 +71,12 @@ class	Channel {
 		//Masks
 		bool		_banMask; //when set, only users outside of the ban list can join
 		bool		_inviteMask; //when set, only invited users can join
-		bool		_voiceMask; //when set, only voiced users can speak
+		bool		_voiceMask; //when set, only voiced users (operators) can speak
 		bool 		_keyMask; //when set, only users with the correct key can join
 		bool		_privateMask; //when set, channel topic won't be displayed in the channel list 
 		bool		_secretMask; //when set, channel name won't be displayed in the channel list nor in the WHO list
 		bool		_userLimitMask; //when set, only users up to the user limit can join
+		bool		_moderatedMask; //when set, only operators can speak
 		//Lists
 		std::vector<int>	_userList; //list of users in the channel
 		std::vector<int>	_banList; //list of users banned from the channel

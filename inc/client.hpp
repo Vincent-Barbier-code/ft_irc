@@ -12,16 +12,17 @@
 class  Client {
 
   private:
-	int									_fd;
-	struct sockaddr_in					_addr;
-	std::string							_nickName;
-	std::string							_userName;
-	std::string 						_hostName;
-	std::string 						_serverName;
-	std::string							_realName;
-	std::string							_currentChannel;
-	bool								_isRegistered;
-	bool								_isAuth;
+	int								_fd;
+	struct sockaddr_in				_addr;
+	std::string						_nickName;
+	std::string						_userName;
+	std::string 					_hostName;
+	std::string 					_serverName;
+	std::string						_realName;
+	std::string						_currentChannel;
+	bool							_isRegistered;
+	bool							_isAuth;
+	bool							_isInvisible;
 	std::map<std::string, Channel &>	_channels;
 	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
 	
@@ -60,6 +61,7 @@ class  Client {
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
+	void		modeUser(std::string const name, std::string const mode);
 	
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;

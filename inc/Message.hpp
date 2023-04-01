@@ -80,6 +80,7 @@ class Message {
         void _parseKICK();
         void _parseINVITE();
 
+        void _parsePING();
 };
 
 std::ostream & operator<<(std::ostream & o, Message const & msg);
