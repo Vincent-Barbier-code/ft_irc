@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/03/31 18:42:48 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/01 18:59:07 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,16 @@ class  Server {
 	void 		start(void);
 	void 		stop(void);
 
+
 	void 		addChannel(Channel const & channel);
 	void		mode(std::string const name, std::string const mode, std::string option, Client &client);
 
   private:
-  	int							_server_fd;
-	sockaddr_in					_addr;
-	int							_epoll_fd;
-	std::map<int, Client *>		_clients;
-	std::string					_password;
+  	int								_server_fd;
+	sockaddr_in						_addr;
+	int								_epoll_fd;
+	std::map<int, Client *>			_clients;
+	std::string						_password;
 	std::map<std::string, Channel>	_channels;
 	
 	Server();
@@ -85,6 +86,8 @@ class  Server {
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
+	void 		_eraseChannel();
+	void 		_eraseClient();
 	
 	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 

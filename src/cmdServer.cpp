@@ -92,8 +92,6 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 		clerr(ERR_CHANOPRIVSNEEDED);
 }
 
-//Commande : NICK
-// Paramètres : <nicknamenyme>
 void	Server::_nick(int client_fd, std::string const nick)
 {
 	if (_findClientByNickName(nick))

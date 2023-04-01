@@ -190,10 +190,6 @@ bool Channel::isModerated() const {
     return false;
 }
 
-std::vector<int>	Channel::getUserList() const {
-	return _userList;
-}
-
 std::vector<int>	Channel::getBanList() const {
 	return _banList;
 }

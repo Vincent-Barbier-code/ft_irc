@@ -47,17 +47,6 @@ class  Client {
 	bool		isConnected() const;
 	bool		isRegistered() const;
 
-	// channel 		getCurrentChannel();
-	// channel 		joinChannel(const std::string &channel_name);
-	// channel 		leaveChannel();
-	// void 			sendMsg(const std::string &msg);
-	// void 			sendPrivateMsg(const std::string &msg);
-	// void 			updateProfile();
-	// void 			addContact();
-	// void 			removeContact();
-	// void 			connect();
-	// void 			disconnect();
-
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);

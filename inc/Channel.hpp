@@ -23,12 +23,12 @@ class	Channel {
 		
 
 		//getters
-		std::string		getName() const;
-		std::string		getTopic() const;
-		std::string		getPassword() const;
-		int				getkeyMask() const;
-		int 			getinviteMask() const;
-		int				getbanMask() const;
+		std::string			getName() const;
+		std::string			getTopic() const;
+		std::string			getPassword() const;
+		int					getkeyMask() const;
+		int 				getinviteMask() const;
+		int					getbanMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 

@@ -149,18 +149,33 @@ void sigStop(int signum)
 	g_shutdown = 1;
 }
 
-void	Server::stop()
+void	Server::_eraseClient()
 {
 	std::map<int, ClientPtr>::iterator it = _clients.begin();
 	std::map<int, ClientPtr>::iterator ite = _clients.end();
 
-	std::cout << "Server is shutting down..." << std::endl;
 	while(it != ite)
 	{
 		close(it->first); //first is used to access the key (fd of client)
 		delete it->second; //second is used to access the value (pointer to client)
 		_clients.erase(it++);
 	}
+}
+
+void Server::_eraseChannel()
+{
+	std::map<std::string, Channel>::iterator it = _channels.begin();
+	std::map<std::string, Channel>::iterator ite = _channels.end();
+
+	while(it != ite)
+		_channels.erase(it++);
+}
+
+void	Server::stop()
+{
+	std::cout << "Server is shutting down..." << std::endl;
+	_eraseClient();
+	_eraseChannel();
 	close(_epoll_fd);
 	close(_server_fd);
 	exit(EXIT_SUCCESS);
@@ -246,7 +261,6 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			else if (cmd == "PRIVMSG") {
 				_sendPrivateMsg(client, paramsV[0], paramsV[1]);
 			}
-        }
 			else if (cmd == "PING")
 				_sendMsgToCLient(*_clients.at(client_fd), "PONG " + paramsV[0]);
 		}
