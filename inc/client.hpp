@@ -24,8 +24,6 @@ class  Client {
 	bool								_isAuth;
 	std::map<std::string, Channel &>	_channels;
 	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
-
-	
 	
   public:
 
@@ -66,7 +64,6 @@ class  Client {
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 	
-
 	class ClientException : public std::exception {
 		private:
 			int _code;

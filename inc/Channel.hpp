@@ -29,7 +29,8 @@ class	Channel {
 		int				getkeyMask() const;
 		int 			getinviteMask() const;
 		int				getbanMask() const;
-		std::vector<int> getUserList() const ;
+		std::vector<int>	getUserList() const;
+		std::vector<int>    getOperatorList() const;
 
 
 		int 		isInUserList(int fd) const;
@@ -41,10 +42,6 @@ class	Channel {
 		void		addBan(int fd);
 		void		addOperator(int fd);
 		void		removeUser(int fd);
-		std::string			getName() const;
-		std::string			getTopic() const;
-		std::vector<int>	getUserList() const;
-		std::vector<int>    getOperatorList() const;
 
 		bool                isModerated() const;
 		

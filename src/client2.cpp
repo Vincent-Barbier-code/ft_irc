@@ -5,7 +5,6 @@
 void Client::user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname) {
 
- 
     if (realname[0] != ':')
         throw std::invalid_argument("USER: Invalid realname no ':' at the beginning");
     realname.erase(0, 1);

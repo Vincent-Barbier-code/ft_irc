@@ -146,12 +146,6 @@ int Channel::getbanMask() const {
     return _banMask;
 }
 
-
-
-std::vector<int> Channel::getUserList() const {
-    return _userList;
-}
-
 std::vector<int> Channel::getOperatorList() const {
     return _operatorList;
 }
