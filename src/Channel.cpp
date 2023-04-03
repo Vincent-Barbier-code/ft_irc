@@ -236,6 +236,10 @@ void	Channel::setKey(std::string key) {
 	_password = key;
 }
 
+void	Channel::setTopic(std::string topic) {
+    _topic = topic;
+}
+
 bool	Channel::setUserLimit(std::string limit) {
 	unsigned long int tmp_nb;
 	int	i = 0;

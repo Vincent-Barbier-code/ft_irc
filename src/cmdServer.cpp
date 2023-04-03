@@ -126,3 +126,17 @@ void Server::_part(int client_fd, std::string const & nameChannel)
 	}
 }
 
+void	Server::_topic(int client_fd, std::string const & channelName, std::string const & topic)
+{
+	if (channelName.size() == 0)
+		clerr(ERR_NEEDMOREPARAMS);
+	if (_channels.at(channelName).isInUserList(client_fd))
+		clerr(ERR_NOTONCHANNEL);
+	if (!_channels.at(channelName).isInOperatorList(client_fd))
+		clerr(ERR_CHANOPRIVSNEEDED);	
+	if (topic.size() == 0)
+		clerr(RPL_NOTOPIC);
+	_channels.at(channelName).setTopic(topic);
+	clerr(RPL_TOPIC);
+
+}

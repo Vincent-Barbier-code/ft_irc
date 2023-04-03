@@ -61,6 +61,8 @@ class	Channel {
 		void				setModeratedMask(bool mode);
 		void				setKey(std::string key);
 		bool				setUserLimit(std::string limit);
+		void				setTopic(std::string topic);
+	
 	private :
 	//variables
 		std::string	_name;
