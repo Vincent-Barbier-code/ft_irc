@@ -5,11 +5,9 @@ Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false
 {
 }
 
-Client::Client(int fd, sockaddr_in addr)
+Client::Client(int fd, sockaddr_in addr) : _fd(fd), _addr(addr), _nickName(), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
 {
-	_fd = fd;
-	_addr = addr;
-	_isRegistered = false;
+
 }
 
 Client::~Client()
