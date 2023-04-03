@@ -29,11 +29,8 @@ std::string Server::_getUserNameList(Channel channel) const
 
 void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
-	std::map<std::string, Channel>::iterator it2;
-
 	_parseJoin(client_fd, name);
-	it2 = _channels.find(name);
-	if (it2 == _channels.end())
+	if (_channels.find(name) == _channels.end())
 		addChannel(Channel(name, "" , *_clients.at(client_fd)));
 	else
 	{
@@ -51,6 +48,8 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 			if (_channels.at(name).isInBanList(client_fd))
 				clerr(ERR_BANNEDFROMCHAN);
 		_channels.at(name).addUser(client_fd);
+		if (_channels.at(name).getUserList().size() == 1)
+			_channels.at(name).addOperator(client_fd);
 	}
 	_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
