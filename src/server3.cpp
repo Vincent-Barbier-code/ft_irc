@@ -15,3 +15,8 @@ void Server::_sendMsgNumericToCLient(Client const & client, int code, std::strin
     std::string data = itostr(code) + " " + client.getNickName() + " " + msg;
     _sendMsgToCLient(client, data);
 }
+
+void Server::_user(Client & client, std::vector<std::string> const & params) {
+    client.user(params[0], params[1], params[2], params[3]);
+    _sendWelcomeMsg(client);
+}

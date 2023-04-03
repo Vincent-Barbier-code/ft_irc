@@ -219,59 +219,11 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
-	Client const & client = *_clients.at(client_fd);
+	Client & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
-		//std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
 		std::cout << *it << std::endl;
-		std::string const & cmd = it->getCmd();
-		std::vector<std::string> paramsV = it->getParamsValues();
-		try {
-            if (it->getErr()) {
-				clerr(it->getErr());
-			}
-			else if (cmd == "NICK")
-				_nick(client_fd, paramsV[0]);
-			else if (cmd == "USER")
-			{
-				_clients.at(client_fd)->user(paramsV[0], paramsV[1], paramsV[2], paramsV[3]);
-
-				_sendWelcomeMsg(*_clients.at(client_fd));
-			}
-			else if (cmd == "PASS")
-				_clients.at(client_fd)->pass(paramsV[0], getPass());
-			else if (cmd == "QUIT")
-			{
-				std::string quitMsg = paramsV.size() ? paramsV[0] : "Aurevoir !" + _clients.at(client_fd)->getNickName();
-				_sendMsgToCLient(*_clients.at(client_fd), paramsV.size() ? paramsV[0] : quitMsg); // a PARSER
-				// il faudra envoyer le message dans les canaux ou le client est present
-				_deconnection(client_fd);
-			}
-			else if (cmd == "JOIN")
-				_join(client_fd, paramsV[0], paramsV[1]);
-			else if (cmd == "KICK")
-				_kick(paramsV[0], client_fd, paramsV[1]);
-			else if(cmd == "INVITE")
-				_invite(client_fd, paramsV[0], paramsV[1]);
-			else if (cmd == "LIST") {
-				//addChannel(Channel("#general", "Welcome to the general channel", *_clients.at(client_fd)));
-				//addChannel(Channel("#zizi", "Welcome to zizi channel", *_clients.at(client_fd)));
-				_list(*_clients.at(client_fd));
-			}
-			else if (cmd == "PRIVMSG") {
-				_sendPrivateMsg(client, paramsV[0], paramsV[1]);
-			}
-			else if (cmd == "PING")
-				_sendMsgToCLient(*_clients.at(client_fd), "PONG " + paramsV[0]);
-			else if (cmd == "PART")
-				_part(client_fd, paramsV[0]);
-			else if (cmd == "TOPIC")
-				_topic(client_fd, paramsV[0], paramsV[1]);
-		}
-		catch(const Client::ClientException& e)
-		{
-			_sendNumericReply(e.getCode(), *_clients.at(client_fd));
-		}
+		_execute(client, *it);
 	}
 }
 

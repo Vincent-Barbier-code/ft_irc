@@ -6,18 +6,14 @@ void Client::user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname) {
 
     if (realname[0] != ':')
-        throw std::invalid_argument("USER: Invalid realname no ':' at the beginning");
+        clerr(ERR_NEEDMOREPARAMS);
     realname.erase(0, 1);
-    if (!isValid(realname))
-        throw std::invalid_argument("USER: Invalid realname");
-    else if (realname.size() > 50)
-        throw std::invalid_argument("USER: Realname too long");
-    else if (!isValid(username))
-        throw std::invalid_argument("USER: Invalid username");
+    if (realname.size() > 50)
+        clerr(ERR_NEEDMOREPARAMS);
     else if (_isRegistered)
-        throw std::invalid_argument("USER: User already registered");
+        clerr(ERR_ALREADYREGISTRED);
     else if (_nickName.empty())
-        throw std::invalid_argument("USER: Nickname not set");
+        clerr(ERR_NONICKNAMEGIVEN);
     
     _userName   = username;
     _hostName   = hostname;

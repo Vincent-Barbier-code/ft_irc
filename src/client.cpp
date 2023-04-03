@@ -64,6 +64,10 @@ bool Client::isRegistered() const {
 	return (_isRegistered);
 }
 
+bool Client::isAuth() const {
+	return (_isAuth);
+}
+
 //Commande : PASS
 //Paramètres : <password>
 void	Client::pass(std::string const &clientPass, std::string const &serverPass) {
