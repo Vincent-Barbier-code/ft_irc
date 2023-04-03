@@ -72,6 +72,7 @@ class  Server {
 	std::string _getNumericReplyMessage(int code, Client const &client) const;
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
+	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
 
 	//channel
