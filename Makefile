@@ -29,6 +29,7 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/cmdServer.cpp \
 		$(SRCDIR)/server3.cpp \
 		$(SRCDIR)/Channel.cpp \
+		$(SRCDIR)/serverMode.cpp \
 
 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
