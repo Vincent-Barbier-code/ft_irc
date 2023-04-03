@@ -265,6 +265,8 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_sendMsgToCLient(*_clients.at(client_fd), "PONG " + paramsV[0]);
 			else if (cmd == "PART")
 				_part(client_fd, paramsV[0]);
+			else if (cmd == "TOPIC")
+				_topic(client_fd, paramsV[0], paramsV[1]);
 		}
 		catch(const Client::ClientException& e)
 		{

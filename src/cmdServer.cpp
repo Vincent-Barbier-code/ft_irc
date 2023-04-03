@@ -130,13 +130,16 @@ void	Server::_topic(int client_fd, std::string const & channelName, std::string 
 {
 	if (channelName.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
-	if (_channels.at(channelName).isInUserList(client_fd))
+	else if (_channels.at(channelName).isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
-	if (!_channels.at(channelName).isInOperatorList(client_fd))
+	else if (!_channels.at(channelName).isInOperatorList(client_fd))
 		clerr(ERR_CHANOPRIVSNEEDED);	
-	if (topic.size() == 0)
-		clerr(RPL_NOTOPIC);
-	_channels.at(channelName).setTopic(topic);
-	clerr(RPL_TOPIC);
+	else if (topic.size() == 0)
+		_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + channelName + " :" + _channels.at(channelName).getTopic());
+	else
+	{
+		_channels.at(channelName).setTopic(topic);
+		_sendMsgToCLient(*_clients.at(client_fd), "TOPIC " + channelName + " :" + topic);
+	}
 
 }
