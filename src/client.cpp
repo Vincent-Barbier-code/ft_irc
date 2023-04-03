@@ -5,12 +5,10 @@ Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false
 {
 }
 
-Client::Client(int fd, sockaddr_in addr, std::string userName, std::string nickName)
+Client::Client(int fd, sockaddr_in addr)
 {
 	_fd = fd;
 	_addr = addr;
-	_userName = userName;
-	_nickName = nickName;
 	_isRegistered = false;
 }
 

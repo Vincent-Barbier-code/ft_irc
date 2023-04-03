@@ -104,6 +104,7 @@ void	Server::_nick(int client_fd, std::string const nick)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 	{
+		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
 		_clients.at(client_fd)->setNickName(nick);
 		_sendMsgToCLient(*_clients.at(client_fd), "NICK " + nick);
 	}
@@ -122,6 +123,7 @@ void Server::_part(int client_fd, std::string const & nameChannel)
 	{
 		_channels.at(nameChannel).removeUser(client_fd);
 		_sendMsgToCLient(*_clients.at(client_fd), "PART " + nameChannel);
+		clerr(RPL_WELCOME);
 	}
 }
 

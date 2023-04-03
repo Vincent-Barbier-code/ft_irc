@@ -103,7 +103,8 @@ void Server::_acceptNewConnection(void) {
 
 	static int i = 0;
 
-	_clientConnect(client_fd, client_addr, "username" + itostr(i) , "nickname" + itostr(i));
+	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr));
+	// _clientConnect(client_fd, client_addr, " ", " ");
 	i++;
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
@@ -116,15 +117,14 @@ void Server::_acceptNewConnection(void) {
 	}
 }
 
-int		Server::_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname)
-{
-	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr), username, nickname);
+// int		Server::_clientConnect(int client_fd, sockaddr client_addr)
+// {
 
-	// std::cout << "Client connected " << _clients.at(client_fd)->getNickName() << std::endl;
-	// std::cout << "fd = " << client_fd << std::endl;
-	// std::cout << "nbr client connecte = " << _clients.size() << std::endl;
-	return (0);
-}
+// 	// std::cout << "Client connected " << _clients.at(client_fd)->getNickName() << std::endl;
+// 	// std::cout << "fd = " << client_fd << std::endl;
+// 	// std::cout << "nbr client connecte = " << _clients.size() << std::endl;
+// 	return (0);
+// }
 
 void Server::_deconnection(int client_fd) {
 	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;

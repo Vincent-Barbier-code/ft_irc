@@ -31,7 +31,7 @@ class  Client {
 	typedef std::map<int, Client *> client_map;
 
 	Client();
-	Client(int fd, sockaddr_in addr, std::string userName, std::string nickName);
+	Client(int fd, sockaddr_in addr);
 	~Client();
 
 	bool operator==(Client const & rhs) const;
