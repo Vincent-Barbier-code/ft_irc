@@ -36,6 +36,9 @@ void Message::_initParsers(void) {
     _parsers["KICK"] = &Message::_parseKICK;
     _parsers["INVITE"] = &Message::_parseINVITE;
     _parsers["PING"] = &Message::_parsePING;
+    _parsers["MODE"] = &Message::_parseMODE;
+    _parsers["PART"] = &Message::_parsePART;
+    _parsers["TOPIC"] = &Message::_parseTOPIC;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -227,7 +230,7 @@ void Message::_parsePRIVMSG(void) {
 }
 
 void Message::_parseINVITE(void) {
-    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
 
     if (space_splited.size() == 1) {
         _err = ERR_NEEDMOREPARAMS;
@@ -276,4 +279,44 @@ void Message::_parsePING(void) {
     if (space_splited.size() == 1)
         throw std::runtime_error("PARSE PING ARGUMENT PAS SUFFISANT") ; // a remplacer par le setting de la variable d'erreur
     _params.push_back(Param("server", space_splited[1]));
+}
+
+void Message::_parseMODE(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+
+    if (space_splited.size() < 3) {
+        std::cerr << RED "Invalid MODE" WHITE << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
+        return;
+    }
+
+    _params.push_back(Param("channel", space_splited[1]));
+    _params.push_back(Param("mode", space_splited[2]));
+    if (space_splited.size() ==  4 )
+        _params.push_back(Param("limit/user", space_splited[3]));
+}
+
+void Message::_parsePART(void) {
+    std::vector<std::string> space_splited = ke_split(_raw, " ");
+
+    if (space_splited.size() < 2) {
+        std::cerr << RED "Invalid PART" WHITE << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
+        return;
+    }
+
+    _params.push_back(Param("channel", space_splited[1]));
+}
+
+void Message::_parseTOPIC(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
+
+    if (space_splited.size() < 2) {
+        std::cerr << RED "Invalid TOPIC" WHITE << std::endl;
+        _err = ERR_NEEDMOREPARAMS;
+        return;
+    }
+
+    _params.push_back(Param("channel", space_splited[1]));
+    _params.push_back(Param("topic", space_splited.size() == 3 ? space_splited[2].substr(1) : ""));
 }

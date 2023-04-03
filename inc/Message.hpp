@@ -79,8 +79,10 @@ class Message {
         void _parsePRIVMSG();
         void _parseKICK();
         void _parseINVITE();
-
         void _parsePING();
+        void _parseMODE();
+        void _parsePART();
+        void _parseTOPIC();
 };
 
 std::ostream & operator<<(std::ostream & o, Message const & msg);
