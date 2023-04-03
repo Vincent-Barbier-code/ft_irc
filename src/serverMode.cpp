@@ -68,10 +68,14 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 	std::map<std::string, Channel>::iterator it;
 	Channel chan;
 
-	if (mode.size() && (!(mode[0] == '+') || !(mode[0] == '-')))
+	if (!mode.size() || (mode[0] != '+' && mode[0] != '-')) {
+		std::cout << "HELLO" << std::endl;
 		clerr(ERR_UNKNOWNMODE);
-	if (mode.size() > 2)
+	}
+	if (mode.size() > 2) {
+		std::cout << "BONJOUR" << std::endl;
 		clerr(ERR_UNKNOWNMODE);
+	}
 	it = _channels.find(chanName);
 	if (it == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
@@ -81,18 +85,24 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		switch (c) {
 			case 'o':
 				_modeO(chan, mode, option);
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'p':
+				std::cout << "---------------ALED--------------" << std::endl;
 				chan.setPrivateMask(mode[0] == '+');
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 's':
 				chan.setSecretMask(mode[0] == '+');
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'i':
 				chan.setInviteMask(mode[0] == '+');
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'm':
 				chan.setModeratedMask(mode[0] == '+');
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'l':
 				if (mode[0] == '+') {
@@ -106,12 +116,15 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				}
 				else
 					chan.setUserLimitMask(false);
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'b':
 				_modeB(chan, mode, option);
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'v':
 				chan.setVoiceMask(mode[0] == '+');
+				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'k':
 				
@@ -122,9 +135,10 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 	}
 }
 
-void Server::mode(std::string const name, std::string const mode, std::string option, Client &client) {
+void Server::mode(std::string const name, std::string const mode, std::string option, Client & client) {
+	std::cout << "---------------MODE--------------" << std::endl;
 	if (name[0] == '&' || name[0] == '#')
 		_modeChannel(name, mode, option, client);
 	else
-		client.modeUser(name, mode);
+		client.modeUser(name, mode, client);
 }

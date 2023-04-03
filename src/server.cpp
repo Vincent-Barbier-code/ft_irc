@@ -218,7 +218,7 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
-	Client const & client = *_clients.at(client_fd);
+	Client & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
 		//std::cout << "MSG: " << std::setw(50) << (*it).getRaw()  << "|   CMD: |" << (*it).getCmd() << "|" << std::endl;
@@ -253,8 +253,6 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			else if(cmd == "INVITE")
 				_invite(client_fd, paramsV[0], paramsV[1]);
 			else if (cmd == "LIST") {
-				//addChannel(Channel("#general", "Welcome to the general channel", *_clients.at(client_fd)));
-				//addChannel(Channel("#zizi", "Welcome to zizi channel", *_clients.at(client_fd)));
 				_list(*_clients.at(client_fd));
 			}
 			else if (cmd == "PRIVMSG") {
@@ -266,6 +264,9 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 				_part(client_fd, paramsV[0]);
 			else if (cmd == "TOPIC")
 				_topic(client_fd, paramsV[0], paramsV[1]);
+			else if (cmd == "MODE") {
+				mode(paramsV[0], paramsV[1], paramsV.size() == 3 ? paramsV[2] : "", client);
+			}
 		}
 		catch(const Client::ClientException& e)
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/03 17:59:14 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/03 19:58:16 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class  Server {
 
 
 	void 		addChannel(Channel const & channel);
-	void		mode(std::string const name, std::string const mode, std::string option, Client &client);
+	void		mode(std::string const name, std::string const mode, std::string option, Client & client);
 
   private:
   	int								_server_fd;

@@ -43,16 +43,17 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 				clerr(ERR_BADCHANNELKEY);
 		}
 		// if mode invitation only, check if client is invited
-		if (_channels.at(name).getinviteMask() == 1)
+		if (_channels.at(name).getinviteMask() == 1) {
 			if (!_channels.at(name).isInInviteList(client_fd))
 				clerr(ERR_INVITEONLYCHAN);
+		}
 		// if not banned
 		if (_channels.at(name).getbanMask() == 1)
 			if (_channels.at(name).isInBanList(client_fd))
 				clerr(ERR_BANNEDFROMCHAN);
 		_channels.at(name).addUser(client_fd);
 	}
-	_sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
+	(*_clients.at(client_fd))._sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(_channels.at(name)));
 }
