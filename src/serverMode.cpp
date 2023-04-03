@@ -17,8 +17,8 @@ void	Server::_modeO(Channel & chan, std::string const mode, std::string const op
 		if (mode[0] == '+')
 			chan.addClientToList(chan.getOpList(), client_to_op->getFd());
 		else {
-			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd());
-			if (chan.getOpList().size() == 0)
+			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd()); //if last op leaves, oldest user becomes op
+			if (chan.getOpList().size() == 0 && chan.getUserList().size() != 0)
 				chan.addClientToList(chan.getOpList(), *chan.getUserList().begin());
 		}
 	}
