@@ -68,16 +68,19 @@ class  Server {
 	Client		*_findClientByNickName(std::string const nickName) const;
 	int			_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void		_execRawMsgs(std::string const & raw_msgs, int client_fd);
+	void		_execute(Client & client, Message const & msg);
 
 	std::string _getNumericReplyMessage(int code, Client const &client) const;
 	void		_sendNumericReply(int code, Client const & client);
 	void 		_sendMsgToCLient(Client const & client, std::string const & msg);
+	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
 
 	//channel
 	void    	_createChannel(std::string const & channelName, std::string const & topic, Client const & client);
-	
+		
 	//CmdServer
+	void 		_user(Client & client, std::vector<std::string> const & params);
 	void		_parseJoin(int client_fd, std::string const & name);
 	void		_nick(int client_fd, std::string const nick);
 	void		_join(int client_fd, std::string const & name, std::string const & key);

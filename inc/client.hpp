@@ -46,6 +46,7 @@ class  Client {
 	std::string	setNickName(std::string const &nickName);
 	bool		isConnected() const;
 	bool		isRegistered() const;
+	bool 		isAuth() const;
 
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,
