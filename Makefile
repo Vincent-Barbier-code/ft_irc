@@ -3,11 +3,12 @@ NAME := ft_irc
 PORT := 6667
 PSWD := 1234
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -g3 -std=c++98 -ansi -Wshadow
+# CXX := clang++
+CXXFLAGS := -Wall -Wextra -Werror -g3 -std=c++98 #-ansi -Wshadow
 DEBUG := -g3 -fsanitize=address
 
 # Interpreteur de commandes
-SHELL := /bin/zsh -o pipefail 
+SHELL := /bin/zsh -o pipefail
 # Si ne marche pas a 42 utiliser ca SHELL := /bin/sh
 
 # Répertoires pour les fichiers objets et de dépendances

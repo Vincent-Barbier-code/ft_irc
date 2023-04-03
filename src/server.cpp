@@ -263,6 +263,8 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 			}
 			else if (cmd == "PING")
 				_sendMsgToCLient(*_clients.at(client_fd), "PONG " + paramsV[0]);
+			else if (cmd == "PART")
+				_part(client_fd, paramsV[0]);
 		}
 		catch(const Client::ClientException& e)
 		{
