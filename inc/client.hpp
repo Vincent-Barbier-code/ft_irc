@@ -24,10 +24,10 @@ class  Client {
 	bool							_isAuth;
 	bool							_isInvisible;
 	std::map<std::string, Channel &>	_channels;
-	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
 	
   public:
 
+	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
 	typedef std::map<int, Client *> client_map;
 
 	Client();

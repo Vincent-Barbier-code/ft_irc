@@ -40,9 +40,9 @@ std::string Client::getRealName() const {
 
 
 void Client::_sendMsgToCLient(Client const & client, std::string const & msg) const {
-    std::string data = ":" + client.getNickName() + " " + msg + "\r\n";
+    std::string data = ":" + getNickName() + " " + msg + "\r\n";
 
-    std::cout << BLUE << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
+    std::cout << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
     Server::sendData(client, data);
 }
 
