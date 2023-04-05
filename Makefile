@@ -1,7 +1,7 @@
 # Variables pour le nom du programme, le compilateur et les options de compilation
 NAME := ft_irc
 PORT := 6667
-PSWD := 1234
+PSWD := abc
 CXX := c++
 # CXX := clang++
 CXXFLAGS := -Wall -Wextra -Werror -g3 -std=c++98 #-ansi -Wshadow
