@@ -247,14 +247,14 @@ Client 	*Server::_findClientByFd(int fd)
 }
 
 bool	Server::_isClientOp(Channel const & chan, Client &client) {
-	if (!chan.isClientInList(chan.getUserList(), client.getFd())) {
+	if (!chan.isClientInList(chan.getUserList(), client.getFd()))
 		clerr(ERR_NOTONCHANNEL);
-	}
-	if (!chan.isClientInList(chan.getOpList(), client.getFd())) {
+	if (!chan.isClientInList(chan.getOpList(), client.getFd()))
 		clerr(ERR_CHANOPRIVSNEEDED);
-	}
 	return (true);
 }
+
+
 
 
 // --------------------- Setters -----------------

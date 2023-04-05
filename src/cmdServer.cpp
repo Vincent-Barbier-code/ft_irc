@@ -101,9 +101,14 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 
 void	Server::_nick(int client_fd, std::string const nick)
 {
+	Client &client = *_clients.at(client_fd);
+
 	if (_findClientByNickName(nick))
 	{
-		std::cout << "----------------------------- " + nick + " already exist" << std::endl;
+		int _nickNumber = 1;
+		while (_findClientByNickName(nick + itostr(_nickNumber)))
+			_nickNumber++;
+		client.setNickName(nick + itostr(_nickNumber));
 		clerr(ERR_NICKCOLLISION);
 	}
 	else if (nick.size() > MAX_NICKNAME_LENGTH)
@@ -112,9 +117,8 @@ void	Server::_nick(int client_fd, std::string const nick)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 	{
-		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
-		_clients.at(client_fd)->setNickName(nick);
-		_sendMsgToClient(*_clients.at(client_fd), "NICK " + nick);
+		client.setNickName(nick);
+		_sendMsgToClient(client, "NICK " + nick);
 	}
 }
 

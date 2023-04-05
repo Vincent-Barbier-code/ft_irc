@@ -10,6 +10,11 @@ Client::Client(int fd, sockaddr_in addr) : _fd(fd), _addr(addr), _nickName(), _u
 
 }
 
+Client::Client(int fd, sockaddr_in addr, std::string nickName) : _fd(fd), _addr(addr), _nickName(nickName), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
+{
+
+}
+
 Client::~Client()
 {
 }

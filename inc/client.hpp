@@ -30,6 +30,7 @@ class  Client {
 
 	Client();
 	Client(int fd, sockaddr_in addr);
+	Client(int fd, sockaddr_in addr, std::string nickName);
 	~Client();
 
 	bool operator==(Client const & rhs) const;

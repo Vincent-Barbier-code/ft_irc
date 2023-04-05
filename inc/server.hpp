@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/05 22:31:21 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/05 23:12:49 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class  Server {
 	std::map<int, Client *>			_clients;
 	std::string						_password;
 	std::map<std::string, Channel>	_channels;
+	std::vector<int>				_seenFds;
 	
 	Server();
 
@@ -76,9 +77,6 @@ class  Server {
 	void 		_sendMsgToClientsChannel(Channel const & channel, std::string const & msg) const;
 	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
-
-	//channel
-	void    	_createChannel(std::string const & channelName, std::string const & topic, Client const & client);
 		
 	//CmdServer
 	void 		_user(Client & client, std::vector<std::string> const & params);
