@@ -32,7 +32,6 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 	_parseJoin(client_fd, name);
 	if (_channels.find(name) == _channels.end())
 		addChannel(Channel(name, "" , *_clients.at(client_fd)));
-	}
 	else
 	{
 		if (_channels.at(name).getkeyMask() == 1)

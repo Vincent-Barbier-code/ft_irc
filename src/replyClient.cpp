@@ -41,6 +41,7 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 			break;
 		case ERR_NOSUCHCHANNEL:
 			message = "403 :No such channel";
+			break;
 		case ERR_CANNOTSENDTOCHAN:
 			message = "404 " + client.getNickName() + " :Cannot send to channel";
 			break;
@@ -76,6 +77,7 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 			break;
 		case ERR_PASSWDMISMATCH:
 			message = "464 " + client.getNickName() + " :Password incorrect";
+			break;
 		case ERR_UNKNOWNMODE:
 			message = "472 :Unknown mode";
 			break;
