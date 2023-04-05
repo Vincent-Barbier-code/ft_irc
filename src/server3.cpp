@@ -20,3 +20,11 @@ void Server::_user(Client & client, std::vector<std::string> const & params) {
     client.user(params[0], params[1], params[2], params[3]);
     _sendWelcomeMsg(client);
 }
+
+void Server::_sendMsgToClientsChannel(Channel const & channel, std::string const & msg) const {
+    
+    std::list<Client *> channelClients = Server::filterClientsByFd(_clients, channel.getUserList());
+
+    for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++)
+        _sendMsgToCLient(**client, msg);
+}

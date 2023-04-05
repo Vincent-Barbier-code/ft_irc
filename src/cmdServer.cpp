@@ -52,7 +52,7 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 		if (_channels.at(name).getUserList().size() == 1)
 			_channels.at(name).addOperator(client_fd);
 	}
-
+	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(_channels.at(name)));
 }

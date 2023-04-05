@@ -54,8 +54,11 @@ class  Client {
 	void		modeUser(std::string const name, std::string const mode, Client & client);
 	
 	void sendMsgToCLient(Client const & client, std::string const & msg) const;
+	void sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients) const;
+
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
+
 	
 	class ClientException : public std::exception {
 		private:

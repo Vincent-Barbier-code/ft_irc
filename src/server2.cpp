@@ -11,7 +11,7 @@ void    Server::sendData(Client const & client, std::string const & data) {
 }
 
 
-void Server::_sendMsgToCLient(Client const & client, std::string const & msg) {
+void Server::_sendMsgToCLient(Client const & client, std::string const & msg) const {
     std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
 
     std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 

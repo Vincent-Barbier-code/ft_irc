@@ -54,6 +54,14 @@ void Client::sendMsgToCLient(Client const & client, std::string const & msg) con
     Server::sendData(client, data);
 }
 
+void Client::sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients) const {
+    
+    std::list<Client *> channelClients = Server::filterClientsByFd(clients, channel.getUserList());
+        
+    for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++)
+        sendMsgToCLient(**client, msg);
+}
+
 void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
     
     std::string data = "PRIVMSG " + receiver.getNickName() + " :" + msg;
@@ -61,17 +69,15 @@ void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) co
 }
 
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
+        
     std::vector<int> channelFds = channel.getUserList();
     std::vector<int> channelOps = channel.getOperatorList();
-    std::list<Client *> channelClients = Server::filterClientsByFd(clients, channelFds);
 
     if (find(channelFds.begin(), channelFds.end(), _fd) == channelFds.end())
         clerr(ERR_CANNOTSENDTOCHAN);
     if (channel.isModerated() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
         clerr(ERR_CANNOTSENDTOCHAN);
-        
-    for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++) {
-        std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
-        sendMsgToCLient(**client, data);
-    }
+
+    std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
+    sendMsgToClientsChannel(channel, data, clients);
 }
