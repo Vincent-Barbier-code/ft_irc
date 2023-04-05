@@ -25,7 +25,7 @@ void	Server::_modeO(Channel & chan, std::string const mode, std::string const op
 	}
 }
 
-void	Server::_modeB(Channel & chan, std::string const mode, std::string const option) {
+void	Server::_modeB(Channel & chan, std::string const mode, std::string const option, int client_fd) {
 	std::vector<std::string> options;
 	Client	*client_to_ban;
 
@@ -43,7 +43,7 @@ void	Server::_modeB(Channel & chan, std::string const mode, std::string const op
 			chan.addClientToList(chan.getBanList(), client_to_ban->getFd());
 			//if client to ban is in channel, kick him
 			if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd()))
-				_kick(chan.getName(), client_to_ban->getFd(), "You got banned\n");
+				_kick(client_fd, chan.getName(), client_to_ban->getNickName(), "You got banned\n");
 		}
 		else 
 			chan.rmClientFromList(chan.getBanList(), client_to_ban->getFd());
@@ -84,23 +84,23 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		switch (c) {
 			case 'o':
 				_modeO(chan, mode, option);
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'p':
 				chan.setPrivateMask(mode[0] == '+');
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 's':
 				chan.setSecretMask(mode[0] == '+');
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'i':
 				chan.setInviteMask(mode[0] == '+');
-				client.sendMsgToCLient(client, "MODE " +chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " +chanName + " "  + mode + " ");
 				break;
 			case 'm':
 				chan.setModeratedMask(mode[0] == '+');
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'l':
 				if (mode[0] == '+') {
@@ -114,19 +114,19 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				}
 				else
 					chan.setUserLimitMask(false);
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'b':
-				_modeB(chan, mode, option);
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				_modeB(chan, mode, option, client.getFd());
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'v':
 				chan.setVoiceMask(mode[0] == '+');
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'k':
 				_modeK(chan, mode, option);
-				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			default :
 				clerr(ERR_UNKNOWNMODE);

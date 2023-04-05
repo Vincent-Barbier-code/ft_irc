@@ -9,8 +9,8 @@
 #define MAX_CLIENTS 100
 #define BUFFER_SIZE 1024
 // my macro
-#define MAX_NICKNAME_LENGTH 9
-#define MAX_USERNAME_LENGTH 9
+#define MAX_NICKNAME_LENGTH 20
+#define MAX_USERNAME_LENGTH 20
 #define SERVER_NAME "ft_irc"
 
 #define DEFAULT_PORT 8080

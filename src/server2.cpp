@@ -10,7 +10,7 @@ void    Server::sendData(Client const & client, std::string const & data) {
     }
 }
 
-void Server::_sendMsgToCLient(Client const & client, std::string const & msg) const {
+void Server::_sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
 
     std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
@@ -21,7 +21,7 @@ void	Server::_sendNumericReply(int code, Client const & client){
 	std::string message = _getNumericReplyMessage(code, client);
 	//std::cout << "Sending message to client " << client.getNickName() << ": " << message << std::endl;
 
-	_sendMsgToCLient(client, message);
+	_sendMsgToClient(client, message);
 }
 
 
@@ -58,17 +58,17 @@ void  Server::_list(Client const & client) {
 
 void Server::_sendListStart(Client const & client) {
     std::string msg = itostr(RPL_LISTSTART) + " " + client.getNickName() + " Channel :Users Name";
-    _sendMsgToCLient(client, msg);
+    _sendMsgToClient(client, msg);
 }
 
 void Server::_sendList(Client const & client, Channel const & channel) {
     std::string msg = itostr(RPL_LIST) + " " + client.getNickName() + " " + channel.getName() + " " + itostr(channel.getUserList().size()) + " :" + channel.getTopic();
-    _sendMsgToCLient(client, msg);
+    _sendMsgToClient(client, msg);
 }
 
 void Server::_sendListEnd(Client const & client) {
     std::string msg = itostr(RPL_LISTEND) + " " + client.getNickName() + " End of /LIST";
-    _sendMsgToCLient(client, msg);
+    _sendMsgToClient(client, msg);
 }
 
 void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const {

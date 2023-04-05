@@ -51,33 +51,37 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 			if (channel.isInBanList(client_fd))
 				clerr(ERR_BANNEDFROMCHAN);
 		channel.addUser(client_fd);
-		if (channel.getUserList().size() == 1)
+		if (channel.getOperatorList().size() == 0)
 			channel.addOperator(client_fd);
 	}
 	Channel &channel = _channels.at(name);
 	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
-	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
-	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	_sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
+	_sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
 }
 
 
-void Server::_kick(std::string const & channelName, int client_fd, std::string const & comment)
+void Server::_kick(int client_fd, std::string const & channelName, std::string const banName, std::string const & comment)
 {
+	Client &client = *_clients.at(client_fd);
+
 	if (channelName.size() == 0 || comment.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
-	else
-		clerr(ERR_CHANOPRIVSNEEDED);
 	if (_channels.find(channelName) == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
-	else if (!_channels.at(channelName).isInUserList(client_fd))
+	Channel &channel = _channels.at(channelName);
+
+	if (!channel.isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
-	else if (_channels.at(channelName).isInBanList(client_fd))
+	else if (channel.isInBanList(client_fd))
 		clerr(ERR_BANNEDFROMCHAN);
-	if (_channels.at(channelName).isInOperatorList(client_fd))
+	if (channel.isInOperatorList(client_fd))
 	{
-		_channels.at(channelName).removeUser(client_fd);
-		_sendMsgToCLient(*_clients.at(client_fd), "KICK " + channelName + " " + _clients.at(client_fd)->getNickName() + " :" + comment);
+		channel.removeUser(_findClientByNickName(banName)->getFd());
+		client.sendMsgToClientsChannel(channel, "KICK " + channelName + " " + _clients.at(client_fd)->getNickName() + " :" + comment, _clients, true);
 	}
+	else
+		clerr(ERR_CHANOPRIVSNEEDED);
 }
 
 void Server::_invite(int client_fd, std::string const & nickName, std::string const & channelName)
@@ -89,7 +93,7 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 	if (_channels.at(channelName).isInOperatorList(client_fd))
 	{
 		_channels.at(channelName).addInvite(_findClientByNickName(nickName)->getFd());
-		_sendMsgToCLient(*_clients.at(client_fd), "INVITE " + nickName + " " + channelName);
+		_sendMsgToClient(*_clients.at(client_fd), "INVITE " + nickName + " " + channelName);
 	}
 	else
 		clerr(ERR_CHANOPRIVSNEEDED);
@@ -110,7 +114,7 @@ void	Server::_nick(int client_fd, std::string const nick)
 	{
 		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
 		_clients.at(client_fd)->setNickName(nick);
-		_sendMsgToCLient(*_clients.at(client_fd), "NICK " + nick);
+		_sendMsgToClient(*_clients.at(client_fd), "NICK " + nick);
 	}
 }
 
@@ -130,26 +134,29 @@ void Server::_part(int client_fd, std::string const & nameChannel)
 	else
 	{
 		client.sendMsgToClientsChannel(channel, "PART " + nameChannel, _clients, true);
-		_sendMsgToCLient(client, "PART " + nameChannel);
+		// _sendMsgToClient(client, "PART " + nameChannel);
 		channel.removeUser(client_fd);
-		// clerr(RPL_WELCOME);	
 	}
 }
 
 void	Server::_topic(int client_fd, std::string const & channelName, std::string const & topic)
 {
+	if (_channels.find(channelName) == _channels.end())
+		return ;
+	Channel channel = _channels.at(channelName);
+	Client client = *_clients.at(client_fd);
+
 	if (channelName.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
-	else if (_channels.at(channelName).isInUserList(client_fd))
+	else if (!channel.isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
-	else if (!_channels.at(channelName).isInOperatorList(client_fd))
+	else if (!channel.isInOperatorList(client_fd))
 		clerr(ERR_CHANOPRIVSNEEDED);	
 	else if (topic.size() == 0)
-		_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + channelName + " :" + _channels.at(channelName).getTopic());
+		_sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + channelName + " :" + channel.getTopic());
 	else
 	{
-		_channels.at(channelName).setTopic(topic);
-		_sendMsgToCLient(*_clients.at(client_fd), "TOPIC " + channelName + " :" + topic);
+		channel.setTopic(topic);
+		client.sendMsgToClientsChannel(channel, "TOPIC " + channelName + " :" + topic, _clients, true);
 	}
-
 }

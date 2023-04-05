@@ -11,7 +11,7 @@ void Server::_execute(Client &client, Message const &msg)
         if (msg.getErr())
             clerr(msg.getErr());
         else if (cmd == "PING")
-            _sendMsgToCLient(client, "PONG " + paramsV[0]);
+            _sendMsgToClient(client, "PONG " + paramsV[0]);
         else if (cmd == "PASS")
            client.pass(paramsV[0], getPass());
         else if (!client.isAuth())
@@ -39,7 +39,7 @@ void Server::_execute(Client &client, Message const &msg)
         else if (cmd == "TOPIC")
             _topic(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "KICK")
-            _kick(paramsV[0], client_fd, paramsV[1]);
+            _kick(client_fd, paramsV[0], paramsV[1], paramsV[2]);
         else if (cmd == "INVITE")
             _invite(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "MODE")

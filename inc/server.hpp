@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/03 19:58:16 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/05 22:31:21 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class  Server {
 
 	std::string _getNumericReplyMessage(int code, Client const &client) const;
 	void		_sendNumericReply(int code, Client const & client);
-	void 		_sendMsgToCLient(Client const & client, std::string const & msg) const;
+	void 		_sendMsgToClient(Client const & client, std::string const & msg) const;
 	void 		_sendMsgToClientsChannel(Channel const & channel, std::string const & msg) const;
 	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
@@ -85,7 +85,7 @@ class  Server {
 	void		_parseJoin(int client_fd, std::string const & name);
 	void		_nick(int client_fd, std::string const nick);
 	void		_join(int client_fd, std::string const & name, std::string const & key);
-	void 		_kick(std::string const & channelName, int client_fd, std::string const & comment);
+	void 		_kick(int client_fd, std::string const & channelName, std::string const banName, std::string const & comment);
 	void		_invite(int client_fd, std::string const & nickName, std::string const & channelName);
 	void		_part(int client_fd, std::string const & nameChannel);
 	void		_topic(int client_fd, std::string const & nameChannel, std::string const & topic);
@@ -100,7 +100,7 @@ class  Server {
 	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 
 	void		_modeO(Channel & chan, std::string const mode, std::string option);
-	void		_modeB(Channel & chan, std::string const mode, std::string option);
+	void		_modeB(Channel & chan, std::string const mode, std::string option, int client_fd);
 	void		_modeK(Channel & chan, std::string const mode, std::string const option);
 	void		_modeChannel(std::string const chanName, std::string const mode, std::string option, Client &client);
 	bool		_isClientOp(Channel const & chan, Client &client);
