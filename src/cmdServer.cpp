@@ -117,17 +117,22 @@ void	Server::_nick(int client_fd, std::string const nick)
 
 void Server::_part(int client_fd, std::string const & nameChannel)
 {
+	Client client = *_clients.at(client_fd);
+
 	if (nameChannel.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
 	if (_channels.find(nameChannel) == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
-	else if (!_channels.at(nameChannel).isInUserList(client_fd))
+	Channel &channel = _channels.at(nameChannel);
+
+	if (!channel.isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
 	else
 	{
-		_channels.at(nameChannel).removeUser(client_fd);
-		_sendMsgToCLient(*_clients.at(client_fd), "PART " + nameChannel);
-		clerr(RPL_WELCOME);
+		client.sendMsgToClientsChannel(channel, "PART " + nameChannel, _clients, true);
+		_sendMsgToCLient(client, "PART " + nameChannel);
+		channel.removeUser(client_fd);
+		// clerr(RPL_WELCOME);	
 	}
 }
 
