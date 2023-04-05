@@ -52,7 +52,7 @@ class  Client {
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
-	void		modeUser(std::string const name, std::string const mode);
+	void		modeUser(std::string const name, std::string const mode, Client & client);
 	
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;

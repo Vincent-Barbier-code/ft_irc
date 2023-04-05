@@ -7,7 +7,7 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 	switch (code)
 	{
 		case RPL_WELCOME:
-			message = "001 " + client.getNickName() + " :Welcome on the Marine, Vincent and Kevin IRC Server, my dare " + client.getNickName();
+			message = "001 " + client.getNickName() + " :Welcome on the Marine, Vincent and Kevin IRC Server, my dear " + client.getNickName();
 			break;
 		case RPL_YOURHOST:
 			message = "002 " + client.getNickName() + " :Your host is " + client.getNickName();
@@ -39,6 +39,8 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NOSUCHNICK:
 			message = "401 " + client.getNickName() + " :No such nick/channel";
 			break;
+		case ERR_NOSUCHCHANNEL:
+			message = "403 :No such channel";
 		case ERR_CANNOTSENDTOCHAN:
 			message = "404 " + client.getNickName() + " :Cannot send to channel";
 			break;
@@ -60,6 +62,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NICKNAMEINUSE:
 			message = "433 " + client.getNickName() + " :Nickname is already in use";
 			break;
+		case ERR_NOTONCHANNEL:
+			message = "442 :You're not on that channel";
+			break;
 		case ERR_NOTREGISTERED:
 			message = "451 " + client.getNickName() + " :You have not registered";
 			break;
@@ -71,6 +76,8 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 			break;
 		case ERR_PASSWDMISMATCH:
 			message = "464 " + client.getNickName() + " :Password incorrect";
+		case ERR_UNKNOWNMODE:
+			message = "472 :Unknown mode";
 			break;
 		case ERR_INVITEONLYCHAN:
 			message = "473 " + client.getNickName() + " :Cannot join channel (+i)";
@@ -83,6 +90,12 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 			break;
 		case ERR_CHANOPRIVSNEEDED:
 			message = "482 " + client.getNickName() + " :You're not channel operator";
+			break;
+		case ERR_UMODEUNKNOWNFLAG:
+			message = "501 :Unknown MODE flag";
+			break;
+		case ERR_USERSDONTMATCH:
+			message = "503 :Cant change mode for other users";
 			break;
 		default:
 			throw std::runtime_error("ERROR: Unknown numeric reply code");

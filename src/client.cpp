@@ -83,7 +83,7 @@ void	Client::pass(std::string const &clientPass, std::string const &serverPass) 
 //Commande : MODE
 // Parametres 1 : <canal> {[+|-]|o|p|s|i|t|n|b|v} [<limite>] [<utilisateur>] [<masque de bannissement >]
 // Parametres 2 : <pseudonyme> {[+|-]i}
-void	Client::modeUser(std::string const name, std::string const mode) {
+void	Client::modeUser(std::string const name, std::string const mode, Client & client) {
 	if (name != _nickName)
 		clerr(ERR_USERSDONTMATCH);
 	if (mode[1] == 'i') {
@@ -91,6 +91,7 @@ void	Client::modeUser(std::string const name, std::string const mode) {
 			_isInvisible = true;
 		else
 			_isInvisible = false;
+		_sendMsgToCLient(client, mode);
 	}
 	else
 		clerr(ERR_UMODEUNKNOWNFLAG);

@@ -117,8 +117,24 @@ int Channel::getinviteMask() const{
     return _inviteMask;
 }
 
+int Channel::getbanMask() const {
+    return _banMask;
+}
+
+std::vector<int> Channel::getOperatorList() const {
+    return _operatorList;
+}
+
 std::vector<int> Channel::getUserList() const {
     return _userList;
+}
+
+std::vector<int>	Channel::getBanList() const {
+	return _banList;
+}
+
+std::vector<int>	Channel::getOpList() const {
+	return _operatorList;
 }
 
 void Channel::addUser(int fd) {
@@ -178,25 +194,11 @@ int Channel::isInBanList(int fd) const {
     return 0;
 }
 
-int Channel::getbanMask() const {
-    return _banMask;
-}
-
-std::vector<int> Channel::getOperatorList() const {
-    return _operatorList;
-}
-
 bool Channel::isModerated() const {
     return false;
 }
 
-std::vector<int>	Channel::getBanList() const {
-	return _banList;
-}
 
-std::vector<int>	Channel::getOpList() const {
-	return _operatorList;
-}
 
 //SETTERS
 
