@@ -23,7 +23,6 @@ class  Client {
 	bool							_isRegistered;
 	bool							_isAuth;
 	bool							_isInvisible;
-	std::map<std::string, Channel &>	_channels;
 	
   public:
 
@@ -47,6 +46,8 @@ class  Client {
 	bool		isConnected() const;
 	bool		isRegistered() const;
 	bool 		isAuth() const;
+	bool        isNicked() const;
+	bool        isServerNamed() const;
 
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,

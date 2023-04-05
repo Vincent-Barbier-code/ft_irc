@@ -14,13 +14,13 @@ void    Server::sendData(Client const & client, std::string const & data) {
 void Server::_sendMsgToCLient(Client const & client, std::string const & msg) {
     std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
 
-    std::cout << BLUE << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
+    std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
     sendData(client, data);
 }
 
 void	Server::_sendNumericReply(int code, Client const & client){
 	std::string message = _getNumericReplyMessage(code, client);
-	std::cout << "Sending message to client " << client.getNickName() << ": " << message << std::endl;
+	//std::cout << "Sending message to client " << client.getNickName() << ": " << message << std::endl;
 
 	_sendMsgToCLient(client, message);
 }

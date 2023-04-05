@@ -30,13 +30,21 @@ std::string Client::getHostName() const {
 }
 
 std::string Client::getServerName() const {
-    return _serverName;
+    return _serverName == "" ? "*" : _serverName;
 }
 
 std::string Client::getRealName() const {
     return _realName;
 }
 
+
+bool Client::isNicked() const {
+	return _nickName != "";
+}
+
+bool Client::isServerNamed() const {
+    return _serverName != "";
+}
 
 
 void Client::_sendMsgToCLient(Client const & client, std::string const & msg) const {

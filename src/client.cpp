@@ -36,7 +36,7 @@ std::string Client::getUserName() const
 
 std::string Client::getNickName() const
 {
-	return (this->_nickName);
+	return (this->_nickName == "" ? "*" : this->_nickName);
 }
 
 std::string Client::setNickName(std::string const &nickName)
@@ -71,8 +71,12 @@ void	Client::pass(std::string const &clientPass, std::string const &serverPass) 
 		clerr(ERR_ALREADYREGISTRED);
 	else if (clientPass == serverPass) {
 		_isAuth = true;
+		std::cout << "Client " << inet_ntoa(_addr.sin_addr) << " is now authentified" << std::endl;
 	}
-	clerr(ERR_PASSWDMISMATCH);
+	else {
+		std::cout << RED "Password mismatch" WHITE << std::endl;
+		clerr(ERR_PASSWDMISMATCH);
+	}
 }
 
 

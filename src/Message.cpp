@@ -26,7 +26,7 @@ void Message::_initParsers(void) {
     if (_isParsersInitialized)
         return ;
     _parsers["PASS"] = &Message::_parsePASS;
-    _parsers["CAP"] = &Message::_parseCAP;
+    //_parsers["CAP"] = &Message::_parseCAP;
     _parsers["USER"] = &Message::_parseUSER;
     _parsers["NICK"] = &Message::_parseNICK;
     _parsers["JOIN"] = &Message::_parseJOIN;
@@ -72,12 +72,10 @@ Message::Message(std::string const & raw_msg) {
 
 void Message::_initParams() {
 
-    if (_parsers.find(_cmd) == _parsers.end()) {
-        std::cout << "Invalid command: " << _cmd << std::endl;
-        return ;
-        //throw std::invalid_argument("Invalid command");
-    }
-    (this->*_parsers[_cmd])();
+    if (_parsers.find(_cmd) == _parsers.end())
+        _err = INVALID_CMD;
+    else
+        (this->*_parsers[_cmd])();
     
 }
 
@@ -87,7 +85,7 @@ void Message::_initParams() {
 std::ostream & operator<<(std::ostream & o, Message const & msg) {
     o   << WHITE "RAW_MSG: " PURPLE << std::setw(50) << msg.getRawWPrefix()
         << WHITE "  |   CMD: " PURPLE << std::setw(5)  << msg.getCmd() << WHITE
-        << "  |   PARAMS: " PURPLE << msg.paramsToString() << WHITE  << std::endl; 
+        << "  |   PARAMS: " PURPLE << msg.paramsToString() << WHITE;
 
     return o;
 }

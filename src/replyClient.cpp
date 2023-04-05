@@ -60,6 +60,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NICKNAMEINUSE:
 			message = "433 " + client.getNickName() + " :Nickname is already in use";
 			break;
+		case ERR_NOTREGISTERED:
+			message = "451 " + client.getNickName() + " :You have not registered";
+			break;
 		case ERR_NEEDMOREPARAMS:
 			message = "461 " + client.getNickName() + " :Not enough parameters";
 			break;
@@ -81,6 +84,8 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_CHANOPRIVSNEEDED:
 			message = "482 " + client.getNickName() + " :You're not channel operator";
 			break;
+		default:
+			throw std::runtime_error("ERROR: Unknown numeric reply code");
 	}
 	return (message);
 }
