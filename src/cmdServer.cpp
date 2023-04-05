@@ -29,32 +29,35 @@ std::string Server::_getUserNameList(Channel channel) const
 
 void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
+
 	_parseJoin(client_fd, name);
 	if (_channels.find(name) == _channels.end())
 		addChannel(Channel(name, "" , *_clients.at(client_fd)));
 	else
 	{
-		if (_channels.at(name).getkeyMask() == 1)
+		Channel &channel = _channels.at(name);
+		if (channel.getkeyMask() == 1)
 		{
-			if (key != _channels.at(name).getPassword())
+			if (key != channel.getPassword())
 				clerr(ERR_BADCHANNELKEY);
 		}
 		// if mode invitation only, check if client is invited
-		if (_channels.at(name).getinviteMask() == 1) {
-			if (!_channels.at(name).isInInviteList(client_fd))
+		if (channel.getinviteMask() == 1) {
+			if (!channel.isInInviteList(client_fd))
 				clerr(ERR_INVITEONLYCHAN);
 		}
 		// if not banned
-		if (_channels.at(name).getbanMask() == 1)
-			if (_channels.at(name).isInBanList(client_fd))
+		if (channel.getbanMask() == 1)
+			if (channel.isInBanList(client_fd))
 				clerr(ERR_BANNEDFROMCHAN);
-		_channels.at(name).addUser(client_fd);
-		if (_channels.at(name).getUserList().size() == 1)
-			_channels.at(name).addOperator(client_fd);
+		channel.addUser(client_fd);
+		if (channel.getUserList().size() == 1)
+			channel.addOperator(client_fd);
 	}
-	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
-	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
-	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(_channels.at(name)));
+	Channel &channel = _channels.at(name);
+	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
+	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
+	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
 }
 
 

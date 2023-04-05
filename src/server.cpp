@@ -254,9 +254,6 @@ bool	Server::_isClientOp(Channel const & chan, Client &client) {
 	return (true);
 }
 
-
-
-
 // --------------------- Setters -----------------
 
 // --------------------- Getters -----------------

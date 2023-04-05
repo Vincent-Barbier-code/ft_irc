@@ -54,12 +54,15 @@ void Client::sendMsgToCLient(Client const & client, std::string const & msg) con
     Server::sendData(client, data);
 }
 
-void Client::sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients) const {
-    
+void Client::sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients, bool toMe) const {
     std::list<Client *> channelClients = Server::filterClientsByFd(clients, channel.getUserList());
-        
+    
+
     for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++)
-        sendMsgToCLient(**client, msg);
+        {
+            if (*client != this || toMe)
+                sendMsgToCLient(**client, msg);
+        }
 }
 
 void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
@@ -79,5 +82,5 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
         clerr(ERR_CANNOTSENDTOCHAN);
 
     std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
-    sendMsgToClientsChannel(channel, data, clients);
+    sendMsgToClientsChannel(channel, data, clients, false);
 }
