@@ -17,7 +17,8 @@ void	Server::_modeO(Channel & chan, std::string const mode, std::string const op
 		if (mode[0] == '+')
 			chan.addClientToList(chan.getOpList(), client_to_op->getFd());
 		else {
-			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd()); //if last op leaves, oldest user becomes op
+			//if last op leaves, oldest user becomes op
+			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd());
 			if (chan.getOpList().size() == 0 && chan.getUserList().size() != 0)
 				chan.addClientToList(chan.getOpList(), *chan.getUserList().begin());
 		}
@@ -40,7 +41,8 @@ void	Server::_modeB(Channel & chan, std::string const mode, std::string const op
 			clerr(ERR_NOSUCHNICK);
 		if (mode[0] == '+') {
 			chan.addClientToList(chan.getBanList(), client_to_ban->getFd());
-			if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd())) //if client to ban is in channel, kick him
+			//if client to ban is in channel, kick him
+			if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd()))
 				_kick(chan.getName(), client_to_ban->getFd(), "You got banned\n");
 		}
 		else 
@@ -63,10 +65,10 @@ void	Server::_modeK(Channel & chan, std::string const mode, std::string const op
 		chan.setKeyMask(false);
 }
 
-//RPL_CHANNELMODEIS a faire
 void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string const option, Client &client) {
 	std::map<std::string, Channel>::iterator it;
 	Channel &chan = _channels.at(chanName);
+	
 	if (!mode.size() || (mode[0] != '+' && mode[0] != '-')) {
 		clerr(ERR_UNKNOWNMODE);
 	}
@@ -74,30 +76,31 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		clerr(ERR_UNKNOWNMODE);
 	}
 	it = _channels.find(chanName);
-	if (it == _channels.end())
+	if (it == _channels.end()) {
 		clerr(ERR_NOSUCHCHANNEL);
+	}
 	if (_isClientOp(chan, client)) {
 		char c = mode[1];
 		switch (c) {
 			case 'o':
 				_modeO(chan, mode, option);
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'p':
 				chan.setPrivateMask(mode[0] == '+');
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 's':
 				chan.setSecretMask(mode[0] == '+');
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'i':
 				chan.setInviteMask(mode[0] == '+');
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " +chanName + " "  + mode + " ");
 				break;
 			case 'm':
 				chan.setModeratedMask(mode[0] == '+');
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'l':
 				if (mode[0] == '+') {
@@ -111,18 +114,19 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				}
 				else
 					chan.setUserLimitMask(false);
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'b':
 				_modeB(chan, mode, option);
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'v':
 				chan.setVoiceMask(mode[0] == '+');
-				_sendMsgNumericToCLient(client, 221, mode);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			case 'k':
-				
+				_modeK(chan, mode, option);
+				client.sendMsgToCLient(client, "MODE " + chanName + " "  + mode + " ");
 				break;
 			default :
 				clerr(ERR_UNKNOWNMODE);
@@ -131,7 +135,6 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 }
 
 void Server::mode(std::string const name, std::string const mode, std::string option, Client & client) {
-	std::cout << "---------------MODE--------------" << std::endl;
 	if (name[0] == '&' || name[0] == '#')
 		_modeChannel(name, mode, option, client);
 	else

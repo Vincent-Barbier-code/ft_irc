@@ -100,7 +100,7 @@ void	Server::_nick(int client_fd, std::string const nick)
 	if (_findClientByNickName(nick))
 	{
 		std::cout << "----------------------------- " + nick + " already exist" << std::endl;
-		clerr(ERR_NICKNAMEINUSE);
+		clerr(ERR_NICKCOLLISION);
 	}
 	else if (nick.size() > MAX_NICKNAME_LENGTH)
 		clerr(ERR_ERRONEUSNICKNAME);
