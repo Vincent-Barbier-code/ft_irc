@@ -47,7 +47,7 @@ bool Client::isServerNamed() const {
 }
 
 
-void Client::_sendMsgToCLient(Client const & client, std::string const & msg) const {
+void Client::sendMsgToCLient(Client const & client, std::string const & msg) const {
     std::string data = ":" + getNickName() + " " + msg + "\r\n";
 
     std::cout << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
@@ -57,7 +57,7 @@ void Client::_sendMsgToCLient(Client const & client, std::string const & msg) co
 void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
     
     std::string data = "PRIVMSG " + receiver.getNickName() + " :" + msg;
-    _sendMsgToCLient(receiver, msg); 
+    sendMsgToCLient(receiver, msg); 
 }
 
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
@@ -72,6 +72,6 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
         
     for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++) {
         std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
-        _sendMsgToCLient(**client, data);
+        sendMsgToCLient(**client, data);
     }
 }

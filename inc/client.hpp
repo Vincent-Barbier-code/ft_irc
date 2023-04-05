@@ -26,7 +26,6 @@ class  Client {
 	
   public:
 
-	void _sendMsgToCLient(Client const & client, std::string const & msg) const;
 	typedef std::map<int, Client *> client_map;
 
 	Client();
@@ -54,6 +53,7 @@ class  Client {
                   std::string const & servername, std::string realname);
 	void		modeUser(std::string const name, std::string const mode, Client & client);
 	
+	void sendMsgToCLient(Client const & client, std::string const & msg) const;
 	void sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 	
