@@ -33,8 +33,9 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 
 	_parseJoin(client_fd, name);
 	it2 = _channels.find(name);
-	if (it2 == _channels.end())
+	if (it2 == _channels.end()) {
 		addChannel(Channel(name, "" , *_clients.at(client_fd)));
+	}
 	else
 	{
 		if (_channels.at(name).getkeyMask() == 1)
@@ -53,7 +54,7 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 				clerr(ERR_BANNEDFROMCHAN);
 		_channels.at(name).addUser(client_fd);
 	}
-	(*_clients.at(client_fd))._sendMsgToCLient(*_clients.at(client_fd), "JOIN " + name);
+
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + _channels.at(name).getTopic());
 	_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(_channels.at(name)));
 }

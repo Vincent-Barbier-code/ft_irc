@@ -66,20 +66,16 @@ void	Server::_modeK(Channel & chan, std::string const mode, std::string const op
 //RPL_CHANNELMODEIS a faire
 void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string const option, Client &client) {
 	std::map<std::string, Channel>::iterator it;
-	Channel chan;
-
+	Channel &chan = _channels.at(chanName);
 	if (!mode.size() || (mode[0] != '+' && mode[0] != '-')) {
-		std::cout << "HELLO" << std::endl;
 		clerr(ERR_UNKNOWNMODE);
 	}
 	if (mode.size() > 2) {
-		std::cout << "BONJOUR" << std::endl;
 		clerr(ERR_UNKNOWNMODE);
 	}
 	it = _channels.find(chanName);
 	if (it == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
-	chan = it->second;
 	if (_isClientOp(chan, client)) {
 		char c = mode[1];
 		switch (c) {
@@ -88,7 +84,6 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				_sendMsgNumericToCLient(client, 221, mode);
 				break;
 			case 'p':
-				std::cout << "---------------ALED--------------" << std::endl;
 				chan.setPrivateMask(mode[0] == '+');
 				_sendMsgNumericToCLient(client, 221, mode);
 				break;

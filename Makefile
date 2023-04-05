@@ -2,7 +2,7 @@
 NAME := ft_irc
 PORT := 6667
 PSWD := 1234
-CXX := c++
+CXX := clang++
 # CXX := clang++
 CXXFLAGS := -Wall -Wextra -Werror -g3 -std=c++98 #-ansi -Wshadow
 DEBUG := -g3 -fsanitize=address
