@@ -57,7 +57,20 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 	Channel &channel = _channels.at(name);
 	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
 	_sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
-	_sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel), _clients, true);
+	// _sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+}
+
+bool Server::_isClientNameInList(Channel channel, std::string name) const {
+	std::vector<int> userList = channel.getUserList();
+	int client_fd;
+
+	for (size_t i = 0; i < userList.size(); i++) {
+		client_fd = userList.at(i);
+		if (_clients.at(client_fd)->getNickName() == name)
+			return true;
+	}
+	return false;
 }
 
 
@@ -65,7 +78,7 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 {
 	Client &client = *_clients.at(client_fd);
 
-	if (channelName.size() == 0 || comment.size() == 0)
+	if (channelName.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
 	if (_channels.find(channelName) == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
@@ -73,12 +86,17 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 
 	if (!channel.isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
+	else if (!_isClientNameInList(channel, banName))
+		clerr(ERR_USERNOTINCHANNEL);
 	else if (channel.isInBanList(client_fd))
 		clerr(ERR_BANNEDFROMCHAN);
 	if (channel.isInOperatorList(client_fd))
 	{
-		channel.removeUser(_findClientByNickName(banName)->getFd());
-		client.sendMsgToClientsChannel(channel, "KICK " + channelName + " " + _clients.at(client_fd)->getNickName() + " :" + comment, _clients, true);
+		Client &clientBan = *_findClientByNickName(banName);
+		clientBan.sendMsgToClient(clientBan, "PART " + channelName);
+		client.sendMsgToClientsChannel(channel, "KICK " + channelName + " " + banName + " :" + comment, _clients, true);
+		// _F .sendMsgToClientsChannel(channel, "PART " + channelName, _clients, true);
+		channel.removeUser(clientBan.getFd());
 	}
 	else
 		clerr(ERR_CHANOPRIVSNEEDED);
@@ -137,8 +155,7 @@ void Server::_part(int client_fd, std::string const & nameChannel)
 		clerr(ERR_NOTONCHANNEL);
 	else
 	{
-		client.sendMsgToClientsChannel(channel, "PART " + nameChannel, _clients, true);
-		// _sendMsgToClient(client, "PART " + nameChannel);
+		client.sendMsgToClientsChannel(channel, "PART " + nameChannel, _clients, false);
 		channel.removeUser(client_fd);
 	}
 }

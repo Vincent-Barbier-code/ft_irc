@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/05 23:12:49 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/06 05:40:10 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ class  Server {
 	void		_part(int client_fd, std::string const & nameChannel);
 	void		_topic(int client_fd, std::string const & nameChannel, std::string const & topic);
 	std::string _getUserNameList(Channel channel) const;
+	bool		_isClientNameInList(Channel channel, std::string name) const;
 	void        _list(Client const & client);
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);

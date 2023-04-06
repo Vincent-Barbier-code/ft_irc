@@ -66,6 +66,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_NICKCOLLISION:
 			message = "436 " + client.getNickName() + " :Nickname collision KILL";
 			break;
+		case ERR_USERNOTINCHANNEL:
+			message = "441 " + client.getNickName() + " :They aren't on that channel";
+			break;
 		case ERR_NOTONCHANNEL:
 			message = "442 :You're not on that channel";
 			break;
