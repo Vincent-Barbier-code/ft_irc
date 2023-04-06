@@ -4,6 +4,7 @@
 # pragma once
 
 #include <list>
+#include <set>
 #include <algorithm>
 
 #include "macro.hpp"
@@ -27,6 +28,8 @@ class  Client {
   public:
 
 	typedef std::map<int, Client *> client_map;
+	typedef Channel::channel_map channel_map;
+	typedef Channel::channelPtr_map channelPtr_map;
 
 	Client();
 	Client(int fd, sockaddr_in addr);
@@ -55,9 +58,12 @@ class  Client {
 	
 	void 	sendMsgToCLient(Client const & client, std::string const & msg) const;
 	void	sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients, bool toMe) const;
+	void 	sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const;
 
 	void 	sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void 	sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
+
+	std::list<Channel const *> getJoinedChannels(channel_map const & channels) const;
 
 	
 	class ClientException : public std::exception {

@@ -111,6 +111,7 @@ void	Server::_nick(int client_fd, std::string const nick)
 		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
 		_clients.at(client_fd)->setNickName(nick);
 		_sendMsgToCLient(*_clients.at(client_fd), "NICK " + nick);
+		_clients.at(client_fd)->sendMsg
 	}
 }
 
