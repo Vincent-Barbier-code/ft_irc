@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/06 05:40:10 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/06 13:12:15 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ class  Server {
 	void		_deconnection(int client_fd);
 	Client		*_findClientByFd(int fd);
 	Client		*_findClientByNickName(std::string const nickName) const;
-	int			_clientConnect(int client_fd, sockaddr client_addr, std::string username, std::string nickname);
 	void		_execRawMsgs(std::string const & raw_msgs, int client_fd);
 	void		_execute(Client & client, Message const & msg);
 
@@ -93,8 +92,11 @@ class  Server {
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
+
+	//stop
 	void 		_eraseChannel();
 	void 		_eraseClient();
+	void		_partChannels();
 	
 	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 

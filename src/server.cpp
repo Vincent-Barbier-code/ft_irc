@@ -130,7 +130,24 @@ void Server::_deconnection(int client_fd) {
 	_clients.erase(client_fd);
 }
 
-void sigStop(int signum)
+void Server::_partChannels()
+{
+	std::map<std::string, Channel>::iterator	it = _channels.begin();
+
+	while (it != _channels.end())
+	{
+		std::cout << "Parting channel " << it->first << std::endl;
+		std::vector<int>	users = it->second.getUserList();
+		for (size_t i = 0; i < users.size(); i++)
+		{
+			std::cout << "Parting channel " << it->first << " for client " << i << std::endl;
+			_part(users[i], it->first);
+		}
+		it++;
+	}
+}
+
+void	sigStop(int signum)
 {
 	(void)signum;
 	std::cout << "Sigquit received." << std::endl;
@@ -162,6 +179,7 @@ void Server::_eraseChannel()
 void	Server::stop()
 {
 	std::cout << "Server is shutting down..." << std::endl;
+	_partChannels();
 	_eraseClient();
 	_eraseChannel();
 	close(_epoll_fd);
