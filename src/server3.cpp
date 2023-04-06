@@ -13,7 +13,7 @@ std::list<Client *> Server::filterClientsByFd(std::map<int, Client *> const & cl
 void Server::_sendMsgNumericToCLient(Client const & client, int code, std::string const & msg) {
 
     std::string data = itostr(code) + " " + client.getNickName() + " " + msg;
-    _sendMsgToCLient(client, data);
+    _sendMsgToClient(client, data);
 }
 
 void Server::_user(Client & client, std::vector<std::string> const & params) {
@@ -26,5 +26,5 @@ void Server::_sendMsgToClientsChannel(Channel const & channel, std::string const
     std::list<Client *> channelClients = Server::filterClientsByFd(_clients, channel.getUserList());
 
     for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++)
-        _sendMsgToCLient(**client, msg);
+        _sendMsgToClient(**client, msg);
 }

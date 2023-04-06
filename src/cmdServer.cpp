@@ -29,10 +29,10 @@ std::string Server::_getUserNameList(Channel channel) const
 
 void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
-
+	Client &client = *_clients.at(client_fd);
 	_parseJoin(client_fd, name);
 	if (_channels.find(name) == _channels.end())
-		addChannel(Channel(name, "" , *_clients.at(client_fd)));
+		addChannel(Channel(name, "" , client));
 	else
 	{
 		Channel &channel = _channels.at(name);
@@ -43,9 +43,15 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 		}
 		// if mode invitation only, check if client is invited
 		if (channel.getinviteMask() == 1) {
-			if (!channel.isInInviteList(client_fd))
-				clerr(ERR_INVITEONLYCHAN);
+			if (!channel.isInInviteList(client_fd)) {
+				client.sendMsgToClient(client, itostr(ERR_INVITEONLYCHAN) + " " + client.getNickName() + " " + name + " :Cannot join channel (+i)");
+				return ;
+			}
 		}
+		//if mode limit is set, check if channel is full
+		if (channel.getUserLimit() != 0)
+			if (channel.getUserList().size() >= channel.getUserLimit())
+				client.sendMsgToClient(client, itostr(ERR_CHANNELISFULL) + " " + client.getNickName() + " " + name + " :Cannot join channel (+l)");
 		// if not banned
 		if (channel.getbanMask() == 1)
 			if (channel.isInBanList(client_fd))
@@ -56,8 +62,8 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 	}
 	Channel &channel = _channels.at(name);
 	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
-	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
-	(*_clients.at(client_fd)).sendMsgToCLient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	(*_clients.at(client_fd)).sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
+	//(*_clients.at(client_fd)).sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
 }
 
 
@@ -76,7 +82,7 @@ void Server::_kick(std::string const & channelName, int client_fd, std::string c
 	if (_channels.at(channelName).isInOperatorList(client_fd))
 	{
 		_channels.at(channelName).removeUser(client_fd);
-		_sendMsgToCLient(*_clients.at(client_fd), "KICK " + channelName + " " + _clients.at(client_fd)->getNickName() + " :" + comment);
+		_sendMsgToClient(*_clients.at(client_fd), "KICK " + channelName + " " + _clients.at(client_fd)->getNickName() + " :" + comment);
 	}
 }
 
@@ -89,7 +95,7 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 	if (_channels.at(channelName).isInOperatorList(client_fd))
 	{
 		_channels.at(channelName).addInvite(_findClientByNickName(nickName)->getFd());
-		_sendMsgToCLient(*_clients.at(client_fd), "INVITE " + nickName + " " + channelName);
+		_sendMsgToClient(*_clients.at(client_fd), "INVITE " + nickName + " " + channelName);
 	}
 	else
 		clerr(ERR_CHANOPRIVSNEEDED);
@@ -99,7 +105,6 @@ void	Server::_nick(int client_fd, std::string const nick)
 {
 	if (_findClientByNickName(nick))
 	{
-		std::cout << "----------------------------- " + nick + " already exist" << std::endl;
 		clerr(ERR_NICKCOLLISION);
 	}
 	else if (nick.size() > MAX_NICKNAME_LENGTH)
@@ -108,9 +113,8 @@ void	Server::_nick(int client_fd, std::string const nick)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 	{
-		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
 		_clients.at(client_fd)->setNickName(nick);
-		_sendMsgToCLient(*_clients.at(client_fd), "NICK " + nick);
+		_sendMsgToClient(*_clients.at(client_fd), "NICK " + nick);
 	}
 }
 
@@ -124,15 +128,12 @@ void Server::_part(int client_fd, std::string const & nameChannel)
 	if (_channels.find(nameChannel) == _channels.end())
 		clerr(ERR_NOSUCHCHANNEL);
 	Channel &channel = _channels.at(nameChannel);
-
 	if (!channel.isInUserList(client_fd))
 		clerr(ERR_NOTONCHANNEL);
 	else
 	{
 		client.sendMsgToClientsChannel(channel, "PART " + nameChannel, _clients, true);
-		_sendMsgToCLient(client, "PART " + nameChannel);
 		channel.removeUser(client_fd);
-		// clerr(RPL_WELCOME);	
 	}
 }
 
@@ -145,11 +146,11 @@ void	Server::_topic(int client_fd, std::string const & channelName, std::string 
 	else if (!_channels.at(channelName).isInOperatorList(client_fd))
 		clerr(ERR_CHANOPRIVSNEEDED);	
 	else if (topic.size() == 0)
-		_sendMsgToCLient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + channelName + " :" + _channels.at(channelName).getTopic());
+		_sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + channelName + " :" + _channels.at(channelName).getTopic());
 	else
 	{
 		_channels.at(channelName).setTopic(topic);
-		_sendMsgToCLient(*_clients.at(client_fd), "TOPIC " + channelName + " :" + topic);
+		_sendMsgToClient(*_clients.at(client_fd), "TOPIC " + channelName + " :" + topic);
 	}
 
 }

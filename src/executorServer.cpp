@@ -11,7 +11,7 @@ void Server::_execute(Client &client, Message const &msg)
         if (msg.getErr())
             clerr(msg.getErr());
         else if (cmd == "PING")
-            _sendMsgToCLient(client, "PONG " + paramsV[0]);
+            _sendMsgToClient(client, "PONG " + paramsV[0]);
         else if (cmd == "PASS")
            client.pass(paramsV[0], getPass());
         else if (!client.isAuth())

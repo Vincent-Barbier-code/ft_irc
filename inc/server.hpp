@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/03 19:58:16 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/05 23:47:40 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,10 @@ class  Server {
 
 	std::string _getNumericReplyMessage(int code, Client const &client) const;
 	void		_sendNumericReply(int code, Client const & client);
-	void 		_sendMsgToCLient(Client const & client, std::string const & msg) const;
+	void 		_sendMsgToClient(Client const & client, std::string const & msg) const;
 	void 		_sendMsgToClientsChannel(Channel const & channel, std::string const & msg) const;
 	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
-
-	//channel
-	void    	_createChannel(std::string const & channelName, std::string const & topic, Client const & client);
 		
 	//CmdServer
 	void 		_user(Client & client, std::vector<std::string> const & params);

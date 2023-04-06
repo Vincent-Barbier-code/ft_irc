@@ -4,7 +4,6 @@ Channel::Channel() {
     _name = "";
     _topic = "";
     _password = "";
-    _userCount = 0;
     _userLimit = 0;
     _banMask = false;
     _inviteMask = false;
@@ -20,7 +19,6 @@ Channel::Channel(std::string name, std::string const &topic, Client const &creat
     _name = name;
     _topic = topic;
     _password = "";
-    _userCount = 1;
     _userLimit = 0;
     _banMask = false;
     _inviteMask = false;
@@ -38,7 +36,6 @@ Channel & Channel::operator=(Channel const & rhs) {
     _name = rhs._name;
     _topic = rhs._topic;
     _password = rhs._password;
-    _userCount = rhs._userCount;
     _userLimit = rhs._userLimit;
     _banMask = rhs._banMask;
     _inviteMask = rhs._inviteMask;
@@ -75,20 +72,27 @@ bool	Channel::isClientInList(std::vector<int> list, int fdClient) const {
 	return (false);
 }
 
-bool	Channel::addClientToList(std::vector<int> list, int fdClient) {
-	if (isClientInList(list, fdClient))
-		return (false);
-	list.push_back(fdClient);
-	return (true);
-}
-
-bool	Channel::rmClientFromList(std::vector<int> list, int fdClient) {
-	std::vector<int>::iterator it = list.begin();
-	std::vector<int>::iterator ite = list.end();
+bool		Channel::removeOperator(int fd) {
+    std::vector<int>::iterator it = _operatorList.begin();
+	std::vector<int>::iterator ite = _operatorList.end();
 
 	while (it != ite) {
-		if (*it == fdClient) {
-			list.erase(it);
+		if (*it == fd) {
+			_operatorList.erase(it);
+			return (true);
+		}
+		it++;
+	}
+	return (false);
+}
+
+bool		Channel::removeBan(int fd) {
+    std::vector<int>::iterator it = _banList.begin();
+	std::vector<int>::iterator ite = _banList.end();
+
+	while (it != ite) {
+		if (*it == fd) {
+			_banList.erase(it);
 			return (true);
 		}
 		it++;
@@ -137,20 +141,33 @@ std::vector<int>	Channel::getOpList() const {
 	return _operatorList;
 }
 
+unsigned long int	Channel::getUserLimit() const {
+    return _userLimit;
+}
+
 void Channel::addUser(int fd) {
     _userList.push_back(fd);
 }
 
-void Channel::addOperator(int fd) {
-    _operatorList.push_back(fd);
+bool Channel::addOperator(int fd) {
+    if (isClientInList(_operatorList, fd))
+		return (false);
+	_operatorList.push_back(fd);
+	return (true);
 }
 
-void Channel::addBan(int fd) {
-    _banList.push_back(fd);
+bool Channel::addBan(int fd) {
+    if (isClientInList(_banList, fd))
+		return (false);
+	_banList.push_back(fd);
+	return (true);
 }
 
-void Channel::addInvite(int fd) {
-    _inviteList.push_back(fd);
+bool Channel::addInvite(int fd) {
+    if (isClientInList(_inviteList, fd))
+		return (false);
+	_inviteList.push_back(fd);
+	return (true);
 }
 
 void Channel::removeUser(int fd) {
