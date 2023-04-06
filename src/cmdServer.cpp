@@ -55,10 +55,12 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 			channel.addOperator(client_fd);
 	}
 	Channel &channel = _channels.at(name);
-	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
-	_sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
-	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel), _clients, true);
-	// _sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	Client &client = *_clients.at(client_fd);
+
+	client.sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
+	_sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + name + " :" + channel.getTopic());
+	// _sendMsgToClientsChannel(channel, itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + name + " :" + _getUserNameList(channel));
 }
 
 bool Server::_isClientNameInList(Channel channel, std::string name) const {
@@ -95,7 +97,6 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 		Client &clientBan = *_findClientByNickName(banName);
 		clientBan.sendMsgToClient(clientBan, "PART " + channelName);
 		client.sendMsgToClientsChannel(channel, "KICK " + channelName + " " + banName + " :" + comment, _clients, true);
-		// _F .sendMsgToClientsChannel(channel, "PART " + channelName, _clients, true);
 		channel.removeUser(clientBan.getFd());
 	}
 	else
@@ -164,7 +165,7 @@ void	Server::_topic(int client_fd, std::string const & channelName, std::string 
 {
 	if (_channels.find(channelName) == _channels.end())
 		return ;
-	Channel channel = _channels.at(channelName);
+	Channel &channel = _channels.at(channelName);
 	Client client = *_clients.at(client_fd);
 
 	if (channelName.size() == 0)
