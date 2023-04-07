@@ -184,20 +184,22 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 		return ;
 	}
 
-	int len;
-	int client_fd = client_ev.data.fd;
+	int 	 len;
+	int 	 client_fd = client_ev.data.fd;
+	Client & client = *_clients.at(client_fd);
+
+	if (client.getBuf().find("\r\n") != std::string::npos)
+		client.clearBuf();
+
 	len = read(client_fd, buf, size);
 	if (len == -1) {
 		perror("read() failed");
 		exit(EXIT_FAILURE);
 	}
 
-	Client & client = *_clients.at(client_fd);
 	client.appendBuf(buf, len);
-	if (client.getBuf().find("\r\n") != std::string::npos) {
+	if (client.getBuf().find("\r\n") != std::string::npos)
 		_execRawMsgs(client.getBuf(), client_fd);
-		client.clearBuf();
-	}
 }
 
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
