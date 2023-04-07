@@ -32,6 +32,7 @@ class	Channel {
 		int					getkeyMask() const;
 		int 				getinviteMask() const;
 		int					getbanMask() const;
+		bool 				getVoiceMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 

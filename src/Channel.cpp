@@ -259,3 +259,7 @@ bool	Channel::setUserLimit(std::string limit) {
 	_userLimit = tmp_nb;
 	return (true);
 }
+
+bool Channel::getVoiceMask() const {
+    return _voiceMask;
+}

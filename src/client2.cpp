@@ -78,7 +78,7 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
 
     if (find(channelFds.begin(), channelFds.end(), _fd) == channelFds.end())
         clerr(ERR_CANNOTSENDTOCHAN);
-    if (channel.isModerated() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
+    if (channel.getVoiceMask() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
         clerr(ERR_CANNOTSENDTOCHAN);
 
     std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
