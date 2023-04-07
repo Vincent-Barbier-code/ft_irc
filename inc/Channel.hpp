@@ -34,6 +34,8 @@ class	Channel {
 		std::vector<int>	getBanList() const;
 		std::vector<int>	getOpList() const;
 		unsigned long int	getUserLimit() const;
+		bool				getSecretMask() const;
+		bool				getPrivateMask() const;
 
 		int 		isInUserList(int fd) const;
 		int			isInInviteList(int fd) const;

@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/05 23:47:40 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/07 21:04:36 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ class  Server {
 	void        _list(Client const & client);
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
+	void		_sendListPrivate(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
 	void 		_eraseChannel();
 	void 		_eraseClient();

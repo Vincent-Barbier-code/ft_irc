@@ -145,6 +145,15 @@ unsigned long int	Channel::getUserLimit() const {
     return _userLimit;
 }
 
+bool				Channel::getSecretMask() const {
+    return _secretMask;
+}
+
+bool				Channel::getPrivateMask() const {
+    return _privateMask;
+}
+
+//SETTERS
 void Channel::addUser(int fd) {
     _userList.push_back(fd);
 }
