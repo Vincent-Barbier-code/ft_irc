@@ -96,6 +96,7 @@ class  Server {
 	void		_sendListEnd(Client const & client);
 	void 		_eraseChannel();
 	void 		_eraseClient();
+	void 		_quit(Client & client, std::string const & comment);
 	
 	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 

@@ -28,3 +28,9 @@ void Server::_sendMsgToClientsChannel(Channel const & channel, std::string const
     for (std::list<Client*>::const_iterator client = channelClients.begin(); client != channelClients.end(); client++)
         _sendMsgToCLient(**client, msg);
 }
+
+void Server::_quit(Client & client, std::string const & msg) {
+    std::string quitMsg = "QUIT :" + (msg == "" ? "for no reason" : msg);
+    client.sendMsgToStalkers(quitMsg, _channels, _clients);
+    _deconnection(client.getFd());
+}
