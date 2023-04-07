@@ -157,7 +157,10 @@ void Message::_parseCAP(void) {
 
 void Message::_parseNICK(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
-    _params.push_back(Param("nickname", space_splited[1]));
+    if (space_splited.size() != 2)
+        _err = ERR_NEEDMOREPARAMS;
+    else
+        _params.push_back(Param("nickname", space_splited[1]));
 }
 
 void Message::_parseUSER(void) {
