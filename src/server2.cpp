@@ -72,7 +72,6 @@ void Server::_sendListEnd(Client const & client) {
 }
 
 void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const {
-    std::cout << "sendMsg: " << msg << std::endl;
 
     std::vector<std::string> destsList = ke_split(dests, std::string(","));
     if (destsList.size() > 30)

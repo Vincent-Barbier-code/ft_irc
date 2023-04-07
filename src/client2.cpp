@@ -68,7 +68,7 @@ void Client::sendMsgToClientsChannel(Channel const & channel, std::string const 
 void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
     
     std::string data = "PRIVMSG " + receiver.getNickName() + " :" + msg;
-    sendMsgToCLient(receiver, msg); 
+    sendMsgToCLient(receiver, data); 
 }
 
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
