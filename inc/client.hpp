@@ -28,8 +28,7 @@ class  Client {
   public:
 
 	typedef std::map<int, Client *> client_map;
-	typedef Channel::channel_map channel_map;
-	typedef Channel::channelPtr_map channelPtr_map;
+	typedef std::map<std::string, Channel> channel_map;
 
 	Client();
 	Client(int fd, sockaddr_in addr);
@@ -63,7 +62,8 @@ class  Client {
 	void 	sendPrivateMsg(Client const & receiver, std::string const & msg) const;
 	void 	sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 
-	std::list<Channel const *> getJoinedChannels(channel_map const & channels) const;
+	std::list<Channel const *>	getJoinedChannels(channel_map const & channels) const;
+	std::set<Client const *>	getStalkers(channel_map const & channels, client_map const & clients) const;
 
 	
 	class ClientException : public std::exception {

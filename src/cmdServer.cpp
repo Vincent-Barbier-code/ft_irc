@@ -97,6 +97,7 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 
 void	Server::_nick(int client_fd, std::string const nick)
 {
+	Client & client = *_clients.at(client_fd);
 	if (_findClientByNickName(nick))
 	{
 		std::cout << "----------------------------- " + nick + " already exist" << std::endl;
@@ -109,9 +110,9 @@ void	Server::_nick(int client_fd, std::string const nick)
 	else
 	{
 		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
-		_clients.at(client_fd)->setNickName(nick);
-		_sendMsgToCLient(*_clients.at(client_fd), "NICK " + nick);
-		_clients.at(client_fd)->sendMsg
+		client.sendMsgToStalkers("NICK " + nick, _channels, _clients);
+		client.sendMsgToCLient(client, "NICK " + nick);
+		client.setNickName(nick);
 	}
 }
 

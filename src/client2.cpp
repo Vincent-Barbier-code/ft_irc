@@ -86,16 +86,22 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
 }
 
 void Client::sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const {
+    std::set<Client const *> stalkers = getStalkers(channels, clients);
+    for (std::set<Client const *>::const_iterator stalker = stalkers.begin(); stalker != stalkers.end(); stalker++)
+        sendMsgToCLient(**stalker, msg); 
+}
+
+std::set<Client const *> Client::getStalkers(channel_map const & channels, client_map const & clients) const {
     std::set <Client const *> stalkers;
     std::list<Channel const *> joinedChannels = getJoinedChannels(channels);
 
     for (std::list<Channel const *>::const_iterator channel = joinedChannels.begin(); channel != joinedChannels.end(); channel++) {
         std::vector<int> const & users = (*channel)->getUserList();
-        for (std::vector<int>::const_iterator user = users.begin(); user != users.end(); user++) {
+        for (std::vector<int>::const_iterator user = users.begin(); user != users.end(); user++)
             if (*user != _fd)
                 stalkers.insert(clients.at(*user));
-        }
     }
+    return stalkers;
 }
 
 std::list<Channel const *> Client::getJoinedChannels(channel_map const & channels) const {

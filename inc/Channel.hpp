@@ -15,7 +15,6 @@ class	Channel {
 	public :
 
 		typedef std::map<std::string, Channel> channel_map;
-		typedef std::map<std::string, Channel *> channelPtr_map;
 
 		Channel();
 		Channel(std::string name, std::string const &topic, Client const &creator); 
