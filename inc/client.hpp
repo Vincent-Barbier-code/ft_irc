@@ -13,6 +13,7 @@
 class  Client {
 
   private:
+	std::string 					_buf;
 	int								_fd;
 	struct sockaddr_in				_addr;
 	std::string						_nickName;
@@ -43,12 +44,16 @@ class  Client {
 	std::string getHostName() const; 
 	std::string getServerName() const;
 	std::string getRealName() const;
+	std::string getBuf() const;
 	std::string	setNickName(std::string const &nickName);
+	void 		setBuf(std::string const & buf);
 	bool		isConnected() const;
 	bool		isRegistered() const;
 	bool 		isAuth() const;
 	bool        isNicked() const;
 	bool        isServerNamed() const;
+	void        appendBuf(char const * buf, size_t len);
+	void 		clearBuf();
 
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,

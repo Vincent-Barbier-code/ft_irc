@@ -116,3 +116,19 @@ std::list<Channel const *> Client::getJoinedChannels(channel_map const & channel
 
     return joinedChannels;
 }
+
+void Client::setBuf(std::string const & buf) {
+    _buf = buf;
+}
+
+void Client::appendBuf(char const * buf, size_t len) {
+    _buf.append(buf, len);
+}
+
+std::string Client::getBuf() const {
+    return _buf;
+}
+
+void Client::clearBuf() {
+    _buf.clear();
+}
