@@ -250,9 +250,11 @@ bool Channel::isModerated() const {
     return false;
 }
 
-
-
 //SETTERS
+
+void    Channel::setModeratedMask(bool mode) {
+    _moderatedMask = mode;
+}
 
 void	Channel::setInviteMask(bool mode) {
 	_inviteMask = mode;

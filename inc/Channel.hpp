@@ -63,7 +63,7 @@ class	Channel {
 		void				setKeyMask(bool mode);
 		void				setSecretMask(bool mode);
 		void				setUserLimitMask(bool mode);
-		void				setModeratedMask(bool mode);
+		void				setModeratedMask(bool mode) ;
 		void				setKey(std::string key);
 		bool				setUserLimit(std::string limit);
 		void				setTopic(std::string topic);
