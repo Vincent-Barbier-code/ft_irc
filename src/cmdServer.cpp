@@ -1,8 +1,7 @@
 #include "server.hpp"
 
-void Server::_parseJoin(int client_fd, std::string const & name)
+void Server::_parseJoin(std::string const & name)
 {
-	(void)(client_fd);
 	if (name.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
 	if (name[0] != '#' && name[0] != '&')
@@ -20,47 +19,52 @@ std::string Server::_getUserNameList(Channel channel) const
 
     for (size_t i = 0; i < channel.getUserList().size(); i++) {
 		client_fd = channel.getUserList().at(i);
-		std::cout << "----------------------------client_fd: " << client_fd << std::endl;
         userList += " " + _clients.at(client_fd)->getNickName();
     }
     return userList;
+}
+
+void Server::_checkJoin(std::string const &name, int client_fd, std::string const & key)
+{
+	Channel &channel = _channels.at(name);
+	if (channel.getkeyMask() == 1)
+	{
+		if (key != channel.getPassword())
+			clerr(ERR_BADCHANNELKEY);
+	}
+	// if mode invitation only, check if client is invited
+	if (channel.getinviteMask() == 1) {
+		if (!channel.isInInviteList(client_fd))
+			clerr(ERR_INVITEONLYCHAN);
+		else
+			channel.removeInvite(client_fd);
+	}
+	// if not banned
+	if (channel.getbanMask() == 1)
+		if (channel.isInBanList(client_fd))
+			clerr(ERR_BANNEDFROMCHAN);
+	channel.addUser(client_fd);
+	if (channel.getOperatorList().size() == 0)
+		channel.addOperator(client_fd);
 }
 
 
 void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
 
-	_parseJoin(client_fd, name);
+	_parseJoin(name);
 	if (_channels.find(name) == _channels.end())
 		addChannel(Channel(name, "" , *_clients.at(client_fd)));
 	else
-	{
-		Channel &channel = _channels.at(name);
-		if (channel.getkeyMask() == 1)
-		{
-			if (key != channel.getPassword())
-				clerr(ERR_BADCHANNELKEY);
-		}
-		// if mode invitation only, check if client is invited
-		if (channel.getinviteMask() == 1) {
-			if (!channel.isInInviteList(client_fd))
-				clerr(ERR_INVITEONLYCHAN);
-		}
-		// if not banned
-		if (channel.getbanMask() == 1)
-			if (channel.isInBanList(client_fd))
-				clerr(ERR_BANNEDFROMCHAN);
-		channel.addUser(client_fd);
-		if (channel.getOperatorList().size() == 0)
-			channel.addOperator(client_fd);
-	}
+		_checkJoin(name, client_fd, key);
+
 	Channel &channel = _channels.at(name);
 	Client &client = *_clients.at(client_fd);
 
 	client.sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
 	_sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + name + " :" + channel.getTopic());
-	// _sendMsgToClientsChannel(channel, itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
-	_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + name + " :" + _getUserNameList(channel));
+	_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " = " + name + " :" + _getUserNameList(channel));
+	_sendMsgToClient(client, itostr(366) + " " + client.getNickName() + " " + name);
 }
 
 bool Server::_isClientNameInList(Channel channel, std::string name) const {

@@ -1,7 +1,5 @@
 #include "server.hpp"
 
-bool	g_shutdown = false;
-
 // ------------------ Server Class - Constructor / Destructor ------------------
 
 Server::Server() {
@@ -13,6 +11,7 @@ Server::~Server(){
 Server::Server(int port, std::string password): _password(password) {
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd == -1) {
+		close(_server_fd);
 		perror("socket()");
 		exit(EXIT_FAILURE);
 	}
@@ -21,15 +20,16 @@ Server::Server(int port, std::string password): _password(password) {
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(port);
 
-
 	_clients = std::map<int, ClientPtr>();
 
 	if (setsockopt(_server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &_addr, sizeof(_addr))) {
+		close(_server_fd);
 		perror("setsockopt()");
 		exit(EXIT_FAILURE);
 	}
 
     if (bind(_server_fd, reinterpret_cast<sockaddr *>(&_addr), sizeof(_addr)) == -1) {
+		close(_server_fd);
         perror("bind()");
         exit(EXIT_FAILURE);
     }
@@ -40,6 +40,7 @@ Server::Server(int port, std::string password): _password(password) {
 
 void Server::start() {
 	if (listen(_server_fd, SOMAXCONN) == -1) {
+		close(_server_fd);
         perror("listen() failed");
         exit(EXIT_FAILURE);
     }
@@ -56,6 +57,7 @@ void Server::start() {
 		if ((nb_ev = epoll_wait(_epoll_fd, &ready_events, maxevents, -1)) == -1) {
 			if (errno == EINTR) //signal recu
 				continue;
+			_freeAndClose();
 			perror("epoll_wait() failed first");
 			exit(EXIT_FAILURE);
 		}
@@ -73,6 +75,7 @@ void Server::start() {
 void Server::_initEpoll() {
 	if ((_epoll_fd = epoll_create(1)) == -1) {
 		perror("epoll_create() failed");
+		_freeAndClose();
 		exit(EXIT_FAILURE);
 	}
 
@@ -81,7 +84,8 @@ void Server::_initEpoll() {
 	server_ev.data.fd =_server_fd;
 	server_ev.events = EPOLLIN;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD,_server_fd, &server_ev) == -1) {
-	   perror("epoll_ctl on server fd failed:");
+	   perror("epoll_ctl on server fd failed:");\
+	   _freeAndClose();
 	   exit(EXIT_FAILURE);
 	}
 }
@@ -98,6 +102,8 @@ void Server::_acceptNewConnection(void) {
 
 	if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) {
 	   perror("accept() failed");
+	   close(client_fd);
+	   _freeAndClose();
 	   exit(EXIT_FAILURE);
 	}
 
@@ -110,6 +116,7 @@ void Server::_acceptNewConnection(void) {
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1)
 	{
 	   perror("epoll_ctl() failed");
+	   _freeAndClose();
 	   exit(EXIT_FAILURE);
 	}
 }
@@ -117,7 +124,9 @@ void Server::_acceptNewConnection(void) {
 void Server::_deconnection(int client_fd) {
 	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
+		// MESSAGE LEAK
 		perror("epoll_ctl() failed");
+		_freeAndClose();
 		exit(EXIT_FAILURE);
 	}
 	std::map<std::string, Channel>::iterator it = _channels.begin();
@@ -129,64 +138,6 @@ void Server::_deconnection(int client_fd) {
 	delete _clients[client_fd];
 	_clients.erase(client_fd);
 }
-
-void Server::_partChannels()
-{
-	std::map<std::string, Channel>::iterator	it = _channels.begin();
-
-	while (it != _channels.end())
-	{
-		std::cout << "Parting channel " << it->first << std::endl;
-		std::vector<int>	users = it->second.getUserList();
-		for (size_t i = 0; i < users.size(); i++)
-		{
-			std::cout << "Parting channel " << it->first << " for client " << i << std::endl;
-			_part(users[i], it->first);
-		}
-		it++;
-	}
-}
-
-void	sigStop(int signum)
-{
-	(void)signum;
-	std::cout << "Sigquit received." << std::endl;
-	g_shutdown = 1;
-}
-
-void	Server::_eraseClient()
-{
-	std::map<int, ClientPtr>::iterator it = _clients.begin();
-	std::map<int, ClientPtr>::iterator ite = _clients.end();
-
-	while(it != ite)
-	{
-		close(it->first); //first is used to access the key (fd of client)
-		delete it->second; //second is used to access the value (pointer to client)
-		_clients.erase(it++);
-	}
-}
-
-void Server::_eraseChannel()
-{
-	std::map<std::string, Channel>::iterator it = _channels.begin();
-	std::map<std::string, Channel>::iterator ite = _channels.end();
-
-	while(it != ite)
-		_channels.erase(it++);
-}
-
-void	Server::stop()
-{
-	std::cout << "Server is shutting down..." << std::endl;
-	_partChannels();
-	_eraseClient();
-	_eraseChannel();
-	close(_epoll_fd);
-	close(_server_fd);
-	exit(EXIT_SUCCESS);
-}
-
 
 // ---------------- Manage client events  ---------------------
 
@@ -207,6 +158,7 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 	while ((len = read(client_fd, buf, size))) {
 		if (len == -1) {
 			perror("read() failed");
+			_freeAndClose();
 			exit(EXIT_FAILURE);
 		}
 		buf[len] = '\0';
@@ -218,12 +170,10 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 		if (data[data.length() - 2] == '\r' && data[data.length() - 1] == '\n')
 			break;
 	}
-	
 	_execRawMsgs(data, client_fd);
 }
 
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
-
 	std::vector<Message> msgs = Message::parseAllMsg(raw_msgs);
 	Client & client = *_clients.at(client_fd);
 
@@ -271,9 +221,6 @@ bool	Server::_isClientOp(Channel const & chan, Client &client) {
 		clerr(ERR_CHANOPRIVSNEEDED);
 	return (true);
 }
-
-
-
 
 // --------------------- Setters -----------------
 

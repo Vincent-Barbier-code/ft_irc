@@ -31,6 +31,7 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/Channel.cpp \
 		$(SRCDIR)/serverMode.cpp \
 		$(SRCDIR)/executorServer.cpp \
+		$(SRCDIR)/stopQuit.cpp \
 
 
 

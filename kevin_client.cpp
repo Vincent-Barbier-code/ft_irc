@@ -10,10 +10,7 @@
 
 int main(void) {
 
-
-
-
-    int         client_fd;
+    int	client_fd;
 
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		perror("socket failed");
@@ -56,9 +53,6 @@ int main(void) {
 
 	std::cout << "recv done !" << std::endl;
 	std::cout << "Len: " << len << ", Message du serveur: " << buf << std::endl;
-
-	
-
 
     return 0;
 }

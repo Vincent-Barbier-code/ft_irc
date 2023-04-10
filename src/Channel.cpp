@@ -162,6 +162,15 @@ void Channel::removeUser(int fd) {
     }
 }
 
+void Channel::removeInvite(int fd) {
+    for (std::vector<int>::iterator it = _inviteList.begin(); it != _inviteList.end(); it++) {
+        if (*it == fd) {
+            _inviteList.erase(it);
+            break;
+        }
+    }
+}
+
 int Channel::isInInviteList(int fd) const {
     for (std::vector<int>::const_iterator it = _inviteList.begin(); it != _inviteList.end(); it++) {
         if (*it == fd)

@@ -42,6 +42,7 @@ class	Channel {
 		void		addBan(int fd);
 		void		addOperator(int fd);
 		void		removeUser(int fd);
+		void		removeInvite(int fd);
 
 		bool                isModerated() const;
 		
