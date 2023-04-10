@@ -41,13 +41,16 @@ class	Channel {
 		int			isInInviteList(int fd) const;
 		int 		isInBanList(int fd) const;
 		int			isInOperatorList(int fd) const;
+		int			isInVoiceList(int fd) const;
 		void		addUser(int fd);
 		bool		addInvite(int fd);
 		bool		addBan(int fd);
 		bool		addOperator(int fd);
+		bool		addVoice(int fd);
 		bool		removeOperator(int fd);
 		bool		removeBan(int fd);
 		void		removeUser(int fd);
+		void		removeVoice(int fd);
 
 		bool                isModerated() const;
 		
@@ -86,6 +89,7 @@ class	Channel {
 		std::vector<int>	_banList; //list of users banned from the channel
 		std::vector<int>	_inviteList; //list of users invited to the channel
 		std::vector<int>	_operatorList; //list of users with operator status
+		std::vector<int>	_voiceList; //list of users with voice status
 };
 
 #endif

@@ -19,13 +19,17 @@ std::string Server::_getUserNameList(Channel channel) const
 	int client_fd;
 
     for (size_t i = 0; i < channel.getUserList().size(); i++) {
+		if (i != 0)
+			userList += " ";
 		client_fd = channel.getUserList().at(i);
-		std::cout << "----------------------------client_fd: " << client_fd << std::endl;
-        userList += " " + _clients.at(client_fd)->getNickName();
+		if (channel.isInOperatorList(client_fd))
+			userList += "@";
+		else if (channel.isInVoiceList(client_fd))
+			userList += "+";
+		userList += _clients.at(client_fd)->getNickName();
     }
     return userList;
 }
-
 
 void Server::_join(int client_fd, std::string const & name, std::string const & key)
 {
@@ -60,12 +64,21 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 		if (channel.getUserList().size() == 1)
 			channel.addOperator(client_fd);
 	}
+	std::string chan_mode;
+	if (_channels.at(name).getPrivateMask() == 1)
+		chan_mode = "*";
+	else if (_channels.at(name).getSecretMask() == 1)
+		chan_mode = "@";
+	else
+		chan_mode = "=";
 	Channel &channel = _channels.at(name);
-	(*_clients.at(client_fd)).sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
-	(*_clients.at(client_fd)).sendMsgToClient(*_clients.at(client_fd), itostr(RPL_TOPIC) + " " + _clients.at(client_fd)->getNickName() + " " + name + " :" + channel.getTopic());
-	//(*_clients.at(client_fd)).sendMsgToClient(*_clients.at(client_fd),itostr(RPL_NAMREPLY) + " " + _clients.at(client_fd)->getNickName() + " " + name + " Clients:" + _getUserNameList(channel));
+	client.sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
+	client.sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + name + " :" + channel.getTopic());
+	//_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + name + " :" + _getUserNameList(channel));
+	//_sendMsgToClient(client, itostr(RPL_ENDOFNAMES) + " " + name);
+	_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + chan_mode + " " + name + " :" + _getUserNameList(channel));
+	_sendMsgToClient(client, itostr(RPL_ENDOFNAMES) + " " + client.getNickName() + " " + name);
 }
-
 
 void Server::_kick(std::string const & channelName, int client_fd, std::string const & comment)
 {

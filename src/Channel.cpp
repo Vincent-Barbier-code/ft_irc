@@ -179,10 +179,26 @@ bool Channel::addInvite(int fd) {
 	return (true);
 }
 
+bool    Channel::addVoice(int fd) {
+    if (isClientInList(_voiceList, fd))
+        return (false);
+    _voiceList.push_back(fd);
+    return (true);
+}
+
 void Channel::removeUser(int fd) {
     for (std::vector<int>::iterator it = _userList.begin(); it != _userList.end(); it++) {
         if (*it == fd) {
             _userList.erase(it);
+            break;
+        }
+    }
+}
+
+void    Channel::removeVoice(int fd) {
+    for (std::vector<int>::iterator it = _voiceList.begin(); it != _voiceList.end(); it++) {
+        if (*it == fd) {
+            _voiceList.erase(it);
             break;
         }
     }
@@ -214,6 +230,14 @@ int Channel::isInOperatorList(int fd) const {
 
 int Channel::isInBanList(int fd) const {
     for (std::vector<int>::const_iterator it = _banList.begin(); it != _banList.end(); it++) {
+        if (*it == fd)
+            return 1;
+    }
+    return 0;
+}
+
+int    Channel::isInVoiceList(int fd) const {
+    for (std::vector<int>::const_iterator it = _voiceList.begin(); it != _voiceList.end(); it++) {
         if (*it == fd)
             return 1;
     }
