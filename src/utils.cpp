@@ -70,3 +70,20 @@ bool isValid(std::string const & str) {
     }
     return true;
 }
+
+bool	checkAtoi(std::string argv) {
+	unsigned long int tmp_nb;
+	int	i = 0;
+
+	while(argv[i]) {
+		if (!isdigit(argv[i]))
+			return (false);
+		i++;
+	}
+	if (i > 10)
+		return (false);
+	tmp_nb = atoi(argv.c_str());
+	if (tmp_nb > 2147483647)
+		return (false);
+	return (true);
+}
