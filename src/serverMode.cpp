@@ -42,10 +42,11 @@ void	Server::_modeB(Channel & chan, std::string const mode, std::string const op
 		if (!client_to_ban)
 			clerr(ERR_NOSUCHNICK);
 		if (mode[0] == '+') {
-			chan.addBan(client_to_ban->getFd());
 			//if client to ban is in channel, kick him
-			if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd()))
+			chan.addBan(client_to_ban->getFd());
+			if (chan.isInUserList(client_to_ban->getFd()))
 				_kick(client_fd, chan.getName(), client_to_ban->getNickName(), "You got banned\n");
+			std::cout << "BAN: " << client_to_ban->getNickName() << std::endl;
 		}
 		else 
 			chan.removeBan(client_to_ban->getFd());
@@ -121,7 +122,7 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'b':
-				_modeB(chan, mode, option);
+				_modeB(chan, mode, option, client.getFd());
 				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'v':

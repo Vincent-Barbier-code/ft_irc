@@ -28,7 +28,6 @@ class	Channel {
 		std::string			getPassword() const;
 		int					getkeyMask() const;
 		int 				getinviteMask() const;
-		int					getbanMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 		std::vector<int>	getBanList() const;
@@ -58,7 +57,6 @@ class	Channel {
 		//creator needed to set the first operator
 
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
-		void				setBanMask(bool mode);
 		void				setInviteMask(bool mode);
 		void				setVoiceMask(bool mode);
 		void				setPrivateMask(bool mode);
@@ -77,7 +75,6 @@ class	Channel {
 		std::string			_password; //only used if keyMask is set
 		unsigned long int	_userLimit; //only used if userLimitMask is set
 		//Masks
-		bool		_banMask; //when set, only users outside of the ban list can join
 		bool		_inviteMask; //when set, only invited users can join
 		bool		_voiceMask; //when set, only voiced users (operators) can speak
 		bool 		_keyMask; //when set, only users with the correct key can join

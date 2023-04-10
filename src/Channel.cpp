@@ -5,7 +5,6 @@ Channel::Channel() {
     _topic = "";
     _password = "";
     _userLimit = 0;
-    _banMask = false;
     _inviteMask = false;
     _voiceMask = false;
     _keyMask = false;
@@ -20,7 +19,6 @@ Channel::Channel(std::string name, std::string const &topic, Client const &creat
     _topic = topic;
     _password = "";
     _userLimit = 0;
-    _banMask = false;
     _inviteMask = false;
     _voiceMask = false;
     _keyMask = false;
@@ -37,7 +35,6 @@ Channel & Channel::operator=(Channel const & rhs) {
     _topic = rhs._topic;
     _password = rhs._password;
     _userLimit = rhs._userLimit;
-    _banMask = rhs._banMask;
     _inviteMask = rhs._inviteMask;
     _voiceMask = rhs._voiceMask;
     _keyMask = rhs._keyMask;
@@ -119,10 +116,6 @@ int Channel::getkeyMask() const {
 
 int Channel::getinviteMask() const{
     return _inviteMask;
-}
-
-int Channel::getbanMask() const {
-    return _banMask;
 }
 
 std::vector<int> Channel::getOperatorList() const {
@@ -260,14 +253,6 @@ bool Channel::isModerated() const {
 
 
 //SETTERS
-
-void	Channel::setBanMask(bool mode) {
-	_banMask = mode;
-}
-
-void	Channel::setModeratedMask(bool mode) {
-	_banMask = mode;
-}
 
 void	Channel::setInviteMask(bool mode) {
 	_inviteMask = mode;

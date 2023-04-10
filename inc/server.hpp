@@ -6,7 +6,7 @@
 /*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/10 16:02:02 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/10 16:53:50 by vbarbier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ class  Server {
 	void		_nick(int client_fd, std::string const nick);
 	void		_join(int client_fd, std::string const & name, std::string const & key);
 	void		_parseJoin(std::string const & name);
-	void 		_checkJoin (std::string const &name, int client_fd, std::string const & key);
+	int 		_checkJoin (std::string const &name, int client_fd, std::string const & key);
 	void 		_kick(int client_fd, std::string const & channelName, std::string const banName, std::string const & comment);
 	void		_invite(int client_fd, std::string const & nickName, std::string const & channelName);
 	void		_part(int client_fd, std::string const & nameChannel);
