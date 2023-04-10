@@ -84,6 +84,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_PASSWDMISMATCH:
 			message = "464 " + client.getNickName() + " :Password incorrect";
 			break;
+		case ERR_CHANNELISFULL:
+			message = "471 " + client.getNickName() + " :Cannot join channel (+l)";
+			break;
 		case ERR_UNKNOWNMODE:
 			message = "472 :Unknown mode";
 			break;

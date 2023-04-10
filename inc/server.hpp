@@ -93,6 +93,7 @@ class  Server {
 	void        _list(Client const & client);
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
+	void		_sendListPrivate(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
 
 	//stop

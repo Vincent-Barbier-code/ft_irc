@@ -31,27 +31,33 @@ class	Channel {
 		int					getbanMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
-
+		std::vector<int>	getBanList() const;
+		std::vector<int>	getOpList() const;
+		unsigned long int	getUserLimit() const;
+		bool				getSecretMask() const;
+		bool				getPrivateMask() const;
 
 		int 		isInUserList(int fd) const;
 		int			isInInviteList(int fd) const;
 		int 		isInBanList(int fd) const;
 		int			isInOperatorList(int fd) const;
+		int			isInVoiceList(int fd) const;
 		void		addUser(int fd);
-		void		addInvite(int fd);
-		void		addBan(int fd);
-		void		addOperator(int fd);
+		bool		addInvite(int fd);
+		bool		addBan(int fd);
+		bool		addOperator(int fd);
+		bool		addVoice(int fd);
+		bool		removeOperator(int fd);
+		bool		removeBan(int fd);
 		void		removeUser(int fd);
 		void		removeInvite(int fd);
+		void		removeVoice(int fd);
 
 		bool                isModerated() const;
 		
 		//creator needed to set the first operator
-		std::vector<int>	getBanList() const;
-		std::vector<int>	getOpList() const;
-		bool				rmClientFromList(std::vector<int> list, int fdClient);
+
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
-		bool				addClientToList(std::vector<int> list, int fdClient);
 		void				setBanMask(bool mode);
 		void				setInviteMask(bool mode);
 		void				setVoiceMask(bool mode);
@@ -66,11 +72,10 @@ class	Channel {
 	
 	private :
 	//variables
-		std::string	_name;
-		std::string	_topic; //max 200 characters
-		std::string	_password; //only used if keyMask is set
-		int			_userCount; //number of users in the channel
-		int			_userLimit; //only used if userLimitMask is set
+		std::string			_name;
+		std::string			_topic; //max 200 characters
+		std::string			_password; //only used if keyMask is set
+		unsigned long int	_userLimit; //only used if userLimitMask is set
 		//Masks
 		bool		_banMask; //when set, only users outside of the ban list can join
 		bool		_inviteMask; //when set, only invited users can join

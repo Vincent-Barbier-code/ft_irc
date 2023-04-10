@@ -14,13 +14,15 @@ void	Server::_modeO(Channel & chan, std::string const mode, std::string const op
 		client_to_op = _findClientByNickName(*it);
 		if (!client_to_op)
 			clerr(ERR_NOSUCHNICK);
-		if (mode[0] == '+')
-			chan.addClientToList(chan.getOpList(), client_to_op->getFd());
+		if (mode[0] == '+') {
+			chan.addOperator(client_to_op->getFd());
+		}
 		else {
 			//if last op leaves, oldest user becomes op
-			chan.rmClientFromList(chan.getOpList(), client_to_op->getFd());
-			if (chan.getOpList().size() == 0 && chan.getUserList().size() != 0)
-				chan.addClientToList(chan.getOpList(), *chan.getUserList().begin());
+			chan.removeOperator(client_to_op->getFd());
+			if (chan.getOpList().size() == 0 && chan.getUserList().size() != 0) {
+				chan.addOperator(*chan.getUserList().begin());
+			}
 		}
 	}
 }
@@ -40,13 +42,13 @@ void	Server::_modeB(Channel & chan, std::string const mode, std::string const op
 		if (!client_to_ban)
 			clerr(ERR_NOSUCHNICK);
 		if (mode[0] == '+') {
-			chan.addClientToList(chan.getBanList(), client_to_ban->getFd());
+			chan.addBan(client_to_ban->getFd());
 			//if client to ban is in channel, kick him
 			if (chan.isClientInList(chan.getUserList(), client_to_ban->getFd()))
 				_kick(client_fd, chan.getName(), client_to_ban->getNickName(), "You got banned\n");
 		}
 		else 
-			chan.rmClientFromList(chan.getBanList(), client_to_ban->getFd());
+			chan.removeBan(client_to_ban->getFd());
 	}
 }
 
@@ -69,7 +71,9 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 	std::map<std::string, Channel>::iterator it;
 	Channel &chan = _channels.at(chanName);
 	
-	if (!mode.size() || (mode[0] != '+' && mode[0] != '-')) {
+	if (!mode.size())
+		return ;
+	if (mode[0] != '+' && mode[0] != '-') {
 		clerr(ERR_UNKNOWNMODE);
 	}
 	if (mode.size() > 2) {
@@ -84,23 +88,23 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		switch (c) {
 			case 'o':
 				_modeO(chan, mode, option);
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'p':
 				chan.setPrivateMask(mode[0] == '+');
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			case 's':
 				chan.setSecretMask(mode[0] == '+');
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			case 'i':
 				chan.setInviteMask(mode[0] == '+');
-				client.sendMsgToClient(client, "MODE " +chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			case 'm':
 				chan.setModeratedMask(mode[0] == '+');
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			case 'l':
 				if (mode[0] == '+') {
@@ -114,19 +118,19 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				}
 				else
 					chan.setUserLimitMask(false);
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'b':
-				_modeB(chan, mode, option, client.getFd());
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				_modeB(chan, mode, option);
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'v':
 				chan.setVoiceMask(mode[0] == '+');
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			case 'k':
 				_modeK(chan, mode, option);
-				client.sendMsgToClient(client, "MODE " + chanName + " "  + mode + " ");
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
 				break;
 			default :
 				clerr(ERR_UNKNOWNMODE);

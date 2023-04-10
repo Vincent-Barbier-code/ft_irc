@@ -90,7 +90,6 @@ void Server::_initEpoll() {
 	}
 }
 
-
 // ---------------------- new client connection / deconnection ----------------------------
 
 void Server::_acceptNewConnection(void) {
