@@ -71,7 +71,9 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 	std::map<std::string, Channel>::iterator it;
 	Channel &chan = _channels.at(chanName);
 	
-	if (!mode.size() || (mode[0] != '+' && mode[0] != '-')) {
+	if (!mode.size())
+		return ;
+	if (mode[0] != '+' && mode[0] != '-') {
 		clerr(ERR_UNKNOWNMODE);
 	}
 	if (mode.size() > 2) {

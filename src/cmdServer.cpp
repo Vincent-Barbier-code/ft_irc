@@ -73,9 +73,8 @@ void Server::_join(int client_fd, std::string const & name, std::string const & 
 		chan_mode = "=";
 	Channel &channel = _channels.at(name);
 	client.sendMsgToClientsChannel(channel, "JOIN " + name, _clients, true);
-	client.sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + name + " :" + channel.getTopic());
-	//_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + name + " :" + _getUserNameList(channel));
-	//_sendMsgToClient(client, itostr(RPL_ENDOFNAMES) + " " + name);
+	if (channel.getTopic().size() != 0)
+		client.sendMsgToClient(client, itostr(RPL_TOPIC) + " " + client.getNickName() + " " + name + " :" + channel.getTopic());
 	_sendMsgToClient(client, itostr(RPL_NAMREPLY) + " " + client.getNickName() + " " + chan_mode + " " + name + " :" + _getUserNameList(channel));
 	_sendMsgToClient(client, itostr(RPL_ENDOFNAMES) + " " + client.getNickName() + " " + name);
 }
