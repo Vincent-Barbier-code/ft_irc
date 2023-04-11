@@ -43,7 +43,7 @@ void Server::_execute(Client &client, Message const &msg)
         else if (cmd == "INVITE")
             _invite(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "MODE")
-            mode(paramsV[0], paramsV[1], paramsV.size() == 3 ? paramsV[2] : "", client);
+            mode(paramsV[0], paramsV[1].size() == 2 ? paramsV[1] : "", paramsV.size() == 3 ? paramsV[2] : "", client);
     }
     catch (Client::ClientException const &e) {
         if (e.getCode() == -1)
