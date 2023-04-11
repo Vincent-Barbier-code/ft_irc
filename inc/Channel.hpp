@@ -62,7 +62,6 @@ class	Channel {
 
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
 		void				setInviteMask(bool mode);
-		void				setVoiceMask(bool mode);
 		void				setPrivateMask(bool mode);
 		void				setKeyMask(bool mode);
 		void				setSecretMask(bool mode);
@@ -80,7 +79,6 @@ class	Channel {
 		unsigned long int	_userLimit; //only used if userLimitMask is set
 		//Masks
 		bool		_inviteMask; //when set, only invited users can join
-		bool		_voiceMask; //when set, only voiced users (operators) can speak
 		bool 		_keyMask; //when set, only users with the correct key can join
 		bool		_privateMask; //when set, channel topic won't be displayed in the channel list 
 		bool		_secretMask; //when set, channel name won't be displayed in the channel list nor in the WHO list

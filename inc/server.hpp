@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vbarbier <vbarbier@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/10 16:53:50 by vbarbier         ###   ########.fr       */
+/*   Updated: 2023/04/10 22:54:40 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ class  Server {
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListPrivate(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
+	void		_morse(int client_fd, std::string const & msg);
 
 	//stop
 	void 		_eraseChannel();
@@ -105,9 +106,11 @@ class  Server {
 	
 	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
 
+	//MODE
 	void		_modeO(Channel & chan, std::string const mode, std::string option);
 	void		_modeB(Channel & chan, std::string const mode, std::string option, int client_fd);
 	void		_modeK(Channel & chan, std::string const mode, std::string const option);
+	void		_modeV(Channel & chan, std::string const mode, std::string const option);
 	void		_modeChannel(std::string const chanName, std::string const mode, std::string option, Client &client);
 	bool		_isClientOp(Channel const & chan, Client &client);
 };

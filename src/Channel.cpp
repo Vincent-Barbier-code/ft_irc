@@ -6,7 +6,6 @@ Channel::Channel() {
     _password = "";
     _userLimit = 0;
     _inviteMask = false;
-    _voiceMask = false;
     _keyMask = false;
     _privateMask = false;
     _secretMask = false;
@@ -20,7 +19,6 @@ Channel::Channel(std::string name, std::string const &topic, Client const &creat
     _password = "";
     _userLimit = 0;
     _inviteMask = false;
-    _voiceMask = false;
     _keyMask = false;
     _privateMask = false;
     _secretMask = false;
@@ -36,13 +34,13 @@ Channel & Channel::operator=(Channel const & rhs) {
     _password = rhs._password;
     _userLimit = rhs._userLimit;
     _inviteMask = rhs._inviteMask;
-    _voiceMask = rhs._voiceMask;
     _keyMask = rhs._keyMask;
     _privateMask = rhs._privateMask;
     _secretMask = rhs._secretMask;
     _userLimitMask = rhs._userLimitMask;
     _userList = rhs._userList;
     _operatorList = rhs._operatorList;
+    _voiceList = rhs._voiceList;
     return *this;
 }
 
@@ -247,7 +245,7 @@ int    Channel::isInVoiceList(int fd) const {
 }
 
 bool Channel::isModerated() const {
-    return false;
+    return _moderatedMask;
 }
 
 //SETTERS
@@ -258,10 +256,6 @@ void    Channel::setModeratedMask(bool mode) {
 
 void	Channel::setInviteMask(bool mode) {
 	_inviteMask = mode;
-}
-
-void	Channel::setVoiceMask(bool mode) {
-	_voiceMask = mode;
 }
 
 void	Channel::setKeyMask(bool mode) {
