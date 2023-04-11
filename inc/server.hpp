@@ -99,6 +99,7 @@ class  Server {
 	//stop
 	void 		_eraseChannel();
 	void 		_eraseClient();
+	void 		_quit(Client & client, std::string const & comment);
 	void		_partChannels();
 	void		_freeAndClose();
 	

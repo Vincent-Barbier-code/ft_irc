@@ -27,7 +27,7 @@ void Server::_execute(Client &client, Message const &msg)
             clerr(ERR_NOTREGISTERED);
         /* - - - - - - - - - - - - - After USER registration - - - */
         else if (cmd == "QUIT")
-            _deconnection(client_fd);
+            _quit(client, paramsV.size() == 1 ? paramsV[0] : "");
         else if (cmd == "JOIN")
             _join(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "LIST")

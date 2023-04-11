@@ -13,6 +13,9 @@ class Client;
 
 class	Channel {
 	public :
+
+		typedef std::map<std::string, Channel> channel_map;
+
 		Channel();
 		Channel(std::string name, std::string const &topic, Client const &creator); 
 
@@ -28,6 +31,7 @@ class	Channel {
 		std::string			getPassword() const;
 		int					getkeyMask() const;
 		int 				getinviteMask() const;
+		bool 				getVoiceMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 		std::vector<int>	getBanList() const;

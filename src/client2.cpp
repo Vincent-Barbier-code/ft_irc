@@ -68,7 +68,7 @@ void Client::sendMsgToClientsChannel(Channel const & channel, std::string const 
 void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
     
     std::string data = "PRIVMSG " + receiver.getNickName() + " :" + msg;
-    sendMsgToClient(receiver, msg); 
+    sendMsgToClient(receiver, data); 
 }
 
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
@@ -78,9 +78,57 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
 
     if (find(channelFds.begin(), channelFds.end(), _fd) == channelFds.end())
         clerr(ERR_CANNOTSENDTOCHAN);
-    if (channel.isModerated() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
+    if (channel.getVoiceMask() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
         clerr(ERR_CANNOTSENDTOCHAN);
 
     std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
     sendMsgToClientsChannel(channel, data, clients, false);
+}
+
+void Client::sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const {
+    std::set<Client const *> stalkers = getStalkers(channels, clients);
+    for (std::set<Client const *>::const_iterator stalker = stalkers.begin(); stalker != stalkers.end(); stalker++)
+        sendMsgToCLient(**stalker, msg); 
+}
+
+std::set<Client const *> Client::getStalkers(channel_map const & channels, client_map const & clients) const {
+    std::set <Client const *> stalkers;
+    std::list<Channel const *> joinedChannels = getJoinedChannels(channels);
+
+    for (std::list<Channel const *>::const_iterator channel = joinedChannels.begin(); channel != joinedChannels.end(); channel++) {
+        std::vector<int> const & users = (*channel)->getUserList();
+        for (std::vector<int>::const_iterator user = users.begin(); user != users.end(); user++)
+            if (*user != _fd)
+                stalkers.insert(clients.at(*user));
+    }
+    return stalkers;
+}
+
+std::list<Channel const *> Client::getJoinedChannels(channel_map const & channels) const {
+    std::list<Channel const *> joinedChannels;
+    for (channel_map::const_iterator channel = channels.begin(); channel != channels.end(); channel++) {
+        
+        std::vector<int> const & users = channel->second.getUserList();
+        if (find(users.begin(), users.end(), _fd) != users.end()) {
+            joinedChannels.push_back(&(channel->second));
+        }
+    }
+
+    return joinedChannels;
+}
+
+void Client::setBuf(std::string const & buf) {
+    _buf = buf;
+}
+
+void Client::appendBuf(char const * buf, size_t len) {
+    _buf.append(buf, len);
+}
+
+std::string Client::getBuf() const {
+    return _buf;
+}
+
+void Client::clearBuf() {
+    _buf.clear();
 }

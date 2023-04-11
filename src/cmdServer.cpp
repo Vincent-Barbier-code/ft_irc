@@ -153,8 +153,7 @@ void Server::_invite(int client_fd, std::string const & nickName, std::string co
 
 void	Server::_nick(int client_fd, std::string const nick)
 {
-	Client &client = *_clients.at(client_fd);
-
+	Client & client = *_clients.at(client_fd);
 	if (_findClientByNickName(nick))
 	{
 		int _nickNumber = 1;
@@ -169,8 +168,10 @@ void	Server::_nick(int client_fd, std::string const nick)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 	{
+		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
+		client.sendMsgToStalkers("NICK " + nick, _channels, _clients);
+		client.sendMsgToClient(client, "NICK " + nick);
 		client.setNickName(nick);
-		_sendMsgToClient(client, "NICK " + nick);
 	}
 }
 

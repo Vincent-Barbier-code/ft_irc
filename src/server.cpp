@@ -152,24 +152,23 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 		return ;
 	}
 
-	int len;
-	int client_fd = client_ev.data.fd;
-	while ((len = read(client_fd, buf, size))) {
-		if (len == -1) {
-			perror("read() failed");
-			_freeAndClose();
-			exit(EXIT_FAILURE);
-		}
-		buf[len] = '\0';
-		data.append(buf);
-		if (0 && data.length() < 3) {
-			std::cerr << "The server has received a message smaller than 3 character which is weird so i exit" << std::endl;
-			exit(2);
-		}
-		if (data[data.length() - 2] == '\r' && data[data.length() - 1] == '\n')
-			break;
+	int 	 len;
+	int 	 client_fd = client_ev.data.fd;
+	Client & client = *_clients.at(client_fd);
+
+	if (client.getBuf().find("\r\n") != std::string::npos)
+		client.clearBuf();
+
+	len = read(client_fd, buf, size);
+	if (len == -1) {
+		_freeAndClose();
+		perror("read() failed");
+		exit(EXIT_FAILURE);
 	}
-	_execRawMsgs(data, client_fd);
+
+	client.appendBuf(buf, len);
+	if (client.getBuf().find("\r\n") != std::string::npos)
+		_execRawMsgs(client.getBuf(), client_fd);
 }
 
 void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
