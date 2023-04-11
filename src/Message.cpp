@@ -293,7 +293,7 @@ void Message::_parseMODE(void) {
     }
 
     _params.push_back(Param("channel", space_splited[1]));
-    if (space_splited.size() ==  3)
+    if (space_splited.size() >=  3)
         _params.push_back(Param("mode", space_splited[2]));
     if (space_splited.size() ==  4 )
         _params.push_back(Param("limit/user", space_splited[3]));

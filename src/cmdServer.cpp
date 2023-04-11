@@ -34,13 +34,13 @@ int Server::_checkJoin(std::string const &name, int client_fd, std::string const
 {
     Client &client = *_clients.at(client_fd);
 	Channel &channel = _channels.at(name);
-	if (channel.getkeyMask() == 1)
+	if (channel.getKeyMask() == 1)
 	{
 		if (key != channel.getPassword())
 			clerr(ERR_BADCHANNELKEY);
 	}
 	// if mode invitation only, check if client is invited
-	if (channel.getinviteMask() == 1) {
+	if (channel.getInviteMask() == 1) {
 		if (!channel.isInInviteList(client_fd)) {
 			client.sendMsgToClient(client, itostr(ERR_INVITEONLYCHAN) + " " + client.getNickName() + " " + name + " :Cannot join channel (+i)");
 			return 0;
@@ -49,7 +49,7 @@ int Server::_checkJoin(std::string const &name, int client_fd, std::string const
 			channel.removeInvite(client_fd);
 	}
 	//if mode limit is set, check if channel is full
-	if (channel.getUserLimit() != 0)
+	if (channel.getUserLimitMask() && channel.getUserLimit() != 0)
 		if (channel.getUserList().size() >= channel.getUserLimit()) {
 			client.sendMsgToClient(client, itostr(ERR_CHANNELISFULL) + " " + client.getNickName() + " " + name + " :Cannot join channel (+l)");
 			return 0;

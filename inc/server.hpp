@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/10 22:54:40 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/11 19:19:08 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ class  Server {
 	void		_modeV(Channel & chan, std::string const mode, std::string const option);
 	void		_modeChannel(std::string const chanName, std::string const mode, std::string option, Client &client);
 	bool		_isClientOp(Channel const & chan, Client &client);
+	void		_modeSendMasks(Channel & chan, Client & client);
 };
 #endif
 

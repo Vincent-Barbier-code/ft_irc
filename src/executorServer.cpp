@@ -43,17 +43,20 @@ void Server::_execute(Client &client, Message const &msg)
         else if (cmd == "INVITE")
             _invite(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "MODE")
-            mode(paramsV[0], paramsV[1], paramsV.size() == 3 ? paramsV[2] : "", client);
+            mode(paramsV[0], paramsV.size() >= 2 ? paramsV[1] : "", paramsV.size() == 3 ? paramsV[2] : "", client);
         else if (cmd == "SERVER")
             _morse(client_fd, paramsV[0]);
+        fflush(stdout);
     }
     catch (Client::ClientException const &e) {
         if (e.getCode() == -1)
             std::cerr << RED "Invalid command: " << msg.getCmd() << WHITE << std::endl;
         else
             _sendNumericReply(e.getCode(), client);
+        fflush(stdout);
     }
     catch(const std::exception &e) {
         std::cerr << RED "Erreur non géré: what():" << e.what() << "Parsing de l'erreur: " << msg << WHITE << std::endl;
+        fflush(stdout);
     }
 }

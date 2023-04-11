@@ -108,11 +108,11 @@ std::string Channel::getPassword() const {
     return _password;
 }
 
-int Channel::getkeyMask() const {
+int Channel::getKeyMask() const {
     return _keyMask;
 }
 
-int Channel::getinviteMask() const{
+int Channel::getInviteMask() const{
     return _inviteMask;
 }
 
@@ -146,6 +146,10 @@ bool				Channel::getPrivateMask() const {
 
 bool                Channel::getModeratedMask() const {
     return _moderatedMask;
+}
+
+bool				Channel::getUserLimitMask() const {
+    return _userLimitMask;
 }
 
 //SETTERS
