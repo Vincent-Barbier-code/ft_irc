@@ -59,9 +59,10 @@ void Client::sendMsgToClientsChannel(Channel const & channel, std::string const 
         }
 }
 
-void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) const {
+void Client::sendPrivateMsg(Client const & receiver, std::string const & msg, bool isNotice/* = false*/) const {
     
-    std::string data = "PRIVMSG " + receiver.getNickName() + " :" + msg;
+    std::string cmd = isNotice ? "NOTICE" : "PRIVMSG";
+    std::string data = cmd + " " + receiver.getNickName() + " :" + msg;
     sendMsgToClient(receiver, data); 
 }
 

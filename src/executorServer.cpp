@@ -32,8 +32,8 @@ void Server::_execute(Client &client, Message const &msg)
             _join(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "LIST")
             _list(client);
-        else if (cmd == "PRIVMSG")
-            _sendPrivateMsg(client, paramsV[0], paramsV[1]);
+        else if (cmd == "PRIVMSG" || cmd == "NOTICE")
+            _sendPrivateMsg(client, paramsV[0], paramsV[1], cmd == "NOTICE");
         else if (cmd == "PART")
             _part(client_fd, paramsV[0]);
         else if (cmd == "TOPIC")

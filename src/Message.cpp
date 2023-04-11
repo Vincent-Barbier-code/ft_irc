@@ -39,6 +39,7 @@ void Message::_initParsers(void) {
     _parsers["MODE"] = &Message::_parseMODE;
     _parsers["PART"] = &Message::_parsePART;
     _parsers["TOPIC"] = &Message::_parseTOPIC;
+    _parsers["NOTICE"] = &Message::_parsePRIVMSG;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {

@@ -103,7 +103,7 @@ class  Server {
 	void		_partChannels();
 	void		_freeAndClose();
 	
-	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const;
+	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg, bool isNotice = false) const;
 
 	void		_modeO(Channel & chan, std::string const mode, std::string option);
 	void		_modeB(Channel & chan, std::string const mode, std::string option, int client_fd);

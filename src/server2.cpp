@@ -86,7 +86,7 @@ void Server::_sendListEnd(Client const & client) {
     _sendMsgToClient(client, msg);
 }
 
-void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg) const {
+void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg, bool isNotice /*= false*/) const {
 
     std::vector<std::string> destsList = ke_split(dests, std::string(","));
     if (destsList.size() > 30)
@@ -98,9 +98,13 @@ void Server::_sendPrivateMsg(Client const & sender, std::string const & dests, s
             sender.sendPrivateMsg(_channels.at(*dst), msg, _clients);
         } else {
             Client * client = _findClientByNickName(*dst);
-            if (client == NULL)
-                clerr(ERR_NOSUCHNICK);
-            sender.sendPrivateMsg(*client, msg);
+            if (client == NULL) {
+                if (isNotice)
+                    return;
+                else
+                    clerr(ERR_NOSUCHNICK);
+            }
+            sender.sendPrivateMsg(*client, msg, isNotice);
         }
     }
 }
