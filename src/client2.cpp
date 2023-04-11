@@ -5,9 +5,6 @@
 void Client::user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname) {
 
-    if (realname[0] != ':')
-        clerr(ERR_NEEDMOREPARAMS);
-    realname.erase(0, 1);
     if (realname.size() > 50)
         clerr(ERR_NEEDMOREPARAMS);
     else if (_isRegistered)
@@ -20,9 +17,6 @@ void Client::user(std::string const & username, std::string const & hostname,
     _serverName = servername;
     _realName   = realname;
     _isRegistered = true;
-
-    std::cout << "COMMAND USER executed: " << _userName << " " << _hostName << " " << _serverName << " " << _realName << std::endl;
-    std::cout << "nickname: " << _nickName << std::endl; 
 }
 
 std::string Client::getHostName() const {
