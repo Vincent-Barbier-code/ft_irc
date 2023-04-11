@@ -54,7 +54,7 @@ std::string shrinkNBlank(std::string const & str, size_t n /* = std::string::npo
     return s;
 }
 
-bool isValid(std::string const & str) {
+bool isPrintableMsg(std::string const & str) {
     
     if (str.empty())
         return false;
@@ -62,11 +62,9 @@ bool isValid(std::string const & str) {
     if (str.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
         return false;
 
-    size_t i = 0;
-    while (i < str.length()) {
+    for (size_t i = 0; i < str.length(); i++) {
         if (isprint(str.at(i)) == 0)
             return false;
-        i++;
     }
     return true;
 }

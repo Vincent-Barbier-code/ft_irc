@@ -4,6 +4,7 @@
 
 #define clerr(code) throw Client::ClientException(code)
 #define INVALID_CMD -1
+#define INVALID_CHARACTER -2
 
 // default macro
 #define MAX_CLIENTS 100

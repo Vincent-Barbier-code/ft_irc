@@ -61,11 +61,20 @@ Message::Message(std::string const & raw_msg) {
         _initParsers(); // static function to init the map of parsers
 
     // - - - - - -
+
+    _err = 0;
     _rawWPrefix = raw_msg;
+
+    if (_rawWPrefix.empty() || !isPrintableMsg(_rawWPrefix) || 
+        _rawWPrefix.size() > 1024 || isspace(_rawWPrefix[0])) {
+        _err =  INVALID_CHARACTER;
+        return ;
+    }
+
     _raw = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(_rawWPrefix.find(' ') + 1) : _rawWPrefix;
     _prefix = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(1, _rawWPrefix.find(' ') - 1) : "";
     _cmd = _raw.substr(0, _raw.find(' '));
-    _err = 0;
+    
     _initParams();
 }
 
