@@ -285,14 +285,15 @@ void Message::_parsePING(void) {
 void Message::_parseMODE(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
 
-    if (space_splited.size() < 3) {
+    if (space_splited.size() < 2) {
         std::cerr << RED "Invalid MODE" WHITE << std::endl;
         _err = ERR_NEEDMOREPARAMS;
         return;
     }
 
     _params.push_back(Param("channel", space_splited[1]));
-    _params.push_back(Param("mode", space_splited[2]));
+    if (space_splited.size() ==  3)
+        _params.push_back(Param("mode", space_splited[2]));
     if (space_splited.size() ==  4 )
         _params.push_back(Param("limit/user", space_splited[3]));
 }
