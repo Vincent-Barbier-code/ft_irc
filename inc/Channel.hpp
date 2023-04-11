@@ -31,7 +31,6 @@ class	Channel {
 		std::string			getPassword() const;
 		int					getkeyMask() const;
 		int 				getinviteMask() const;
-		bool 				getVoiceMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 		std::vector<int>	getBanList() const;
@@ -39,6 +38,7 @@ class	Channel {
 		unsigned long int	getUserLimit() const;
 		bool				getSecretMask() const;
 		bool				getPrivateMask() const;
+		bool				getModeratedMask() const;
 
 		int 		isInUserList(int fd) const;
 		int			isInInviteList(int fd) const;

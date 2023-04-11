@@ -74,13 +74,13 @@ void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) co
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
         
     std::vector<int> channelFds = channel.getUserList();
-    std::vector<int> channelOps = channel.getOperatorList();
 
     if (find(channelFds.begin(), channelFds.end(), _fd) == channelFds.end())
         clerr(ERR_CANNOTSENDTOCHAN);
-    if (channel.getVoiceMask() && find(channelOps.begin(), channelOps.end(), _fd) == channelOps.end())
-        clerr(ERR_CANNOTSENDTOCHAN);
-
+    if (channel.getModeratedMask() && channel.isInVoiceList(_fd) == false) {
+        sendMsgToClient(*this, itostr(ERR_CANNOTSENDTOCHAN) + " " + _nickName + " " + channel.getName() + " :Cannot talk in channel (+m)");
+        return;
+    }
     std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
     sendMsgToClientsChannel(channel, data, clients, false);
 }

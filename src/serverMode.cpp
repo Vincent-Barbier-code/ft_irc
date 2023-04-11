@@ -140,7 +140,7 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				break;
 			case 'v':
 				_modeV(chan, mode, option);
-				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'k':
 				_modeK(chan, mode, option);

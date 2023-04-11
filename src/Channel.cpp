@@ -144,6 +144,10 @@ bool				Channel::getPrivateMask() const {
     return _privateMask;
 }
 
+bool                Channel::getModeratedMask() const {
+    return _moderatedMask;
+}
+
 //SETTERS
 void Channel::addUser(int fd) {
     _userList.push_back(fd);
@@ -298,8 +302,4 @@ bool	Channel::setUserLimit(std::string limit) {
 		return (false);
 	_userLimit = tmp_nb;
 	return (true);
-}
-
-bool Channel::getVoiceMask() const {
-    return _voiceMask;
 }
