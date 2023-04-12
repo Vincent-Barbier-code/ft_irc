@@ -106,8 +106,10 @@ void	Server::_modeSendMasks(Channel & chan, Client & client) {
 
 void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string const option, Client &client) {
 	std::map<std::string, Channel>::iterator it;
+
+	if (_channels.find(chanName) == _channels.end())
+		clerr(ERR_NOSUCHCHANNEL);
 	Channel &chan = _channels.at(chanName);
-	
 	if (!mode.size()) {
 		_modeSendMasks(chan, client);
 		return ;

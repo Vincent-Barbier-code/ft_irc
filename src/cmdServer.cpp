@@ -138,6 +138,8 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 
 void Server::_invite(int client_fd, std::string const & nickName, std::string const & channelName)
 {
+	if (_channels.find(channelName) == _channels.end())
+		clerr(ERR_NOSUCHCHANNEL);
 	if (nickName.size() == 0 || channelName.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
 	if (!_findClientByNickName(nickName))
