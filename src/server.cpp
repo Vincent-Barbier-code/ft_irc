@@ -99,6 +99,7 @@ void Server::_acceptNewConnection(void) {
 	socklen_t client_addrlen = sizeof(client_addr);
 	memset(&client_addr, 0, client_addrlen);
 
+
 	if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) {
 	   perror("accept() failed");
 	   close(client_fd);
@@ -107,6 +108,8 @@ void Server::_acceptNewConnection(void) {
 	}
 
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr));
+	
+	displayClients();
 
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
@@ -136,6 +139,8 @@ void Server::_deconnection(int client_fd) {
 	close(client_fd);
 	delete _clients[client_fd];
 	_clients.erase(client_fd);
+	
+	displayClients();
 }
 
 // ---------------- Manage client events  ---------------------
@@ -176,7 +181,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 	Client & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
-		std::cout << "\n" << *it << std::endl;
+		if (DEBUG) std::cout << "\n" << *it << std::endl;
 		_execute(client, *it);
 	}
 }

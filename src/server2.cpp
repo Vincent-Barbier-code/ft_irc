@@ -13,7 +13,7 @@ void    Server::sendData(Client const & client, std::string const & data) {
 void Server::_sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
 
-    std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
+    if (DEBUG) std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
     sendData(client, data);
 }
 
@@ -26,7 +26,7 @@ void	Server::_sendNumericReply(int code, Client const & client){
 
 
 void 		Server::_sendWelcomeMsg(Client const & client) {
-	std::cout << "Welcoming: "; 
+	if (DEBUG) std::cout << "Welcoming: "; 
     _sendNumericReply(RPL_WELCOME, client);
 
 }

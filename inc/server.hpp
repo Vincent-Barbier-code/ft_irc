@@ -113,6 +113,9 @@ class  Server {
 	void		_modeChannel(std::string const chanName, std::string const mode, std::string option, Client &client);
 	bool		_isClientOp(Channel const & chan, Client &client);
 	void		_modeSendMasks(Channel & chan, Client & client);
+
+
+	void        displayClients();
 };
 #endif
 

@@ -43,7 +43,7 @@ bool Client::isServerNamed() const {
 void Client::sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + getNickName() + "!" + client.getUserName() + "@" + client.getHostName() + " " + msg + "\r\n";
 
-    std::cout << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
+    if (DEBUG) std::cout << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
     Server::sendData(client, data);
 }
 

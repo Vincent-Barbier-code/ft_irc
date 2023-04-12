@@ -2,6 +2,8 @@
 #define MACRO_HPP
 # pragma once
 
+#define DEBUG 0
+
 #define clerr(code) throw Client::ClientException(code)
 #define INVALID_CMD -1
 #define INVALID_CHARACTER -2
