@@ -39,7 +39,6 @@ void Message::_initParsers(void) {
     _parsers["MODE"] = &Message::_parseMODE;
     _parsers["PART"] = &Message::_parsePART;
     _parsers["TOPIC"] = &Message::_parseTOPIC;
-    _parsers["SERVER"] = &Message::_parseMORSE;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -322,9 +321,4 @@ void Message::_parseTOPIC(void) {
 
     _params.push_back(Param("channel", space_splited[1]));
     _params.push_back(Param("topic", space_splited.size() == 3 ? space_splited[2].substr(1) : ""));
-}
-
-void    Message::_parseMORSE(void) {
-    std::vector<std::string> space_splited = ke_split(_raw, " ");
-    _params.push_back(Param("toconvert", space_splited[1]));
 }

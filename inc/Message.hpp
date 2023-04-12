@@ -83,7 +83,6 @@ class Message {
         void _parseMODE();
         void _parsePART();
         void _parseTOPIC();
-        void _parseMORSE();
 };
 
 std::ostream & operator<<(std::ostream & o, Message const & msg);

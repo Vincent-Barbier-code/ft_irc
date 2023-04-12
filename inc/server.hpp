@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/11 19:19:08 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/12 17:59:02 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,7 @@ class  Server {
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListPrivate(Client const & client, Channel const & channel);
 	void		_sendListEnd(Client const & client);
-	void		_morse(int client_fd, std::string const & msg);
-
+	
 	//stop
 	void 		_eraseChannel();
 	void 		_eraseClient();

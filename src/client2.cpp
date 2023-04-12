@@ -1,7 +1,6 @@
 #include "client.hpp"
 #include "utils.hpp"
 
-
 void Client::user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname) {
 
@@ -54,6 +53,12 @@ void Client::sendMsgToClient(Client const & client, std::string const & msg) con
     Server::sendData(client, data);
 }
 
+void Client::botSendMsgToClient(Client const & client, std::string const & msg) const {
+    std::string data = ":bipboup " + msg + "\r\n";
+
+    Server::sendData(client, data);
+}
+
 void Client::sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients, bool toMe) const {
     std::list<Client *> channelClients = Server::filterClientsByFd(clients, channel.getUserList());
     
@@ -72,7 +77,7 @@ void Client::sendPrivateMsg(Client const & receiver, std::string const & msg) co
 }
 
 void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const {
-        
+    std::string	morseMsg = "";    
     std::vector<int> channelFds = channel.getUserList();
 
     if (find(channelFds.begin(), channelFds.end(), _fd) == channelFds.end())
@@ -82,7 +87,10 @@ void Client::sendPrivateMsg(Channel const & channel, std::string const & msg, cl
         return;
     }
     std::string data = "PRIVMSG " + channel.getName() + " :" + msg;
-    sendMsgToClientsChannel(channel, data, clients, false);
+    morseMsg = _lookForMorse(msg);
+	if (morseMsg.size())
+		_morse(channel, morseMsg);
+	sendMsgToClientsChannel(channel, data, clients, false);
 }
 
 void Client::sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const {

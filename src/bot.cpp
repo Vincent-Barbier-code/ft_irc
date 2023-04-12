@@ -1,7 +1,20 @@
-#include "ft_irc.hpp"
-#include "server.hpp"
+#include "client.hpp"
 
-void	Server::_morse(int client_fd, std::string const & msg) {
+std::string Client::_lookForMorse(std::string msg) const { 
+	std::string morseMsg = "";
+	std::size_t	found;
+
+	if (!msg.size())
+		return(morseMsg);
+	found = msg.find("morse:");
+	if (found != std::string::npos && found == 0) {
+		morseMsg = msg;
+		morseMsg.erase(found, 6);
+	}
+	return (morseMsg);
+}
+
+void	Client::_morse(Channel const &chan, std::string const & msg) const {
 	std::string morse;
 	std::map<char, std::string> morseMap;
 
@@ -41,9 +54,10 @@ void	Server::_morse(int client_fd, std::string const & msg) {
 	morseMap['7'] = "--...";
 	morseMap['8'] = "---..";
 	morseMap['9'] = "----.";
+	morseMap[' '] = " ";
 
 	for (size_t i = 0; i < msg.size(); i++) {
-		if (!isalpha(msg[i]) && !isdigit(msg[i]))
+		if ((msg[i] != ' ') && !isalpha(msg[i]) && !isdigit(msg[i]))
 			clerr(ERR_NOTALPHANUMERIC);
 		if (msg[i] == ' ')
 			morse += " ";
@@ -52,5 +66,5 @@ void	Server::_morse(int client_fd, std::string const & msg) {
 			morse += " ";
 		}
 	}
-	_sendMsgToClient(*_findClientByFd(client_fd), "PRIVMSG " + _clients[client_fd]->getNickName() + " :" + morse);
+	botSendMsgToClient(*this, "PRIVMSG " + chan.getName() + " :" + morse);
 }
