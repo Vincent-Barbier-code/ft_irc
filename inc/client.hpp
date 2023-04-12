@@ -73,7 +73,7 @@ class  Client {
 	void	sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients, bool toMe) const;
 	void 	sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const;
 
-	void 	sendPrivateMsg(Client const & receiver, std::string const & msg) const;
+	void 	sendPrivateMsg(Client const & receiver, std::string const & msg, bool isNotice = false) const;
 	void 	sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 
 	//bot

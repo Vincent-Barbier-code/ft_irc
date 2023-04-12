@@ -39,6 +39,7 @@ void Message::_initParsers(void) {
     _parsers["MODE"] = &Message::_parseMODE;
     _parsers["PART"] = &Message::_parsePART;
     _parsers["TOPIC"] = &Message::_parseTOPIC;
+    _parsers["NOTICE"] = &Message::_parsePRIVMSG;
 }
 
 std::vector<Message> Message::parseAllMsg(std::string const & raw_msgs) {
@@ -61,11 +62,20 @@ Message::Message(std::string const & raw_msg) {
         _initParsers(); // static function to init the map of parsers
 
     // - - - - - -
+
+    _err = 0;
     _rawWPrefix = raw_msg;
+
+    if (_rawWPrefix.empty() || !isPrintableMsg(_rawWPrefix) || 
+        _rawWPrefix.size() > 1024 || isspace(_rawWPrefix[0])) {
+        _err =  INVALID_CHARACTER;
+        return ;
+    }
+
     _raw = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(_rawWPrefix.find(' ') + 1) : _rawWPrefix;
     _prefix = _rawWPrefix[0] == ':' ? _rawWPrefix.substr(1, _rawWPrefix.find(' ') - 1) : "";
     _cmd = _raw.substr(0, _raw.find(' '));
-    _err = 0;
+    
     _initParams();
 }
 
@@ -146,8 +156,12 @@ std::string Message::paramsToString() const {
 // ---------------------- Parsers -----------------------
 
 void Message::_parsePASS(void) {
+
     std::vector<std::string> space_splited = ke_split(_raw, " ");
-    _params.push_back(Param("password", space_splited[1]));
+    if (space_splited.size() != 2)
+        _err = ERR_NEEDMOREPARAMS;
+    else
+        _params.push_back(Param("password", space_splited[1]));
 }
 
 void Message::_parseCAP(void) {
@@ -165,36 +179,23 @@ void Message::_parseNICK(void) {
 
 void Message::_parseUSER(void) {
 
-    std::vector<std::string> space_splited = ke_split(_raw, " ");
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 5);
     
-    std::string realname = space_splited[4];
-
-    for (size_t i = 5; i < space_splited.size(); i++) {
-        realname += " " + space_splited[i];
-    }
-    
-
-    _params.push_back(Param("username", space_splited[1]));
-    _params.push_back(Param("hostname", space_splited[2]));
-    _params.push_back(Param("servername", space_splited[3]));
-    _params.push_back(Param("realname", realname));
-
-}
-
-void Message::_parseQUIT(void) {
-    std::vector<std::string> space_splited = ke_split(_raw, " ");
-    if (space_splited.size() == 1)
-        return ; // no message after QUIT command
-    if (space_splited[1][0] != ':') {
-        std::cout << "Invalid QUIT message" << std::endl;
+    if (space_splited.size() != 5) {
         _err = ERR_NEEDMOREPARAMS;
         return ;
     }
-    std::string message = space_splited[1].substr(1);
-    for (size_t i = 2; i < space_splited.size(); i++) {
-        message += " " + space_splited[i];
-    }
-    _params.push_back(Param("message", message));
+    _params.push_back(Param("username", space_splited[1]));
+    _params.push_back(Param("hostname", space_splited[2]));
+    _params.push_back(Param("servername", space_splited[3]));
+    _params.push_back(Param("realname", space_splited[4].substr(1)));
+}
+
+void Message::_parseQUIT(void) {
+    std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 2);
+    if (space_splited.size() == 1)
+        return ; // no message after QUIT command
+    _params.push_back(Param("message", space_splited[1].substr(1)));
 }
 
 void Message::_parseLIST(void) {
@@ -233,17 +234,10 @@ void Message::_parsePRIVMSG(void) {
 void Message::_parseINVITE(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
 
-    if (space_splited.size() == 1) {
+    if (space_splited.size() != 3) {
         _err = ERR_NEEDMOREPARAMS;
-        std::cerr << RED "Invalid INVITE NO PARAMS" WHITE << std::endl;
+        return ;
     }
-    if (space_splited.size() == 2) {
-        _err = ERR_NEEDMOREPARAMS;
-        std::cerr << RED "Invalid INVITE NO CANAL" WHITE << std::endl;
-    }
-
-    if (_err) return;
-
     _params.push_back(Param("nickname", space_splited[1]));
     _params.push_back(Param("channel", space_splited[2]));
 }
@@ -252,10 +246,7 @@ void Message::_parseKICK(void) {
     std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 4);
 
     if (space_splited.size() < 3) {
-
-        std::string strerr = "Invalid KICK ";
-        _err               = ERR_NEEDMOREPARAMS;
-        strerr += space_splited.size() == 1 ? "NO PARAMS" : "NO USER";
+        _err = ERR_NEEDMOREPARAMS;
         return;
     }
 
@@ -268,17 +259,22 @@ void Message::_parseKICK(void) {
 void Message::_parseJOIN(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
 
-    if (space_splited.size() > 1)
-        _params.push_back(Param("channel", space_splited[1]));
-    
-    if (space_splited.size() > 2)
+    if (space_splited.size() == 1) {
+        _err = ERR_NEEDMOREPARAMS;
+        return;
+    }
+    _params.push_back(Param("channel", space_splited[1]));
+    if (space_splited.size() == 3)
         _params.push_back(Param("key", space_splited[2]));
 }
 
 void Message::_parsePING(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
-    if (space_splited.size() == 1)
-        throw std::runtime_error("PARSE PING ARGUMENT PAS SUFFISANT") ; // a remplacer par le setting de la variable d'erreur
+    
+    if (space_splited.size() == 1) {
+        _err = ERR_NEEDMOREPARAMS;
+        return;
+    }
     _params.push_back(Param("server", space_splited[1]));
 }
 
@@ -302,11 +298,9 @@ void Message::_parsePART(void) {
     std::vector<std::string> space_splited = ke_split(_raw, " ");
 
     if (space_splited.size() < 2) {
-        std::cerr << RED "Invalid PART" WHITE << std::endl;
         _err = ERR_NEEDMOREPARAMS;
         return;
     }
-
     _params.push_back(Param("channel", space_splited[1]));
 }
 
@@ -314,11 +308,9 @@ void Message::_parseTOPIC(void) {
     std::vector<std::string> space_splited = ke_nSplit(_raw, " ", 3);
 
     if (space_splited.size() < 2) {
-        std::cerr << RED "Invalid TOPIC" WHITE << std::endl;
         _err = ERR_NEEDMOREPARAMS;
         return;
     }
-
     _params.push_back(Param("channel", space_splited[1]));
     _params.push_back(Param("topic", space_splited.size() == 3 ? space_splited[2].substr(1) : ""));
 }

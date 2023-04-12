@@ -32,8 +32,8 @@ void Server::_execute(Client &client, Message const &msg)
             _join(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "LIST")
             _list(client);
-        else if (cmd == "PRIVMSG")
-            _sendPrivateMsg(client, paramsV[0], paramsV[1]);
+        else if (cmd == "PRIVMSG" || cmd == "NOTICE")
+            _sendPrivateMsg(client, paramsV[0], paramsV[1], cmd == "NOTICE");
         else if (cmd == "PART")
             _part(client_fd, paramsV[0]);
         else if (cmd == "TOPIC")
@@ -47,14 +47,16 @@ void Server::_execute(Client &client, Message const &msg)
         fflush(stdout);
     }
     catch (Client::ClientException const &e) {
-        if (e.getCode() == -1)
-            std::cerr << RED "Invalid command: " << msg.getCmd() << WHITE << std::endl;
+        if (e.getCode() == INVALID_CMD)
+            std::cerr << RED "Invalid command: " PURPLE << msg.getCmd() << WHITE << std::endl;
+        else if (e.getCode() == INVALID_CHARACTER)
+            std::cerr << RED "Invalid character: non printable or leading/trailing spaces/tab...  : |" PURPLE << msg.getRawWPrefix() << RED "|" WHITE << std::endl;
         else
             _sendNumericReply(e.getCode(), client);
         fflush(stdout);
     }
     catch(const std::exception &e) {
-        std::cerr << RED "Erreur non géré: what():" << e.what() << "Parsing de l'erreur: " << msg << WHITE << std::endl;
+        std::cerr << RED "Erreur non géré: what():" << e.what() << ", Parsing de l'erreur: " << msg << WHITE << std::endl;
         fflush(stdout);
     }
 }
