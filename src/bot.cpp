@@ -4,6 +4,7 @@ std::string Client::_lookForMorse(std::string msg) const {
 	std::string morseMsg = "";
 	std::size_t	found;
 
+	std::cout << msg << std::endl;
 	if (!msg.size())
 		return(morseMsg);
 	found = msg.find("morse:");
@@ -11,11 +12,11 @@ std::string Client::_lookForMorse(std::string msg) const {
 		morseMsg = msg;
 		morseMsg.erase(found, 6);
 	}
+	std::cout << morseMsg << std::endl;
 	return (morseMsg);
 }
 
-void	Client::_morse(Channel const &chan, std::string const & msg) const {
-	std::string morse;
+std::map<char, std::string>	_initMorseMap(void) {
 	std::map<char, std::string> morseMap;
 
 	morseMap['a'] = ".-";
@@ -43,7 +44,32 @@ void	Client::_morse(Channel const &chan, std::string const & msg) const {
 	morseMap['w'] = ".--";
 	morseMap['x'] = "-..-";
 	morseMap['y'] = "-.--";
-	morseMap['z'] = "--..";
+	morseMap['A'] = ".-";
+	morseMap['B'] = "-...";
+	morseMap['C'] = "-.-.";
+	morseMap['D'] = "-..";
+	morseMap['E'] = ".";
+	morseMap['F'] = "..-.";
+	morseMap['G'] = "--.";
+	morseMap['H'] = "....";
+	morseMap['I'] = "..";
+	morseMap['J'] = ".---";
+	morseMap['K'] = "-.-";
+	morseMap['L'] = ".-..";
+	morseMap['M'] = "--";
+	morseMap['N'] = "-.";
+	morseMap['O'] = "---";
+	morseMap['P'] = ".--.";
+	morseMap['Q'] = "--.-";
+	morseMap['R'] = ".-.";
+	morseMap['S'] = "...";
+	morseMap['T'] = "-";
+	morseMap['U'] = "..-";
+	morseMap['V'] = "...-";
+	morseMap['W'] = ".--";
+	morseMap['X'] = "-..-";
+	morseMap['Y'] = "-.--";
+	morseMap['Z'] = "--..";
 	morseMap['0'] = "-----";
 	morseMap['1'] = ".----";
 	morseMap['2'] = "..---";
@@ -56,6 +82,14 @@ void	Client::_morse(Channel const &chan, std::string const & msg) const {
 	morseMap['9'] = "----.";
 	morseMap[' '] = " ";
 
+	return (morseMap);
+}
+
+void	Client::_morse(Channel const &chan, std::string const & msg) const {
+	std::string morse;
+	std::map<char, std::string> morseMap;
+	
+	morseMap = _initMorseMap();
 	for (size_t i = 0; i < msg.size(); i++) {
 		if ((msg[i] != ' ') && !isalpha(msg[i]) && !isdigit(msg[i]))
 			clerr(ERR_NOTALPHANUMERIC);
