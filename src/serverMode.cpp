@@ -68,12 +68,50 @@ void	Server::_modeK(Channel & chan, std::string const mode, std::string const op
 		chan.setKeyMask(false);
 }
 
+void	Server::_modeV(Channel & chan, std::string const mode, std::string const option) {
+	Client *client_voice = _findClientByNickName(option);
+
+	if (!client_voice)
+		clerr(ERR_NOSUCHNICK);
+	if (mode[0] == '+') {
+		chan.addVoice(client_voice->getFd());
+	}
+	else {
+		chan.removeVoice(client_voice->getFd());
+	}
+}
+
+void	Server::_modeSendMasks(Channel & chan, Client & client) {
+	std::string mode = "+";
+	std::string option = "";
+
+	if (chan.getPrivateMask())
+		mode += "p";
+	if (chan.getSecretMask())
+		mode += "s";
+	if (chan.getInviteMask())
+		mode += "i";
+	if (chan.getModeratedMask())
+		mode += "m";
+	if (chan.getUserLimitMask()) {
+		mode += "l";
+		option += itostr(chan.getUserLimit());
+	}
+	if (chan.getKeyMask()) {
+		mode += "k";
+		option += chan.getPassword();
+	}
+	_sendMsgToClient(client, "324 " + client.getNickName() + " " + chan.getName() + " " + mode + " " + option);
+}
+
 void	Server::_modeChannel(std::string const chanName, std::string const mode, std::string const option, Client &client) {
 	std::map<std::string, Channel>::iterator it;
 	Channel &chan = _channels.at(chanName);
 	
-	if (!mode.size())
+	if (!mode.size()) {
+		_modeSendMasks(chan, client);
 		return ;
+	}
 	if (mode[0] != '+' && mode[0] != '-') {
 		clerr(ERR_UNKNOWNMODE);
 	}
@@ -126,8 +164,8 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'v':
-				chan.setVoiceMask(mode[0] == '+');
-				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " ", _clients, true);
+				_modeV(chan, mode, option);
+				client.sendMsgToClientsChannel(chan, "MODE " + chanName + " "  + mode + " " + option, _clients, true);
 				break;
 			case 'k':
 				_modeK(chan, mode, option);

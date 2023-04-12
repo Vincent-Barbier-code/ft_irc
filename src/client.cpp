@@ -96,7 +96,7 @@ void	Client::modeUser(std::string const name, std::string const mode, Client & c
 			_isInvisible = true;
 		else
 			_isInvisible = false;
-		sendMsgToClient(client, mode);
+		sendMsgToClient(client, "MODE " + _nickName + " :" + mode);
 	}
 	else
 		clerr(ERR_UMODEUNKNOWNFLAG);

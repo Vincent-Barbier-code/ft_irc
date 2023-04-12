@@ -29,9 +29,8 @@ class	Channel {
 		std::string			getName() const;
 		std::string			getTopic() const;
 		std::string			getPassword() const;
-		int					getkeyMask() const;
-		int 				getinviteMask() const;
-		bool 				getVoiceMask() const;
+		int					getKeyMask() const;
+		int 				getInviteMask() const;
 		std::vector<int>	getUserList() const;
 		std::vector<int>    getOperatorList() const;
 		std::vector<int>	getBanList() const;
@@ -39,7 +38,9 @@ class	Channel {
 		unsigned long int	getUserLimit() const;
 		bool				getSecretMask() const;
 		bool				getPrivateMask() const;
-
+		bool				getModeratedMask() const;
+		bool				getUserLimitMask() const;
+		
 		int 		isInUserList(int fd) const;
 		int			isInInviteList(int fd) const;
 		int 		isInBanList(int fd) const;
@@ -62,7 +63,6 @@ class	Channel {
 
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
 		void				setInviteMask(bool mode);
-		void				setVoiceMask(bool mode);
 		void				setPrivateMask(bool mode);
 		void				setKeyMask(bool mode);
 		void				setSecretMask(bool mode);
@@ -80,7 +80,6 @@ class	Channel {
 		unsigned long int	_userLimit; //only used if userLimitMask is set
 		//Masks
 		bool		_inviteMask; //when set, only invited users can join
-		bool		_voiceMask; //when set, only voiced users (operators) can speak
 		bool 		_keyMask; //when set, only users with the correct key can join
 		bool		_privateMask; //when set, channel topic won't be displayed in the channel list 
 		bool		_secretMask; //when set, channel name won't be displayed in the channel list nor in the WHO list

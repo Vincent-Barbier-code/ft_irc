@@ -108,6 +108,9 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case ERR_USERSDONTMATCH:
 			message = "503 :Cant change mode for other users";
 			break;
+		case ERR_NOTALPHANUMERIC:
+			message = "800 " + client.getNickName() + " :String to convert must be alphanumeric";
+			break;
 		default:
 			throw std::runtime_error("ERROR: Unknown numeric reply code");
 	}
