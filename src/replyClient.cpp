@@ -21,15 +21,6 @@ std::string Server::_getNumericReplyMessage(int code, Client const &client) cons
 		case RPL_LUSERCLIENT:
 			message = "251 " + client.getNickName() + " :There are " + itostr(this->_clients.size()) + " users and " + " 1 server";
 			break;
-		// case RPL_LUSEROP:
-		// 	message = "252 " + client.getNickName() + " " + itostr(this->_operator.size()) + " :operator(s) online";
-		// 	break;
-		// case RPL_LUSERCHANNELS:
-		// 	message = "254 " + client.getNickName() + " " + itostr(this->getChannels().size()) + " :channels formed";
-		// 	break;
-		// case RPL_MOTD:
-		// 	message = "372 " + client.getNickName() + " :- " + client.getServer()->getMotd();
-		// 	break;
 		case RPL_MOTDSTART:
 			message = "375 " + client.getServerName() + " :- Message of the day -";
 			break;
