@@ -114,6 +114,8 @@ void	Server::_modeChannel(std::string const chanName, std::string const mode, st
 		_modeSendMasks(chan, client);
 		return ;
 	}
+	if (mode[0] == 'b')
+		return ;
 	if (mode[0] != '+' && mode[0] != '-') {
 		clerr(ERR_UNKNOWNMODE);
 	}
