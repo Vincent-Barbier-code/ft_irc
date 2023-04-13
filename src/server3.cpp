@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 //template <typename clients_ctn, typename fds_ctn>
 std::list<Client *> Server::filterClientsByFd(std::map<int, Client *> const & clients, std::vector<int> const & fds) {

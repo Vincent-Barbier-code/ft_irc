@@ -27,15 +27,19 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/Message.cpp \
 		$(SRCDIR)/replyClient.cpp \
 		$(SRCDIR)/server2.cpp \
-		$(SRCDIR)/cmdServer.cpp \
 		$(SRCDIR)/server3.cpp \
 		$(SRCDIR)/Channel.cpp \
 		$(SRCDIR)/serverMode.cpp \
 		$(SRCDIR)/executorServer.cpp \
 		$(SRCDIR)/stopQuit.cpp \
-		$(SRCDIR)/serverDebug.cpp
-
-
+		$(SRCDIR)/bot.cpp \
+		$(SRCDIR)/serverDebug.cpp \
+		$(SRCDIR)/_invite.cpp \
+		$(SRCDIR)/_join.cpp \
+		$(SRCDIR)/_kick.cpp \
+		$(SRCDIR)/_nick.cpp \
+		$(SRCDIR)/_part.cpp \
+		$(SRCDIR)/_topic.cpp \
 
 OBJ := $(addprefix $(OBJDIR)/, $(notdir $(SRCS:.cpp=.o)))
 DEPS := $(addprefix $(DEPDIR)/, $(notdir $(SRCS:.cpp=.d)))

@@ -68,3 +68,24 @@ bool isPrintableMsg(std::string const & str) {
     }
     return true;
 }
+
+bool   checkArg(std::string const & str) {
+	unsigned long int tmp_nb;
+	int	i = 0;
+
+    if (str.empty())
+		return (false);
+    if (str.size() == 1 && str[0] == '0')
+		return (false);
+	while(str[i]) {
+		if (!isdigit(str[i]))
+			return (false);
+		i++;
+	}
+	if (i > 10)
+		return (false);
+	tmp_nb = atoi(str.c_str());
+	if (tmp_nb > 2147483647)
+		return (false);
+	return (true);
+}
