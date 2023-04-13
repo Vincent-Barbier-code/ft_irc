@@ -170,7 +170,7 @@ void	Server::_nick(int client_fd, std::string const nick)
 		clerr(ERR_NONICKNAMEGIVEN);
 	else
 	{
-		if (DEBUG) std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
+		std::cout << "----------------------------- " + nick + " is now your nickname" << std::endl;
 		//client.sendMsgToStalkers("NICK " + nick, _channels, _clients);
 		//client.sendMsgToClient(client, "NICK " + nick);
 		for(std::map<int, Client *>::iterator receiver = _clients.begin(); receiver != _clients.end(); receiver++)

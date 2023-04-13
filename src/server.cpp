@@ -46,6 +46,7 @@ void Server::start() {
     }
 
     std::cout << "listen..." << std::endl;
+	displayClients();
 
 	_initEpoll();
 
@@ -181,7 +182,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 	Client & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
-		if (DEBUG) std::cout << "\n" << *it << std::endl;
+		std::cout << "\n" << *it << std::endl;
 		_execute(client, *it);
 	}
 }
