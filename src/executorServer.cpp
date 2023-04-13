@@ -54,10 +54,12 @@ void Server::_execute(Client &client, Message const &msg)
             std::cerr << RED "Invalid character: non printable or leading/trailing spaces/tab...  : |" PURPLE << msg.getRawWPrefix() << RED "|" WHITE << std::endl;
         else
             _sendNumericReply(e.getCode(), client);
+        displayClients();
         fflush(stdout);
     }
     catch(const std::exception &e) {
         std::cerr << RED "Erreur non géré: what():" << e.what() << ", Parsing de l'erreur: " << msg << WHITE << std::endl;
+        displayClients();
         fflush(stdout);
     }
 }
