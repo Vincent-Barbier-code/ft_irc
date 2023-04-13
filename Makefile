@@ -25,14 +25,10 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/utils.cpp \
 		$(SRCDIR)/Message.cpp \
 		$(SRCDIR)/replyClient.cpp \
-		$(SRCDIR)/server2.cpp \
-		$(SRCDIR)/cmdServer.cpp \
-		$(SRCDIR)/server3.cpp \
 		$(SRCDIR)/Channel.cpp \
 		$(SRCDIR)/executorServer.cpp \
 		$(SRCDIR)/stopQuit.cpp \
 		$(SRCDIR)/Server_display.cpp \
-		$(SRCDIR)/bot.cpp \
 		$(SRCDIR)/Server.cpp\
         $(SRCDIR)/Server_accessors.cpp\
         $(SRCDIR)/Server_channel.cpp\
