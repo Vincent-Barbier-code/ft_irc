@@ -6,7 +6,7 @@
 /*   By: mvue <mvue@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:58:56 by vbarbier          #+#    #+#             */
-/*   Updated: 2023/04/12 17:59:02 by mvue             ###   ########.fr       */
+/*   Updated: 2023/04/13 21:23:43 by mvue             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "macro.hpp"
 #include "ft_irc.hpp"
 #include "utils.hpp"
-#include "client.hpp"
+#include "Client.hpp"
 #include "Message.hpp"
 #include "Channel.hpp"
 #include <iomanip>

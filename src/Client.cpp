@@ -1,5 +1,62 @@
-#include "client.hpp"
-#include "utils.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
+
+//---------Constructors - Destructors-----------
+Client::Client(): _fd(0), _addr(), _nickName(), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
+{
+}
+
+Client::Client(int fd, sockaddr_in addr) : _fd(fd), _addr(addr), _nickName(), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
+{
+
+}
+
+Client::Client(int fd, sockaddr_in addr, std::string nickName) : _fd(fd), _addr(addr), _nickName(nickName), _userName(), _isRegistered(false), _isAuth(false), _isInvisible(false)
+{
+
+}
+
+Client::~Client()
+{
+}
+
+bool Client::operator==(Client const & rhs) const
+{
+	return (this->_nickName == rhs._nickName);
+}
+
+//----------------Commands-----------------------
+//Commande : PASS
+//Paramètres : <password>
+void	Client::pass(std::string const &clientPass, std::string const &serverPass) {
+	if (_isAuth)
+		clerr(ERR_ALREADYREGISTRED);
+	else if (clientPass == serverPass) {
+		_isAuth = true;
+		std::cout << "Client " << inet_ntoa(_addr.sin_addr) << " is now authentified" << std::endl;
+	}
+	else {
+		std::cout << RED "Password mismatch" WHITE << std::endl;
+		clerr(ERR_PASSWDMISMATCH);
+	}
+}
+
+//Commande : MODE
+// Parametres 1 : <canal> {[+|-]|o|p|s|i|t|n|b|v} [<limite>] [<utilisateur>] [<masque de bannissement >]
+// Parametres 2 : <pseudonyme> {[+|-]i}
+void	Client::modeUser(std::string const name, std::string const mode, Client & client) {
+	if (name != _nickName)
+		clerr(ERR_USERSDONTMATCH);
+	if (mode[1] == 'i') {
+		if (mode[0] == '+')
+			_isInvisible = true;
+		else
+			_isInvisible = false;
+		sendMsgToClient(client, "MODE " + _nickName + " :" + mode);
+	}
+	else
+		clerr(ERR_UMODEUNKNOWNFLAG);
+}
 
 void Client::user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname) {
@@ -18,28 +75,7 @@ void Client::user(std::string const & username, std::string const & hostname,
     _isRegistered = true;
 }
 
-std::string Client::getHostName() const {
-    return _hostName;
-}
-
-std::string Client::getServerName() const {
-    return _serverName == "" ? "*" : _serverName;
-}
-
-std::string Client::getRealName() const {
-    return _realName;
-}
-
-
-bool Client::isNicked() const {
-	return _nickName != "";
-}
-
-bool Client::isServerNamed() const {
-    return _serverName != "";
-}
-
-
+//---------------Messages-----------------------
 void Client::sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + getNickName() + "!" + getUserName() + "@" + getHostName() + " " + msg + "\r\n";
 
@@ -93,46 +129,3 @@ void Client::sendMsgToStalkers(std::string const & msg, channel_map const & chan
     for (std::set<Client const *>::const_iterator stalker = stalkers.begin(); stalker != stalkers.end(); stalker++)
         sendMsgToClient(**stalker, msg); 
 }
-
-std::set<Client const *> Client::getStalkers(channel_map const & channels, client_map const & clients) const {
-    std::set <Client const *> stalkers;
-    std::list<Channel const *> joinedChannels = getJoinedChannels(channels);
-
-    for (std::list<Channel const *>::const_iterator channel = joinedChannels.begin(); channel != joinedChannels.end(); channel++) {
-        std::vector<int> const & users = (*channel)->getUserList();
-        for (std::vector<int>::const_iterator user = users.begin(); user != users.end(); user++)
-            if (*user != _fd)
-                stalkers.insert(clients.at(*user));
-    }
-    return stalkers;
-}
-
-std::list<Channel const *> Client::getJoinedChannels(channel_map const & channels) const {
-    std::list<Channel const *> joinedChannels;
-    for (channel_map::const_iterator channel = channels.begin(); channel != channels.end(); channel++) {
-        
-        std::vector<int> const & users = channel->second.getUserList();
-        if (find(users.begin(), users.end(), _fd) != users.end()) {
-            joinedChannels.push_back(&(channel->second));
-        }
-    }
-
-    return joinedChannels;
-}
-
-void Client::setBuf(std::string const & buf) {
-    _buf = buf;
-}
-
-void Client::appendBuf(char const * buf, size_t len) {
-    _buf.append(buf, len);
-}
-
-std::string Client::getBuf() const {
-    return _buf;
-}
-
-void Client::clearBuf() {
-    _buf.clear();
-}
-
