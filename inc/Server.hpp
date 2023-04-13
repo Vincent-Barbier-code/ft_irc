@@ -35,17 +35,18 @@ class  Server {
 	int 		getFd() const;
 	sockaddr_in getAddr() const;
 	std::string	getPass() const;
+	
 	void 		start(void);
 	void 		stop(void);
-
 
 	void 		addChannel(Channel const & channel);
 	void		mode(std::string const name, std::string const mode, std::string option, Client & client);
 
   private:
+	static int						_epoll_fd;
+
   	int								_server_fd;
 	sockaddr_in						_addr;
-	static int						_epoll_fd;
 	std::map<int, Client *>			_clients;
 	std::string						_password;
 	std::map<std::string, Channel>	_channels;
@@ -68,6 +69,7 @@ class  Server {
 	void 		_sendMsgToClientsChannel(Channel const & channel, std::string const & msg) const;
 	void        _sendMsgNumericToCLient(Client const & client, int code, std::string const & msg);
 	void 		_sendWelcomeMsg(Client const & client);
+	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg, bool isNotice = false) const;
 		
 	//CmdServer
 	void 		_user(Client & client, std::vector<std::string> const & params);
@@ -79,9 +81,12 @@ class  Server {
 	void		_invite(int client_fd, std::string const & nickName, std::string const & channelName);
 	void		_part(int client_fd, std::string const & nameChannel);
 	void		_topic(int client_fd, std::string const & nameChannel, std::string const & topic);
+	void        _list(Client const & client);
+	void 		_quit(Client & client, std::string const & comment);
+
 	std::string _getUserNameList(Channel channel) const;
 	bool		_isClientNameInList(Channel channel, std::string name) const;
-	void        _list(Client const & client);
+
 	void		_sendListStart(Client const & client);
 	void		_sendList(Client const & client, Channel const & channel);
 	void		_sendListPrivate(Client const & client, Channel const & channel);
@@ -90,11 +95,9 @@ class  Server {
 	//stop
 	void 		_eraseChannel();
 	void 		_eraseClient();
-	void 		_quit(Client & client, std::string const & comment);
 	void		_partChannels();
 	void		_freeAndClose();
 	
-	void 		_sendPrivateMsg(Client const & sender, std::string const & dests, std::string const & msg, bool isNotice = false) const;
 
 	//MODE
 	void		_modeO(Channel & chan, std::string const mode, std::string option);

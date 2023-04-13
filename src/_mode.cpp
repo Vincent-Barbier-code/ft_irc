@@ -1,4 +1,22 @@
 #include "Server.hpp"
+#include "Client.hpp"
+
+//Commande : MODE
+// Parametres 1 : <canal> {[+|-]|o|p|s|i|t|n|b|v} [<limite>] [<utilisateur>] [<masque de bannissement >]
+// Parametres 2 : <pseudonyme> {[+|-]i}
+void	Client::modeUser(std::string const name, std::string const mode, Client & client) {
+	if (name != _nickName)
+		clerr(ERR_USERSDONTMATCH);
+	if (mode[1] == 'i') {
+		if (mode[0] == '+')
+			_isInvisible = true;
+		else
+			_isInvisible = false;
+		sendMsgToClient(client, "MODE " + _nickName + " :" + mode);
+	}
+	else
+		clerr(ERR_UMODEUNKNOWNFLAG);
+}
 
 void	Server::_modeO(Channel & chan, std::string const mode, std::string const option) {
 	std::vector<std::string> options;
@@ -187,3 +205,4 @@ void Server::mode(std::string const name, std::string const mode, std::string op
 	else
 		client.modeUser(name, mode, client);
 }
+

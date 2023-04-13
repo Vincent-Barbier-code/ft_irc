@@ -19,7 +19,6 @@ DEPDIR := dep
 SRCDIR := ./src
 INCDIR := ./inc
 SRCS := $(SRCDIR)/main.cpp \
-		$(SRCDIR)/server.cpp \
 		$(SRCDIR)/Client.cpp \
 		$(SRCDIR)/Client_accessors.cpp \
 		$(SRCDIR)/Client_bot.cpp \
@@ -27,13 +26,24 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/Message.cpp \
 		$(SRCDIR)/replyClient.cpp \
 		$(SRCDIR)/server2.cpp \
+		$(SRCDIR)/cmdServer.cpp \
 		$(SRCDIR)/server3.cpp \
 		$(SRCDIR)/Channel.cpp \
-		$(SRCDIR)/serverMode.cpp \
 		$(SRCDIR)/executorServer.cpp \
 		$(SRCDIR)/stopQuit.cpp \
+		$(SRCDIR)/Server_display.cpp \
 		$(SRCDIR)/bot.cpp \
-		$(SRCDIR)/serverDebug.cpp \
+		$(SRCDIR)/Server.cpp\
+        $(SRCDIR)/Server_accessors.cpp\
+        $(SRCDIR)/Server_channel.cpp\
+        $(SRCDIR)/Server_send.cpp\
+        $(SRCDIR)/Server_utils.cpp\
+        $(SRCDIR)/_list.cpp\
+        $(SRCDIR)/_mode.cpp\
+        $(SRCDIR)/_pass.cpp\
+        $(SRCDIR)/_privmsg.cpp\
+        $(SRCDIR)/_quit.cpp\
+        $(SRCDIR)/_user.cpp \
 		$(SRCDIR)/_invite.cpp \
 		$(SRCDIR)/_join.cpp \
 		$(SRCDIR)/_kick.cpp \
