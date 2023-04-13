@@ -119,6 +119,8 @@ void Server::_acceptNewConnection(void) {
 	memset(&client_ev, 0, sizeof(client_ev));
 	client_ev.data.fd = client_fd;
 	client_ev.events = EPOLLIN | EPOLLRDHUP;
+
+	fcntl(client_fd, F_SETFL, O_NONBLOCK);
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &client_ev) == -1)
 	{
 	   perror("epoll_ctl() failed");
