@@ -34,9 +34,12 @@ class  Server {
   public:
 	
 	static void	sendData(Client const & client, std::string const & data);
+	static void acceptSendData(Client const & client);
 
 	// template <typename clients_ctn, typename fds_ctn>
 	static std::list<Client *> filterClientsByFd(std::map<int, Client *> const &clients, std::vector<int> const &fds);
+	
+	static std::map<int, std::string>      waitingData;
 
 	Server(int port, std::string password);
 	~Server();
@@ -54,7 +57,7 @@ class  Server {
   private:
   	int								_server_fd;
 	sockaddr_in						_addr;
-	int								_epoll_fd;
+	static int						_epoll_fd;
 	std::map<int, Client *>			_clients;
 	std::string						_password;
 	std::map<std::string, Channel>	_channels;

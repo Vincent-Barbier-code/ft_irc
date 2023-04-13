@@ -135,3 +135,4 @@ std::string Client::getBuf() const {
 void Client::clearBuf() {
     _buf.clear();
 }
+

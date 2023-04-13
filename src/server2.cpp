@@ -4,10 +4,33 @@ void    Server::sendData(Client const & client, std::string const & data) {
 
     //std::cout << "send data to " << client_fd << std::endl;
     //std::cout << "data: " << data << std::endl;
+    // if (send(client.getFd(), data.c_str(), data.size(), 0) == -1) {
+    //     perror("send error");
+    //     throw std::runtime_error("send error");
+    // }
+    waitingData[client.getFd()] += data;
+
+    epoll_event client_ev;
+    memset(&client_ev, 0, sizeof(client_ev));
+    client_ev.data.fd = client.getFd();
+    client_ev.events = EPOLLIN | EPOLLRDHUP | EPOLLOUT;
+    epoll_ctl(_epoll_fd, EPOLL_CTL_MOD, client.getFd(), &client_ev);
+}
+
+void Server::acceptSendData(Client const & client) {
+    std::string data = waitingData.at(client.getFd());
+
     if (send(client.getFd(), data.c_str(), data.size(), 0) == -1) {
         perror("send error");
         throw std::runtime_error("send error");
     }
+    waitingData.erase(client.getFd());
+
+    epoll_event client_ev;
+    memset(&client_ev, 0, sizeof(client_ev));
+    client_ev.data.fd = client.getFd();
+    client_ev.events = EPOLLIN | EPOLLRDHUP;
+    epoll_ctl(_epoll_fd, EPOLL_CTL_MOD, client.getFd(), &client_ev);
 }
 
 void Server::_sendMsgToClient(Client const & client, std::string const & msg) const {

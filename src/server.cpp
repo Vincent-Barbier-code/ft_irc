@@ -2,6 +2,9 @@
 
 // ------------------ Server Class - Constructor / Destructor ------------------
 
+int Server::_epoll_fd = -1;
+std::map<int, std::string> Server::waitingData;
+
 Server::Server() {
 }
 
@@ -152,15 +155,19 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 	int 		size = 512;
 	char 		buf[size + 1];
 	memset(buf, 0, size + 1);
+	
+	int 	 len;
+	int 	 client_fd = client_ev.data.fd;
+	Client & client    = *_clients.at(client_fd);
 
 	if (client_ev.events & EPOLLRDHUP) {
 		_deconnection(client_ev.data.fd);
 		return ;
 	}
-
-	int 	 len;
-	int 	 client_fd = client_ev.data.fd;
-	Client & client = *_clients.at(client_fd);
+	if (client_ev.events & EPOLLOUT) {
+		acceptSendData(client);
+		return ;
+	}
 
 	if (client.getBuf().find("\r\n") != std::string::npos)
 		client.clearBuf();
