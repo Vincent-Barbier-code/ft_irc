@@ -6,10 +6,10 @@
 #include <list>
 #include <set>
 #include <algorithm>
-
 #include "macro.hpp"
 #include "server.hpp"
 #include "Channel.hpp"
+
 class  Client {
 
   private:
@@ -31,6 +31,7 @@ class  Client {
 	typedef std::map<int, Client *> client_map;
 	typedef std::map<std::string, Channel> channel_map;
 
+	//---------Constructors - Destructors-----------
 	Client();
 	Client(int fd, sockaddr_in addr);
 	Client(int fd, sockaddr_in addr, std::string nickName);
@@ -38,7 +39,7 @@ class  Client {
 
 	bool operator==(Client const & rhs) const;
 	
-	//getters
+	//-------------------Getters--------------------
 	int 		getFd() const;
 	sockaddr_in getAddr();
 	std::string getUserName() const; 
@@ -55,32 +56,31 @@ class  Client {
 	bool        isNicked() const;
 	bool        isServerNamed() const;
 
-	//setters
+	//----------------Setters----------------------
 	std::string	setNickName(std::string const &nickName);
 	void 		setBuf(std::string const & buf);
 	void        appendBuf(char const * buf, size_t len);
 	void 		clearBuf();
 
-	//commands
+	//----------------Commands-----------------------
 	void		pass(std::string const &clientPass, std::string const &serverPass);
 	void 		user(std::string const & username, std::string const & hostname,
                   std::string const & servername, std::string realname);
 	void		modeUser(std::string const name, std::string const mode, Client & client);
 	
-	//messages
+	//---------------Messages-----------------------
 	void	botSendMsgToClient(Client const & client, std::string const & msg) const;
 	void 	sendMsgToClient(Client const & client, std::string const & msg) const;
 	void	sendMsgToClientsChannel(Channel const & channel, std::string const & msg, client_map const & clients, bool toMe) const;
 	void 	sendMsgToStalkers(std::string const & msg, channel_map const & channels, client_map const & clients) const;
-
 	void 	sendPrivateMsg(Client const & receiver, std::string const & msg, bool isNotice = false) const;
 	void 	sendPrivateMsg(Channel const & channel, std::string const & msg, client_map const & clients) const;
 
-	//bot
+	//------------------Bot--------------------
 	std::string	_lookForMorse(std::string msg) const;
 	void		_morse(Channel const &chan, std::string const & msg) const;
 
-	
+	//---------------Exceptions-----------------
 	class ClientException : public std::exception {
 		private:
 			int _code;

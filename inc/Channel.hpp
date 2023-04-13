@@ -5,7 +5,7 @@
 #include "macro.hpp"
 #include <vector>
 #include <string>
-#include "client.hpp"
+#include "Client.hpp"
 #include "utils.hpp"
 #include "server.hpp"
 

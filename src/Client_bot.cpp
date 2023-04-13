@@ -1,4 +1,4 @@
-#include "client.hpp"
+#include "Client.hpp"
 
 std::string Client::_lookForMorse(std::string msg) const { 
 	std::string morseMsg = "";

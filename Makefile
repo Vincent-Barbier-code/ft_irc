@@ -20,8 +20,9 @@ SRCDIR := ./src
 INCDIR := ./inc
 SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/server.cpp \
-		$(SRCDIR)/client.cpp \
-		$(SRCDIR)/client2.cpp \
+		$(SRCDIR)/Client.cpp \
+		$(SRCDIR)/Client_accessors.cpp \
+		$(SRCDIR)/Client_bot.cpp \
 		$(SRCDIR)/utils.cpp \
 		$(SRCDIR)/Message.cpp \
 		$(SRCDIR)/replyClient.cpp \
@@ -32,7 +33,6 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/serverMode.cpp \
 		$(SRCDIR)/executorServer.cpp \
 		$(SRCDIR)/stopQuit.cpp \
-		$(SRCDIR)/bot.cpp \
 		$(SRCDIR)/serverDebug.cpp
 
 
