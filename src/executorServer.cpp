@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 void Server::_execute(Client &client, Message const &msg)
 {

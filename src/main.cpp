@@ -1,5 +1,5 @@
 #include "ft_irc.hpp"
-#include "server.hpp"
+#include "Server.hpp"
 
 #define MAIN 1
 #define TEST1 1

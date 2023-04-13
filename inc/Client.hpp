@@ -7,7 +7,7 @@
 #include <set>
 #include <algorithm>
 #include "macro.hpp"
-#include "server.hpp"
+#include "Server.hpp"
 #include "Channel.hpp"
 
 class  Client {
