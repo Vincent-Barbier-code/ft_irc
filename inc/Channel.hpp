@@ -7,7 +7,7 @@
 #include <string>
 #include "client.hpp"
 #include "utils.hpp"
-#include "server.hpp"
+#include "Server.hpp"
 
 class Client;
 

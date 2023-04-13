@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 #include "color.hpp"
 
 void Server::displayClients() {

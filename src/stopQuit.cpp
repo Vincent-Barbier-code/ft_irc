@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 bool	g_shutdown = false;
 void Server::_partChannels()

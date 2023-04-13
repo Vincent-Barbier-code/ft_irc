@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 void	Server::_modeO(Channel & chan, std::string const mode, std::string const option) {
 	std::vector<std::string> options;
