@@ -44,6 +44,7 @@ void Server::_execute(Client &client, Message const &msg)
             _invite(client_fd, paramsV[0], paramsV[1]);
         else if (cmd == "MODE")
             mode(paramsV[0], paramsV.size() >= 2 ? paramsV[1] : "", paramsV.size() == 3 ? paramsV[2] : "", client);
+        displayClients();
         fflush(stdout);
     }
     catch (Client::ClientException const &e) {

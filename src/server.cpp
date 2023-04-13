@@ -2,6 +2,9 @@
 
 // ------------------ Server Class - Constructor / Destructor ------------------
 
+int Server::_epoll_fd = -1;
+std::map<int, std::string> Server::waitingData;
+
 Server::Server() {
 }
 
@@ -46,6 +49,7 @@ void Server::start() {
     }
 
     std::cout << "listen..." << std::endl;
+	displayClients();
 
 	_initEpoll();
 
@@ -99,6 +103,7 @@ void Server::_acceptNewConnection(void) {
 	socklen_t client_addrlen = sizeof(client_addr);
 	memset(&client_addr, 0, client_addrlen);
 
+
 	if ((client_fd = accept(_server_fd, &client_addr, &client_addrlen)) == -1) {
 	   perror("accept() failed");
 	   close(client_fd);
@@ -107,6 +112,8 @@ void Server::_acceptNewConnection(void) {
 	}
 
 	_clients[client_fd] = new Client(client_fd, reinterpret_cast<sockaddr_in &>(client_addr));
+	
+	displayClients();
 
 	epoll_event client_ev;
 	memset(&client_ev, 0, sizeof(client_ev));
@@ -136,6 +143,8 @@ void Server::_deconnection(int client_fd) {
 	close(client_fd);
 	delete _clients[client_fd];
 	_clients.erase(client_fd);
+	
+	displayClients();
 }
 
 // ---------------- Manage client events  ---------------------
@@ -146,15 +155,19 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 	int 		size = 512;
 	char 		buf[size + 1];
 	memset(buf, 0, size + 1);
+	
+	int 	 len;
+	int 	 client_fd = client_ev.data.fd;
+	Client & client    = *_clients.at(client_fd);
 
 	if (client_ev.events & EPOLLRDHUP) {
 		_deconnection(client_ev.data.fd);
 		return ;
 	}
-
-	int 	 len;
-	int 	 client_fd = client_ev.data.fd;
-	Client & client = *_clients.at(client_fd);
+	if (client_ev.events & EPOLLOUT) {
+		acceptSendData(client);
+		return ;
+	}
 
 	if (client.getBuf().find("\r\n") != std::string::npos)
 		client.clearBuf();

@@ -1,5 +1,10 @@
 #ifndef COLOR_H
     #define COLOR_H
+
+    #define ANSI_CLEAR_SCREEN "\001\033[2J\002"
+    #define ANSI_MOVE_CURSOR_HOME "\001\033[H\002"
+    #define ANSI_RESET "\001\033[0m\002"
+
     
     #define BLUE "\001\033[1;34m\002"
     #define PURPLE "\001\033[1;35m\002"

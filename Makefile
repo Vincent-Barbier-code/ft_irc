@@ -33,6 +33,7 @@ SRCS := $(SRCDIR)/main.cpp \
 		$(SRCDIR)/executorServer.cpp \
 		$(SRCDIR)/stopQuit.cpp \
 		$(SRCDIR)/bot.cpp \
+		$(SRCDIR)/serverDebug.cpp
 
 
 
