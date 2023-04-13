@@ -25,7 +25,7 @@ class	Channel {
 		bool operator==(std::string const & rhs) const;
 		
 
-		//getters
+		//--------------Getters------------------
 		std::string			getName() const;
 		std::string			getTopic() const;
 		std::string			getPassword() const;
@@ -40,28 +40,25 @@ class	Channel {
 		bool				getPrivateMask() const;
 		bool				getModeratedMask() const;
 		bool				getUserLimitMask() const;
-		
-		int 		isInUserList(int fd) const;
-		int			isInInviteList(int fd) const;
-		int 		isInBanList(int fd) const;
-		int			isInOperatorList(int fd) const;
-		int			isInVoiceList(int fd) const;
-		void		addUser(int fd);
-		bool		addInvite(int fd);
-		bool		addBan(int fd);
-		bool		addOperator(int fd);
-		bool		addVoice(int fd);
-		bool		removeOperator(int fd);
-		bool		removeBan(int fd);
-		void		removeUser(int fd);
-		void		removeInvite(int fd);
-		void		removeVoice(int fd);
-
+		int 				isInUserList(int fd) const;
+		int					isInInviteList(int fd) const;
+		int 				isInBanList(int fd) const;
+		int					isInOperatorList(int fd) const;
+		int					isInVoiceList(int fd) const;
 		bool                isModerated() const;
-		
-		//creator needed to set the first operator
-
 		bool				isClientInList(std::vector<int> list, int fdClient) const;
+		
+		//----------Setters-------------------------
+		void				addUser(int fd);
+		bool				addInvite(int fd);
+		bool				addBan(int fd);
+		bool				addOperator(int fd);
+		bool				addVoice(int fd);
+		bool				removeOperator(int fd);
+		bool				removeBan(int fd);
+		void				removeUser(int fd);
+		void				removeInvite(int fd);
+		void				removeVoice(int fd);
 		void				setInviteMask(bool mode);
 		void				setPrivateMask(bool mode);
 		void				setKeyMask(bool mode);
