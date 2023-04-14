@@ -30,7 +30,7 @@ bool Client::operator==(Client const & rhs) const
 void Client::sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + getNickName() + "!" + getUserName() + "@" + getHostName() + " " + msg + "\r\n";
 
-    std::cout << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
+    std::cerr << BLUE << getNickName() << " -> " << client.getNickName() << WHITE ": |" CYAN << data << WHITE "|" << std::endl; 
     Server::sendData(client, data);
 }
 

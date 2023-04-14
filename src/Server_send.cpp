@@ -30,7 +30,7 @@ void Server::acceptSendData(Client const & client) {
 void Server::_sendMsgToClient(Client const & client, std::string const & msg) const {
     std::string data = ":" + client.getServerName() + " " + msg + "\r\n";
 
-    std::cout << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
+    std::cerr << "To:" <<  BLUE << client.getNickName() << WHITE " |" CYAN << data << WHITE "|" << std::endl; 
     sendData(client, data);
 }
 

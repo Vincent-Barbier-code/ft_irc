@@ -64,7 +64,7 @@ void	Server::_modeB(Channel & chan, std::string const mode, std::string const op
 			chan.addBan(client_to_ban->getFd());
 			if (chan.isInUserList(client_to_ban->getFd()))
 				_kick(client_fd, chan.getName(), client_to_ban->getNickName(), "You got banned\n");
-			std::cout << "BAN: " << client_to_ban->getNickName() << std::endl;
+			std::cerr << "BAN: " << client_to_ban->getNickName() << std::endl;
 		}
 		else 
 			chan.removeBan(client_to_ban->getFd());

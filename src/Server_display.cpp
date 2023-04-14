@@ -59,7 +59,7 @@ void Server::displayClients() {
 
     // Affichage des données
     for (std::size_t k = 0; k < donnees.size(); ++k) {
-        std::cout << couleurs[k+2];
+        std::cout << couleurs[k % 6];
         for (std::size_t i = 0; i < donnees[k].size(); ++i) {
             std::string valeur_affichee;
             if (donnees[k][i].length() > largeur_colonne-3) {
