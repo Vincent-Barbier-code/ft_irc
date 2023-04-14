@@ -4,7 +4,7 @@ std::string Client::_lookForMorse(std::string msg) const {
 	std::string morseMsg = "";
 	std::size_t	found;
 
-	std::cout << msg << std::endl;
+	std::cerr << msg << std::endl;
 	if (!msg.size())
 		return(morseMsg);
 	found = msg.find("morse:");
@@ -12,7 +12,7 @@ std::string Client::_lookForMorse(std::string msg) const {
 		morseMsg = msg;
 		morseMsg.erase(found, 6);
 	}
-	std::cout << morseMsg << std::endl;
+	std::cerr << morseMsg << std::endl;
 	return (morseMsg);
 }
 

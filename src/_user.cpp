@@ -24,7 +24,7 @@ void Server::_user(Client & client, std::vector<std::string> const & params) {
 }
 
 void 		Server::_sendWelcomeMsg(Client const & client) {
-	std::cout << "Welcoming: "; 
+	std::cerr << "Welcoming: "; 
     _sendNumericReply(RPL_WELCOME, client);
 
 }

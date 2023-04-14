@@ -48,14 +48,14 @@ void Server::start() {
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "listen..." << std::endl;
+    std::cerr << "listen..." << std::endl;
 	displayClients();
 
 	_initEpoll();
 
 	while (!g_shutdown) {
 		epoll_event ready_events;
-		int			maxevents = _clients.size() + 1;
+		int			maxevents = 100;//_clients.size() + 1;
 		int			nb_ev;
 
 		if ((nb_ev = epoll_wait(_epoll_fd, &ready_events, maxevents, -1)) == -1) {
@@ -65,7 +65,7 @@ void Server::start() {
 			perror("epoll_wait() failed first");
 			exit(EXIT_FAILURE);
 		}
-		
+		std::cerr << RED "--------------------------------------Nbr ready events: " WHITE << nb_ev << std::endl;
 		for (int i = 0; i < nb_ev; i++) {
 			if ((&ready_events)[i].data.fd ==_server_fd)
 				_acceptNewConnection();
@@ -130,7 +130,7 @@ void Server::_acceptNewConnection(void) {
 }
 
 void Server::_deconnection(int client_fd) {
-	std::cout << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
+	std::cerr << "Le client : " << client_fd << " a ete deconnecte !" << std::endl;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL) == -1) {
 		// MESSAGE LEAK
 		perror("epoll_ctl() failed");
@@ -160,6 +160,7 @@ void Server::_treatClientEvent(epoll_event const & client_ev) {
 	
 	int 	 len;
 	int 	 client_fd = client_ev.data.fd;
+	std::cerr << "--------------------------FD : " << client_ev.data.fd << std::endl;
 	Client & client    = *_clients.at(client_fd);
 
 	if (client_ev.events & EPOLLRDHUP) {
@@ -191,7 +192,7 @@ void Server::_execRawMsgs(std::string const & raw_msgs, int client_fd) {
 	Client & client = *_clients.at(client_fd);
 
 	for (std::vector<Message>::const_iterator it = msgs.begin(); it != msgs.end(); it++) {
-		std::cout << "\n" << *it << std::endl;
+		std::cerr << "\n" << *it << std::endl;
 		_execute(client, *it);
 	}
 }

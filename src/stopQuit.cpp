@@ -7,11 +7,11 @@ void Server::_partChannels()
 
 	while (it != _channels.end())
 	{
-		std::cout << "Parting channel " << it->first << std::endl;
+		std::cerr << "Parting channel " << it->first << std::endl;
 		std::vector<int>	users = it->second.getUserList();
 		for (size_t i = 0; i < users.size(); i++)
 		{
-			std::cout << "Parting channel " << it->first << " for client " << i << std::endl;
+			std::cerr << "Parting channel " << it->first << " for client " << i << std::endl;
 			_part(users[i], it->first);
 		}
 		it++;
@@ -21,7 +21,7 @@ void Server::_partChannels()
 void	sigStop(int signum)
 {
 	(void)signum;
-	std::cout << "Sigquit received." << std::endl;
+	std::cerr << "Sigquit received." << std::endl;
 	g_shutdown = 1;
 }
 
@@ -58,7 +58,7 @@ void Server::_freeAndClose()
 
 void	Server::stop()
 {
-	std::cout << "Server is shutting down..." << std::endl;
+	std::cerr << "Server is shutting down..." << std::endl;
 	_freeAndClose();
 	exit(EXIT_SUCCESS);
 }

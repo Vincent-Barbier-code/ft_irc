@@ -1,9 +1,9 @@
 #include "Server.hpp"
 
 void  Server::_list(Client const & client) {
-    std::cout << "Listing channels" << std::endl;
+    std::cerr << "Listing channels" << std::endl;
     for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        std::cout << it->first << " => " << it->second.getName() << std::endl;
+        std::cerr << it->first << " => " << it->second.getName() << std::endl;
     }
     _sendListStart(client);
     for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
