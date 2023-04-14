@@ -16,8 +16,6 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 {
 	Client &client = *_clients.at(client_fd);
 
-	if (client == *_findClientByNickName(banName))
-		return ;
 	if (channelName.size() == 0)
 		clerr(ERR_NEEDMOREPARAMS);
 	if (_channels.find(channelName) == _channels.end())
