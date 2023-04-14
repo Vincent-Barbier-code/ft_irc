@@ -26,8 +26,6 @@ void Server::_kick(int client_fd, std::string const & channelName, std::string c
 		clerr(ERR_NOTONCHANNEL);
 	else if (!_isClientNameInList(channel, banName))
 		clerr(ERR_USERNOTINCHANNEL);
-	else if (channel.isInBanList(client_fd))
-		clerr(ERR_BANNEDFROMCHAN);
 	if (channel.isInOperatorList(client_fd))
 	{
 		Client &clientBan = *_findClientByNickName(banName);
