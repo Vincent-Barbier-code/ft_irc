@@ -49,7 +49,7 @@ void Server::_eraseChannel()
 
 void Server::_freeAndClose()
 {
-	_partChannels();
+	//_partChannels();
 	_eraseClient();
 	_eraseChannel();
 	close(_epoll_fd);
